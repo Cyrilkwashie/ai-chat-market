@@ -39,7 +39,9 @@ const Index = () => {
             <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-smooth">Pricing</a>
             <a href="#contact" className="text-muted-foreground hover:text-foreground transition-smooth">Contact</a>
             <Button variant="outline" size="sm">Sign In</Button>
-            <Button variant="hero" size="sm">Get Started</Button>
+            <Button variant="hero" size="sm" onClick={() => navigate("/dashboard")}>
+              Vendor Dashboard
+            </Button>
           </div>
         </div>
       </nav>
@@ -71,6 +73,7 @@ const Index = () => {
                   variant="hero" 
                   size="lg" 
                   className="text-lg px-8 py-6"
+                  onClick={() => navigate("/dashboard")}
                 >
                   Start Selling <ArrowRight className="ml-2" />
                 </Button>
