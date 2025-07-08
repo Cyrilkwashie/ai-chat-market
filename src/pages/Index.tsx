@@ -38,9 +38,11 @@ const Index = () => {
             <a href="#features" className="text-muted-foreground hover:text-foreground transition-smooth">Features</a>
             <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-smooth">Pricing</a>
             <a href="#contact" className="text-muted-foreground hover:text-foreground transition-smooth">Contact</a>
-            <Button variant="outline" size="sm">Sign In</Button>
-            <Button variant="hero" size="sm" onClick={() => navigate("/dashboard")}>
-              Vendor Dashboard
+            <Button variant="outline" size="sm" onClick={() => navigate("/signin")}>
+              Sign In
+            </Button>
+            <Button variant="hero" size="sm" onClick={() => navigate("/signin")}>
+              Get Started
             </Button>
           </div>
         </div>
@@ -73,7 +75,7 @@ const Index = () => {
                   variant="hero" 
                   size="lg" 
                   className="text-lg px-8 py-6"
-                  onClick={() => navigate("/dashboard")}
+                  onClick={() => navigate("/signin")}
                 >
                   Start Selling <ArrowRight className="ml-2" />
                 </Button>
