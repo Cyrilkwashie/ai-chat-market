@@ -41,7 +41,7 @@ const Index = () => {
             <Button variant="outline" size="sm" onClick={() => navigate("/signin")}>
               Sign In
             </Button>
-            <Button variant="hero" size="sm" onClick={() => navigate("/signin")}>
+            <Button variant="hero" size="sm" onClick={() => navigate("/signin?mode=signup")}>
               Get Started
             </Button>
           </div>
@@ -75,7 +75,7 @@ const Index = () => {
                   variant="hero" 
                   size="lg" 
                   className="text-lg px-8 py-6"
-                  onClick={() => navigate("/signin")}
+                  onClick={() => navigate("/signin?mode=signup")}
                 >
                   Start Selling <ArrowRight className="ml-2" />
                 </Button>

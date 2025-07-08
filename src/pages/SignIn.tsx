@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { MessageCircle, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 const SignIn = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -19,6 +20,14 @@ const SignIn = () => {
     confirmPassword: "",
     businessName: ""
   });
+
+  // Set signup mode if coming from "Get Started"
+  useEffect(() => {
+    const mode = searchParams.get('mode');
+    if (mode === 'signup') {
+      setIsLogin(false);
+    }
+  }, [searchParams]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
