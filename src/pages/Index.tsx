@@ -15,6 +15,7 @@ import {
   CheckCircle
 } from "lucide-react";
 import heroImage from "@/assets/hero-commerce.jpg";
+import ChatInterface from "@/components/ChatInterface";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("vendor");
@@ -235,58 +236,9 @@ const Index = () => {
               </>
             ) : (
               <>
-                <Card className="hover-lift">
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <MessageCircle className="w-5 h-5 mr-2 text-primary" />
-                      AI Shopping Assistant
-                    </CardTitle>
-                    <CardDescription>
-                      Chat naturally to discover and order products
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-3">
-                      <div className="bg-muted/50 p-3 rounded-lg text-sm">
-                        <strong>You:</strong> I want some jollof rice for dinner
-                      </div>
-                      <div className="bg-primary/10 p-3 rounded-lg text-sm">
-                        <strong>AI:</strong> I found 3 great jollof rice options near you in Accra! 
-                        Mama Ama's is ₵15 with chicken, very popular. Would you like to see the menu?
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="hover-lift">
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <Truck className="w-5 h-5 mr-2 text-primary" />
-                      Local Delivery
-                    </CardTitle>
-                    <CardDescription>
-                      Fast delivery by motorcycle to your location
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between text-sm">
-                      <span>Order placed</span>
-                      <CheckCircle className="w-4 h-4 text-success" />
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span>Being prepared</span>
-                      <CheckCircle className="w-4 h-4 text-success" />
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span>Out for delivery</span>
-                      <div className="w-4 h-4 bg-primary rounded-full animate-pulse" />
-                    </div>
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <span>Delivered</span>
-                      <div className="w-4 h-4 bg-muted rounded-full" />
-                    </div>
-                  </CardContent>
-                </Card>
+                <div className="lg:col-span-2">
+                  <ChatInterface />
+                </div>
               </>
             )}
           </div>
