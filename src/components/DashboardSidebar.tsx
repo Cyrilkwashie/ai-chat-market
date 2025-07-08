@@ -22,8 +22,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -49,7 +47,6 @@ const menuItems = [
 ];
 
 export function DashboardSidebar({ activeSection, setActiveSection }: DashboardSidebarProps) {
-  const { open } = useSidebar();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [profileOpen, setProfileOpen] = useState(false);
@@ -74,19 +71,17 @@ export function DashboardSidebar({ activeSection, setActiveSection }: DashboardS
   };
 
   return (
-    <Sidebar className={open ? "w-64" : "w-14"}>
+    <Sidebar className="w-64">
       <SidebarContent className="flex flex-col">
         <div className="flex-1">
-          {/* Header with Logo and Collapse Toggle */}
-          <div className="p-4 flex items-center justify-between">
+          {/* Header with Logo */}
+          <div className="p-4">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 hero-gradient rounded-lg flex items-center justify-center">
                 <MessageCircle className="w-5 h-5 text-white" />
               </div>
-              {open && <span className="text-xl font-bold text-foreground">AfriCommerce</span>}
+              <span className="text-xl font-bold text-foreground">AfriCommerce</span>
             </div>
-            {/* Always visible collapse/expand button */}
-            <SidebarTrigger className="h-8 w-8 p-0" />
           </div>
 
           <SidebarGroup>
@@ -100,7 +95,7 @@ export function DashboardSidebar({ activeSection, setActiveSection }: DashboardS
                       className={activeSection === item.id ? "bg-primary text-primary-foreground" : "hover:bg-muted"}
                     >
                       <item.icon className="mr-2 h-4 w-4" />
-                      {open && <span>{item.title}</span>}
+                      <span>{item.title}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
@@ -120,55 +115,49 @@ export function DashboardSidebar({ activeSection, setActiveSection }: DashboardS
                       {businessName.substring(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  {open && (
-                    <div className="flex flex-col text-left">
-                      <span className="text-sm font-medium truncate max-w-32">
-                        {businessName}
-                      </span>
-                      <span className="text-xs text-muted-foreground truncate max-w-32">
-                        {userEmail}
-                      </span>
-                    </div>
-                  )}
+                  <div className="flex flex-col text-left">
+                    <span className="text-sm font-medium truncate max-w-32">
+                      {businessName}
+                    </span>
+                    <span className="text-xs text-muted-foreground truncate max-w-32">
+                      {userEmail}
+                    </span>
+                  </div>
                 </div>
-                {open && (
-                  <ChevronUp className={`h-4 w-4 transition-transform ${profileOpen ? 'rotate-180' : ''}`} />
-                )}
+                <ChevronUp className={`h-4 w-4 transition-transform ${profileOpen ? 'rotate-180' : ''}`} />
               </SidebarMenuButton>
             </CollapsibleTrigger>
 
-            {open && (
-              <CollapsibleContent>
-                <div className="px-4 pb-4 space-y-2">
-                  <div className="bg-muted/50 p-3 rounded-lg text-sm">
-                    <div className="space-y-1">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Business:</span>
-                        <span className="font-medium">{businessName}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Type:</span>
-                        <span>{businessProfile.businessType || "Not set"}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Location:</span>
-                        <span>{businessProfile.location || "Not set"}</span>
-                      </div>
+            <CollapsibleContent>
+              <div className="px-4 pb-4 space-y-2">
+                <div className="bg-muted/50 p-3 rounded-lg text-sm">
+                  <div className="space-y-1">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Business:</span>
+                      <span className="font-medium">{businessName}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Type:</span>
+                      <span>{businessProfile.businessType || "Not set"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Location:</span>
+                      <span>{businessProfile.location || "Not set"}</span>
                     </div>
                   </div>
-                  
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
-                    onClick={handleSignOut}
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Sign Out
-                  </Button>
                 </div>
-              </CollapsibleContent>
-            )}
+                
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+                  onClick={handleSignOut}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign Out
+                </Button>
+              </div>
+            </CollapsibleContent>
           </Collapsible>
         </div>
       </SidebarContent>

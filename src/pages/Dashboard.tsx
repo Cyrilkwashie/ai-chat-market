@@ -422,7 +422,7 @@ const DashboardContent = () => {
 // Main Dashboard Component with SidebarProvider
 const Dashboard = () => {
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={true}>
       <DashboardContent />
     </SidebarProvider>
   );
