@@ -75,17 +75,18 @@ export function DashboardSidebar({ activeSection, setActiveSection }: DashboardS
 
   return (
     <Sidebar className={open ? "w-64" : "w-14"}>
-      <SidebarTrigger className="m-2 self-end" />
-      
       <SidebarContent className="flex flex-col">
         <div className="flex-1">
-          <div className="p-4">
+          {/* Header with Logo and Collapse Toggle */}
+          <div className="p-4 flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 hero-gradient rounded-lg flex items-center justify-center">
                 <MessageCircle className="w-5 h-5 text-white" />
               </div>
               {open && <span className="text-xl font-bold text-foreground">AfriCommerce</span>}
             </div>
+            {/* Always visible collapse/expand button */}
+            <SidebarTrigger className="h-8 w-8 p-0" />
           </div>
 
           <SidebarGroup>
