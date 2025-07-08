@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,10 +15,12 @@ import {
   CheckCircle
 } from "lucide-react";
 import heroImage from "@/assets/hero-commerce.jpg";
+import ChatInterface from "@/components/ChatInterface";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("vendor");
 
   return (
     <div className="min-h-screen bg-background">
@@ -140,8 +143,111 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Interactive Demo Section */}
       <section id="features" className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-foreground mb-4">
+              See It In Action
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Experience how our platform works from both vendor and customer perspectives
+            </p>
+          </div>
+
+          {/* Tab Switcher */}
+          <div className="flex justify-center mb-8">
+            <div className="bg-muted p-1 rounded-lg inline-flex">
+              <Button
+                variant={activeTab === "vendor" ? "default" : "ghost"}
+                onClick={() => setActiveTab("vendor")}
+                className="rounded-md"
+              >
+                <Users className="w-4 h-4 mr-2" />
+                Vendor Dashboard
+              </Button>
+              <Button
+                variant={activeTab === "customer" ? "default" : "ghost"}
+                onClick={() => setActiveTab("customer")}
+                className="rounded-md"
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
+                Customer Chat
+              </Button>
+            </div>
+          </div>
+
+          {/* Demo Content */}
+          <div className="grid lg:grid-cols-2 gap-8">
+            {activeTab === "vendor" ? (
+              <>
+                <Card className="hover-lift">
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <BarChart3 className="w-5 h-5 mr-2 text-primary" />
+                      Sales Dashboard
+                    </CardTitle>
+                    <CardDescription>
+                      Track your sales, orders, and customer insights in real-time
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="bg-muted/50 p-4 rounded-lg">
+                      <div className="text-2xl font-bold text-foreground">₵2,450</div>
+                      <div className="text-sm text-muted-foreground">Today's Revenue</div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4 text-center">
+                      <div>
+                        <div className="text-lg font-semibold">24</div>
+                        <div className="text-xs text-muted-foreground">Orders</div>
+                      </div>
+                      <div>
+                        <div className="text-lg font-semibold">18</div>
+                        <div className="text-xs text-muted-foreground">Customers</div>
+                      </div>
+                      <div>
+                        <div className="text-lg font-semibold">95%</div>
+                        <div className="text-xs text-muted-foreground">Satisfaction</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="hover-lift">
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <Smartphone className="w-5 h-5 mr-2 text-primary" />
+                      Mobile Management
+                    </CardTitle>
+                    <CardDescription>
+                      Manage your business on the go with our mobile-first design
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      {["Add new products", "Process orders", "Chat with customers", "Track deliveries"].map((feature, index) => (
+                        <div key={index} className="flex items-center space-x-2">
+                          <CheckCircle className="w-4 h-4 text-success" />
+                          <span className="text-sm">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
+            ) : (
+              <>
+                <div className="lg:col-span-2">
+                  <ChatInterface />
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Additional Features Section */}
+      <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-foreground mb-4">
@@ -152,60 +258,23 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
-            <Card className="hover-lift">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <BarChart3 className="w-5 h-5 mr-2 text-primary" />
-                  Sales Dashboard
-                </CardTitle>
-                <CardDescription>
-                  Track your sales, orders, and customer insights in real-time
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="bg-muted/50 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-foreground">₵2,450</div>
-                  <div className="text-sm text-muted-foreground">Today's Revenue</div>
-                </div>
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <div className="text-lg font-semibold">24</div>
-                    <div className="text-xs text-muted-foreground">Orders</div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: BarChart3, title: "Analytics Dashboard", desc: "Real-time business insights" },
+              { icon: MessageCircle, title: "AI Chat Support", desc: "24/7 customer assistance" },
+              { icon: Truck, title: "Delivery Tracking", desc: "Real-time order updates" },
+              { icon: Smartphone, title: "Mobile Optimized", desc: "Perfect on any device" }
+            ].map((feature, index) => (
+              <Card key={index} className="hover-lift text-center">
+                <CardContent className="pt-6">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg mb-4">
+                    <feature.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <div>
-                    <div className="text-lg font-semibold">18</div>
-                    <div className="text-xs text-muted-foreground">Customers</div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-semibold">95%</div>
-                    <div className="text-xs text-muted-foreground">Satisfaction</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="hover-lift">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Smartphone className="w-5 h-5 mr-2 text-primary" />
-                  Mobile Management
-                </CardTitle>
-                <CardDescription>
-                  Manage your business on the go with our mobile-first design
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  {["Add new products", "Process orders", "Chat with customers", "Track deliveries"].map((feature, index) => (
-                    <div key={index} className="flex items-center space-x-2">
-                      <CheckCircle className="w-4 h-4 text-success" />
-                      <span className="text-sm">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                  <h3 className="font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground">{feature.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
