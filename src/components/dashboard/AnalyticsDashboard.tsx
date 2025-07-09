@@ -1,7 +1,8 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TrendingUp, TrendingDown, Users, ShoppingCart, MessageCircle, Globe } from "lucide-react";
+import { TrendingUp, TrendingDown, Users, ShoppingCart, MessageCircle, Globe, DollarSign, CheckCircle, Clock } from "lucide-react";
 
 const salesData = [
   { period: "Today", revenue: "₵2,450", orders: 24, customers: 18, change: "+12%" },
@@ -27,10 +28,10 @@ const languageStats = [
 ];
 
 const customerInsights = [
-  { metric: "New Customers", value: "47", change: "+23%", trend: "up" },
-  { metric: "Returning Customers", value: "89", change: "+12%", trend: "up" },
-  { metric: "Customer Satisfaction", value: "97%", change: "+2%", trend: "up" },
-  { metric: "Avg Order Value", value: "₵28.50", change: "+5%", trend: "up" }
+  { metric: "New Customers", value: "47", change: "+23%", trend: "up", icon: Users },
+  { metric: "Returning Customers", value: "89", change: "+12%", trend: "up", icon: Users },
+  { metric: "Customer Satisfaction", value: "97%", change: "+2%", trend: "up", icon: CheckCircle },
+  { metric: "Avg Order Value", value: "₵28.50", change: "+5%", trend: "up", icon: DollarSign }
 ];
 
 export function AnalyticsDashboard() {
@@ -56,7 +57,7 @@ export function AnalyticsDashboard() {
       </div>
 
       {/* Sales Overview */}
-      <Card>
+      <Card className="shadow-warm">
         <CardHeader>
           <CardTitle>Sales Overview</CardTitle>
           <CardDescription>Revenue and order trends</CardDescription>
@@ -82,7 +83,7 @@ export function AnalyticsDashboard() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Top Products */}
-        <Card>
+        <Card className="shadow-warm">
           <CardHeader>
             <CardTitle>Top Selling Products</CardTitle>
             <CardDescription>Best performing items this month</CardDescription>
@@ -117,7 +118,7 @@ export function AnalyticsDashboard() {
         </Card>
 
         {/* Language Usage */}
-        <Card>
+        <Card className="shadow-warm">
           <CardHeader>
             <CardTitle>Language Usage</CardTitle>
             <CardDescription>Customer communication preferences</CardDescription>
@@ -146,64 +147,98 @@ export function AnalyticsDashboard() {
         </Card>
       </div>
 
-      {/* Customer Insights */}
-      <Card>
+      {/* Enhanced Customer Insights */}
+      <Card className="shadow-warm">
         <CardHeader>
           <CardTitle>Customer Insights</CardTitle>
           <CardDescription>Understanding your customer behavior</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {customerInsights.map((insight, index) => (
-              <div key={index} className="bg-muted/30 p-4 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <Users className="w-5 h-5 text-primary" />
-                  <Badge variant="outline" className="text-xs">
-                    {insight.trend === "up" ? "↑" : "↓"} {insight.change}
-                  </Badge>
-                </div>
-                <div className="text-2xl font-bold">{insight.value}</div>
-                <div className="text-sm text-muted-foreground">{insight.metric}</div>
-              </div>
+              <Card key={index} className="hover-lift border-l-4 border-l-primary">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-muted-foreground">{insight.metric}</p>
+                      <p className="text-3xl font-bold text-foreground">{insight.value}</p>
+                      <div className="flex items-center text-xs text-success">
+                        <span className="bg-success/10 text-success px-2 py-1 rounded-full">{insight.change}</span>
+                        <span className="ml-2 text-muted-foreground">vs yesterday</span>
+                      </div>
+                    </div>
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                      <insight.icon className="w-6 h-6 text-primary" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </CardContent>
       </Card>
 
       {/* AI Performance */}
-      <Card>
+      <Card className="shadow-warm">
         <CardHeader>
           <CardTitle>AI Chatbot Performance</CardTitle>
           <CardDescription>How well your AI assistant is performing</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <MessageCircle className="w-4 h-4 text-primary" />
-                <span className="font-medium">Response Time</span>
-              </div>
-              <div className="text-2xl font-bold">2.3 sec</div>
-              <div className="text-sm text-muted-foreground">Average response time</div>
-            </div>
+            <Card className="hover-lift border-l-4 border-l-accent">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Response Time</p>
+                    <p className="text-3xl font-bold text-foreground">2.3s</p>
+                    <div className="flex items-center text-xs text-success">
+                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">-0.2s</span>
+                      <span className="ml-2 text-muted-foreground">vs yesterday</span>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                    <Clock className="w-6 h-6 text-accent" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
             
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <TrendingUp className="w-4 h-4 text-success" />
-                <span className="font-medium">Resolution Rate</span>
-              </div>
-              <div className="text-2xl font-bold">94%</div>
-              <div className="text-sm text-muted-foreground">Issues resolved without human help</div>
-            </div>
+            <Card className="hover-lift border-l-4 border-l-success">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Resolution Rate</p>
+                    <p className="text-3xl font-bold text-foreground">94%</p>
+                    <div className="flex items-center text-xs text-success">
+                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">+2%</span>
+                      <span className="ml-2 text-muted-foreground">vs yesterday</span>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center">
+                    <CheckCircle className="w-6 h-6 text-success" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
             
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Globe className="w-4 h-4 text-primary" />
-                <span className="font-medium">Multi-language</span>
-              </div>
-              <div className="text-2xl font-bold">6</div>
-              <div className="text-sm text-muted-foreground">Languages supported</div>
-            </div>
+            <Card className="hover-lift border-l-4 border-l-primary">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Multi-language</p>
+                    <p className="text-3xl font-bold text-foreground">6</p>
+                    <div className="flex items-center text-xs text-success">
+                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">+1</span>
+                      <span className="ml-2 text-muted-foreground">new language</span>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <Globe className="w-6 h-6 text-primary" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </CardContent>
       </Card>

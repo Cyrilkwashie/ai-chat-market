@@ -15,7 +15,8 @@ import {
   CreditCard,
   Bell,
   Search,
-  Menu
+  Menu,
+  DollarSign
 } from "lucide-react";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
@@ -90,24 +91,22 @@ const DashboardContent = () => {
               </div>
             </div>
 
-            {/* Key Stats Grid - Mobile First */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Enhanced Key Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {stats.map((stat, index) => (
-                <Card key={index} className="hover-lift">
-                  <CardContent className="p-4">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                      <div className="space-y-1 flex-1">
-                        <p className="text-xs md:text-sm text-muted-foreground truncate">{stat.label}</p>
-                        <p className="text-lg md:text-xl font-bold text-foreground">{stat.value}</p>
-                        <div className="flex items-center space-x-1">
-                          <div className="text-xs bg-success/10 text-success px-1.5 py-0.5 rounded-full">
-                            {stat.change}
-                          </div>
-                          <span className="text-xs text-muted-foreground hidden md:inline">vs yesterday</span>
+                <Card key={index} className="hover-lift border-l-4 border-l-primary">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
+                        <p className="text-3xl font-bold text-foreground">{stat.value}</p>
+                        <div className="flex items-center text-xs text-success">
+                          <span className="bg-success/10 text-success px-2 py-1 rounded-full">{stat.change}</span>
+                          <span className="ml-2 text-muted-foreground">vs yesterday</span>
                         </div>
                       </div>
-                      <div className="bg-primary/10 p-2 rounded-lg self-end md:self-auto">
-                        <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                      <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                        <stat.icon className="w-6 h-6 text-primary" />
                       </div>
                     </div>
                   </CardContent>
@@ -119,7 +118,7 @@ const DashboardContent = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Monthly Revenue Chart */}
               <div className="lg:col-span-2">
-                <Card>
+                <Card className="shadow-warm">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center text-lg">
                       <BarChart3 className="w-5 h-5 mr-2 text-primary" />
@@ -142,7 +141,7 @@ const DashboardContent = () => {
 
               {/* Top Products - Compact */}
               <div>
-                <Card>
+                <Card className="shadow-warm">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center text-lg">
                       <TrendingUp className="w-5 h-5 mr-2 text-primary" />
@@ -176,7 +175,7 @@ const DashboardContent = () => {
             </div>
 
             {/* Recent Orders - Full Width */}
-            <Card>
+            <Card className="shadow-warm">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                   <div>
@@ -194,7 +193,7 @@ const DashboardContent = () => {
                       customer: "Kwame Asante", 
                       items: "2x Jollof Rice", 
                       amount: "₵30", 
-                      status: "preparing",
+                      status: "confirmed",
                       time: "2 mins ago"
                     },
                     { 
@@ -233,7 +232,7 @@ const DashboardContent = () => {
                         <Badge 
                           variant={
                             order.status === "delivered" ? "default" : 
-                            order.status === "preparing" ? "secondary" : "outline"
+                            order.status === "confirmed" ? "secondary" : "outline"
                           }
                           className="text-xs"
                         >
