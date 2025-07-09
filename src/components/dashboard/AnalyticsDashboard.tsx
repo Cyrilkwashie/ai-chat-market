@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -281,7 +282,7 @@ export function AnalyticsDashboard() {
         {/* Tab 2: Product Analysis */}
         <TabsContent value="products" className="space-y-6">
           <div className="grid lg:grid-cols-2 gap-6">
-            {/* Product Performance Horizontal Bar Chart */}
+            {/* Product Performance Pie Chart */}
             <Card className="shadow-warm">
               <CardHeader>
                 <CardTitle>Product Performance</CardTitle>
@@ -290,20 +291,24 @@ export function AnalyticsDashboard() {
               <CardContent>
                 <ChartContainer config={chartConfig} className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart 
-                      data={productData} 
-                      layout="horizontal" 
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                    >
-                      <XAxis type="number" />
-                      <YAxis dataKey="name" type="category" width={80} />
+                    <RechartsPieChart>
                       <ChartTooltip content={<ChartTooltipContent />} />
-                      <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                      <Pie
+                        data={productData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={80}
+                        paddingAngle={2}
+                        dataKey="value"
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        labelLine={false}
+                      >
                         {productData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
-                      </Bar>
-                    </BarChart>
+                      </Pie>
+                    </RechartsPieChart>
                   </ResponsiveContainer>
                 </ChartContainer>
               </CardContent>
