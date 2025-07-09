@@ -9,8 +9,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Search, Edit, Trash2, Package, TrendingUp, TrendingDown, Grid3X3, List } from "lucide-react";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 const mockProducts = [
   {
@@ -273,73 +271,6 @@ export function ProductManagement() {
                 <Trash2 className="w-6 h-6 text-destructive" />
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Product Analytics Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="shadow-warm">
-          <CardHeader>
-            <CardTitle>Product Performance</CardTitle>
-            <CardDescription>Order distribution across all products</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer
-              config={{
-                orders: {
-                  label: "Orders",
-                  color: "hsl(var(--primary))",
-                },
-              }}
-              className="h-64"
-            >
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={productPerformanceData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={40}
-                    outerRadius={80}
-                    paddingAngle={2}
-                    dataKey="orders"
-                  >
-                    {productPerformanceData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                  </Pie>
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                </PieChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-warm">
-          <CardHeader>
-            <CardTitle>Top Categories</CardTitle>
-            <CardDescription>Best performing product categories</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer
-              config={{
-                sales: {
-                  label: "Sales",
-                  color: "hsl(var(--primary))",
-                },
-              }}
-              className="h-64"
-            >
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={topProductsData} layout="horizontal">
-                  <XAxis type="number" />
-                  <YAxis dataKey="name" type="category" width={80} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="sales" radius={[0, 4, 4, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </ChartContainer>
           </CardContent>
         </Card>
       </div>
