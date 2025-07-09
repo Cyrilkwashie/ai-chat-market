@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -66,7 +67,8 @@ const regions = [
 const chartConfig = {
   revenue: { label: "Revenue", color: "hsl(var(--primary))" },
   orders: { label: "Orders", color: "hsl(142, 76%, 36%)" },
-  customers: { label: "Customers", color: "hsl(45, 93%, 47%)" }
+  customers: { label: "Customers", color: "hsl(45, 93%, 47%)" },
+  value: { label: "Value", color: "hsl(var(--primary))" }
 };
 
 export function AnalyticsDashboard() {
@@ -281,7 +283,7 @@ export function AnalyticsDashboard() {
         {/* Tab 2: Product Analysis */}
         <TabsContent value="products" className="space-y-6">
           <div className="grid lg:grid-cols-2 gap-6">
-            {/* Product Performance Pie Chart */}
+            {/* Product Performance Horizontal Bar Chart */}
             <Card className="shadow-warm">
               <CardHeader>
                 <CardTitle>Product Performance</CardTitle>
@@ -289,22 +291,20 @@ export function AnalyticsDashboard() {
               </CardHeader>
               <CardContent>
                 <ChartContainer config={chartConfig} className="h-64">
-                  <RechartsPieChart>
+                  <BarChart 
+                    data={productData} 
+                    layout="horizontal" 
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <XAxis type="number" />
+                    <YAxis dataKey="name" type="category" width={80} />
                     <ChartTooltip content={<ChartTooltipContent />} />
-                    <Pie
-                      data={productData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      dataKey="value"
-                      labelLine={false}
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    >
+                    <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                       {productData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
-                    </Pie>
-                  </RechartsPieChart>
+                    </Bar>
+                  </BarChart>
                 </ChartContainer>
               </CardContent>
             </Card>
@@ -345,7 +345,7 @@ export function AnalyticsDashboard() {
         {/* Tab 3: Customer Insights */}
         <TabsContent value="customers" className="space-y-6">
           <div className="grid lg:grid-cols-2 gap-6">
-            {/* Customer Segments Pie Chart */}
+            {/* Customer Segments Donut Chart */}
             <Card className="shadow-warm">
               <CardHeader>
                 <CardTitle>Customer Segments</CardTitle>
@@ -359,6 +359,7 @@ export function AnalyticsDashboard() {
                       data={customerSegments}
                       cx="50%"
                       cy="50%"
+                      innerRadius={40}
                       outerRadius={80}
                       dataKey="value"
                       labelLine={false}
