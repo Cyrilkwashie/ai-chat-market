@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { MessageCircle, Bot, Phone, Settings, Zap, Globe, MessageSquare } from "lucide-react";
+import { MessageCircle, Bot, Phone, Settings, Zap, MessageSquare } from "lucide-react";
 
 const activeChats = [
   {
@@ -87,7 +86,7 @@ export function ChatSupport() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="settings" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="settings" className="flex items-center gap-2">
                 <Settings className="w-4 h-4" />
                 Settings
@@ -99,10 +98,6 @@ export function ChatSupport() {
               <TabsTrigger value="integrations" className="flex items-center gap-2">
                 <Zap className="w-4 h-4" />
                 Integrations
-              </TabsTrigger>
-              <TabsTrigger value="languages" className="flex items-center gap-2">
-                <Globe className="w-4 h-4" />
-                Languages
               </TabsTrigger>
             </TabsList>
 
@@ -291,44 +286,6 @@ export function ChatSupport() {
                       checked={paystackEnabled}
                       onCheckedChange={setPaystackEnabled}
                     />
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="languages" className="space-y-6 mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Language Settings</CardTitle>
-                  <CardDescription>
-                    Configure language support for your chatbot
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Primary Language</label>
-                    <Select defaultValue="english">
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="english">English</SelectItem>
-                        <SelectItem value="twi">Twi</SelectItem>
-                        <SelectItem value="hausa">Hausa</SelectItem>
-                        <SelectItem value="pidgin">Pidgin</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-3">
-                    <label className="text-sm font-medium">Additional Languages</label>
-                    <div className="space-y-2">
-                      {["Twi", "Hausa", "Pidgin", "French"].map((lang) => (
-                        <div key={lang} className="flex items-center space-x-2">
-                          <input type="checkbox" id={lang} className="rounded" />
-                          <label htmlFor={lang} className="text-sm">{lang}</label>
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 </CardContent>
               </Card>

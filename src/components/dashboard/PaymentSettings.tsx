@@ -340,46 +340,6 @@ export function PaymentSettings() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Payment Insights */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Payment Insights</CardTitle>
-          <CardDescription>Understand your payment performance</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <h4 className="font-medium">Most Popular Method</h4>
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center">
-                  <Smartphone className="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <p className="font-medium">MTN Mobile Money</p>
-                  <p className="text-sm text-muted-foreground">37% of all transactions</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <h4 className="font-medium">Peak Payment Hours</h4>
-              <div className="space-y-1">
-                <p className="text-2xl font-bold">6-9 PM</p>
-                <p className="text-sm text-muted-foreground">42% of daily transactions</p>
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <h4 className="font-medium">Failed Payment Rate</h4>
-              <div className="space-y-1">
-                <p className="text-2xl font-bold">2.2%</p>
-                <p className="text-sm text-muted-foreground">Mostly due to insufficient funds</p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

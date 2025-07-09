@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -274,6 +275,7 @@ const DashboardContent = () => {
                 <h1 className="text-xl md:text-2xl font-bold text-foreground truncate">
                   {activeSection === "overview" ? "Dashboard" : 
                    activeSection === "customers" ? "Customer Management" :
+                   activeSection === "analytics" ? "Analytics" :
                    activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
                 </h1>
               </div>
