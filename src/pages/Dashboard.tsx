@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,6 +29,7 @@ import { Input } from "@/components/ui/input";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { CustomerManagement } from "@/components/dashboard/CustomerManagement";
+import { SettingsManagement } from "@/components/dashboard/SettingsManagement";
 
 // Dashboard Content Component
 const DashboardContent = () => {
@@ -81,6 +81,8 @@ const DashboardContent = () => {
         return <PaymentSettings />;
       case "deliveries":
         return <DeliveryManagement />;
+      case "settings":
+        return <SettingsManagement />;
       default:
         return (
           <div className="space-y-6">

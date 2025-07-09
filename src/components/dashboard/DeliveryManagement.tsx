@@ -30,7 +30,7 @@ const activeDeliveries = [
     items: "1x Waakye + Fish", 
     driver: "Grace Mensah",
     estimatedTime: "22 mins",
-    status: "preparing",
+    status: "pending",
     progress: 25
   },
   { 
@@ -58,7 +58,7 @@ const getStatusColor = (status: string) => {
       return "default";
     case "on-route":
       return "secondary";
-    case "preparing":
+    case "pending":
       return "outline";
     default:
       return "outline";
@@ -147,7 +147,7 @@ export function DeliveryManagement() {
                     <div className="mt-4 flex space-x-2">
                       <Button size="sm" variant="outline">Track Order</Button>
                       <Button size="sm" variant="outline">Contact Driver</Button>
-                      {delivery.status === "preparing" && (
+                      {delivery.status === "pending" && (
                         <Button size="sm">Mark Ready</Button>
                       )}
                     </div>

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Search, Edit, Trash2, Package, TrendingUp, TrendingDown, Grid3X3, List } from "lucide-react";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 
 const mockProducts = [
   {
@@ -144,6 +145,22 @@ const mockProducts = [
   }
 ];
 
+const productPerformanceData = [
+  { month: "Jan", sales: 156, revenue: 2340 },
+  { month: "Feb", sales: 178, revenue: 2680 },
+  { month: "Mar", sales: 145, revenue: 2180 },
+  { month: "Apr", sales: 203, revenue: 3045 },
+  { month: "May", sales: 189, revenue: 2835 },
+  { month: "Jun", sales: 234, revenue: 3510 },
+];
+
+const topProductsData = [
+  { name: "Jollof Rice", sales: 156, fill: "hsl(var(--primary))" },
+  { name: "Waakye", sales: 134, fill: "hsl(var(--secondary))" },
+  { name: "Electronics", sales: 89, fill: "hsl(var(--accent))" },
+  { name: "Banku", sales: 67, fill: "hsl(var(--muted))" },
+];
+
 const categories = ["All", "Main Course", "Snacks", "Beverages", "Electronics", "Appliances", "Furniture"];
 
 const statusColors = {
@@ -156,7 +173,7 @@ export function ProductManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
+  const [viewMode, setViewMode: any] = useState("cards");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [newCategoryName, setNewCategoryName] = useState("");
   const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
@@ -252,6 +269,66 @@ export function ProductManagement() {
                 <Trash2 className="w-6 h-6 text-destructive" />
               </div>
             </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Product Analytics Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="shadow-warm">
+          <CardHeader>
+            <CardTitle>Product Performance</CardTitle>
+            <CardDescription>Sales and revenue trends over time</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer
+              config={{
+                sales: {
+                  label: "Sales",
+                  color: "hsl(var(--primary))",
+                },
+                revenue: {
+                  label: "Revenue (₵)",
+                  color: "hsl(var(--secondary))",
+                },
+              }}
+              className="h-64"
+            >
+              <BarChart data={productPerformanceData}>
+                <XAxis dataKey="month" />
+                <YAxis />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="sales" fill="var(--color-sales)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="revenue" fill="var(--color-revenue)" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-warm">
+          <CardHeader>
+            <CardTitle>Top Categories</CardTitle>
+            <CardDescription>Best performing product categories</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer
+              config={{
+                sales: {
+                  label: "Sales",
+                  color: "hsl(var(--primary))",
+                },
+              }}
+              className="h-64"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={topProductsData} layout="horizontal">
+                  <XAxis type="number" />
+                  <YAxis dataKey="name" type="category" width={80} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="sales" radius={[0, 4, 4, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
           </CardContent>
         </Card>
       </div>
