@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,10 +14,9 @@ const mockOrders = [
     phone: "+233 20 123 4567",
     items: "2x Jollof Rice, 1x Grilled Chicken",
     total: "₵35.00",
-    status: "preparing",
+    status: "confirmed",
     paymentMethod: "MTN MoMo",
-    orderTime: "2 mins ago",
-    language: "English"
+    orderTime: "2 mins ago"
   },
   {
     id: "#ORD-002", 
@@ -26,8 +26,7 @@ const mockOrders = [
     total: "₵18.50",
     status: "delivered",
     paymentMethod: "Vodafone Cash",
-    orderTime: "15 mins ago",
-    language: "Hausa"
+    orderTime: "15 mins ago"
   },
   {
     id: "#ORD-003",
@@ -37,8 +36,7 @@ const mockOrders = [
     total: "₵52.00",
     status: "pending",
     paymentMethod: "Cash on Delivery",
-    orderTime: "32 mins ago", 
-    language: "Twi"
+    orderTime: "32 mins ago"
   },
   {
     id: "#ORD-004",
@@ -48,14 +46,13 @@ const mockOrders = [
     total: "₵28.00",
     status: "cancelled",
     paymentMethod: "Paystack",
-    orderTime: "1 hour ago",
-    language: "Yoruba"
+    orderTime: "1 hour ago"
   }
 ];
 
 const statusColors = {
   pending: "outline",
-  preparing: "secondary", 
+  confirmed: "secondary", 
   delivered: "default",
   cancelled: "destructive"
 } as const;
@@ -83,20 +80,20 @@ export function OrdersOverview() {
         </Card>
         <Card>
           <CardContent className="p-4">
+            <div className="text-2xl font-bold">8</div>
+            <div className="text-sm text-muted-foreground">Pending Orders</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold">12</div>
+            <div className="text-sm text-muted-foreground">Confirmed Orders</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
             <div className="text-2xl font-bold">₵1,235</div>
             <div className="text-sm text-muted-foreground">Today's Revenue</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold">18</div>
-            <div className="text-sm text-muted-foreground">Processing</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold">3.2 min</div>
-            <div className="text-sm text-muted-foreground">Avg Response Time</div>
           </CardContent>
         </Card>
       </div>
@@ -126,7 +123,7 @@ export function OrdersOverview() {
               <SelectContent>
                 <SelectItem value="all">All Orders</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="preparing">Preparing</SelectItem>
+                <SelectItem value="confirmed">Confirmed</SelectItem>
                 <SelectItem value="delivered">Delivered</SelectItem>
                 <SelectItem value="cancelled">Cancelled</SelectItem>
               </SelectContent>
@@ -137,7 +134,7 @@ export function OrdersOverview() {
           <div className="space-y-4">
             {filteredOrders.map((order) => (
               <div key={order.id} className="border border-border rounded-lg p-4 hover:bg-muted/30 transition-colors">
-                <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 items-center">
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 items-center">
                   <div className="space-y-1">
                     <p className="font-medium">{order.id}</p>
                     <p className="text-sm text-muted-foreground">{order.orderTime}</p>
@@ -146,9 +143,6 @@ export function OrdersOverview() {
                   <div className="space-y-1">
                     <p className="font-medium">{order.customer}</p>
                     <p className="text-sm text-muted-foreground">{order.phone}</p>
-                    <Badge variant="outline" className="text-xs">
-                      {order.language}
-                    </Badge>
                   </div>
                   
                   <div className="lg:col-span-2">
