@@ -10,7 +10,7 @@ import {
   TrendingUp,
   Package,
   MessageCircle,
-  Settings,
+  Settings as SettingsIcon,
   Globe,
   CreditCard,
   Bell,
@@ -26,6 +26,7 @@ import { ProductManagement } from "@/components/dashboard/ProductManagement";
 import { ChatSupport } from "@/components/dashboard/ChatSupport";
 import { PaymentSettings } from "@/components/dashboard/PaymentSettings";
 import { LanguageSettings } from "@/components/dashboard/LanguageSettings";
+import { Settings } from "@/components/dashboard/Settings";
 import { Input } from "@/components/ui/input";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
@@ -81,6 +82,8 @@ const DashboardContent = () => {
         return <PaymentSettings />;
       case "language":
         return <LanguageSettings />;
+      case "settings":
+        return <Settings />;
       default:
         return (
           <div className="space-y-6">
@@ -276,6 +279,7 @@ const DashboardContent = () => {
                   {activeSection === "overview" ? "Dashboard" : 
                    activeSection === "customers" ? "Customer Management" :
                    activeSection === "analytics" ? "Analytics" :
+                   activeSection === "settings" ? "Settings" :
                    activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
                 </h1>
               </div>
