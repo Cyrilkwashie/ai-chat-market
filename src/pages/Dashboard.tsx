@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,6 +28,7 @@ import { LanguageSettings } from "@/components/dashboard/LanguageSettings";
 import { Input } from "@/components/ui/input";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { CustomerManagement } from "@/components/dashboard/CustomerManagement";
 
 // Dashboard Content Component
 const DashboardContent = () => {
@@ -72,6 +72,8 @@ const DashboardContent = () => {
         return <AnalyticsDashboard />;
       case "products":
         return <ProductManagement />;
+      case "customers":
+        return <CustomerManagement />;
       case "chat":
         return <ChatSupport />;
       case "payments":
@@ -271,6 +273,7 @@ const DashboardContent = () => {
               <div className="min-w-0 flex-1">
                 <h1 className="text-xl md:text-2xl font-bold text-foreground truncate">
                   {activeSection === "overview" ? "Dashboard" : 
+                   activeSection === "customers" ? "Customer Management" :
                    activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
                 </h1>
               </div>

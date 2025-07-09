@@ -291,20 +291,22 @@ export function AnalyticsDashboard() {
               </CardHeader>
               <CardContent>
                 <ChartContainer config={chartConfig} className="h-64">
-                  <BarChart 
-                    data={productData} 
-                    layout="horizontal" 
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <XAxis type="number" />
-                    <YAxis dataKey="name" type="category" width={80} />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar dataKey="value" radius={[0, 4, 4, 0]}>
-                      {productData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Bar>
-                  </BarChart>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart 
+                      data={productData} 
+                      layout="horizontal" 
+                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <XAxis type="number" />
+                      <YAxis dataKey="name" type="category" width={80} />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                        {productData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
                 </ChartContainer>
               </CardContent>
             </Card>
