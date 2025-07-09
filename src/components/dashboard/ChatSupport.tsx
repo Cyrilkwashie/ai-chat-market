@@ -2,11 +2,13 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageCircle, Bot, User, Phone, Clock, CheckCircle, AlertTriangle } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { MessageCircle, Bot, Phone, Settings, Zap, MessageSquare } from "lucide-react";
 
 const activeChats = [
   {
@@ -41,45 +43,256 @@ const activeChats = [
   }
 ];
 
-const aiPerformance = [
-  { metric: "Response Time", value: "2.3 sec", target: "< 3 sec", status: "good" },
-  { metric: "Resolution Rate", value: "94%", target: "> 90%", status: "excellent" },
-  { metric: "Customer Satisfaction", value: "97%", target: "> 95%", status: "excellent" },
-  { metric: "Escalation Rate", value: "6%", target: "< 10%", status: "good" }
-];
-
-const commonQueries = [
-  { query: "Menu prices", count: 47, percentage: 32 },
-  { query: "Delivery time", count: 34, percentage: 23 },
-  { query: "Payment methods", count: 28, percentage: 19 },
-  { query: "Order status", count: 22, percentage: 15 },
-  { query: "Location/directions", count: 16, percentage: 11 }
-];
-
 export function ChatSupport() {
   const [selectedChat, setSelectedChat] = useState(activeChats[0]);
+  const [chatbotActive, setChatbotActive] = useState(true);
+  const [businessName, setBusinessName] = useState("My Restaurant");
+  const [welcomeMessage, setWelcomeMessage] = useState("Hello! Welcome to our restaurant. How can I help you today?");
+  const [businessDescription, setBusinessDescription] = useState("We serve delicious local dishes with fast delivery.");
+  const [autoConfirmOrders, setAutoConfirmOrders] = useState(false);
+  const [sendReceipts, setSendReceipts] = useState(true);
+  const [inventoryAlerts, setInventoryAlerts] = useState(true);
+  const [communicationTone, setCommunicationTone] = useState("friendly");
+  const [customPersonality, setCustomPersonality] = useState("");
+  const [fallbackResponses, setFallbackResponses] = useState("I'm sorry, I didn't understand that. Could you please rephrase?");
+  const [flutterwaveEnabled, setFlutterwaveEnabled] = useState(false);
+  const [paystackEnabled, setPaystackEnabled] = useState(false);
 
   return (
     <div className="space-y-6">
-      {/* AI Performance Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {aiPerformance.map((metric, index) => (
-          <Card key={index}>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold">{metric.value}</div>
-                  <div className="text-sm text-muted-foreground">{metric.metric}</div>
-                  <div className="text-xs text-muted-foreground">Target: {metric.target}</div>
-                </div>
-                <div className={`w-3 h-3 rounded-full ${
-                  metric.status === "excellent" ? "bg-success" : "bg-primary"
-                }`} />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {/* Chatbot Configuration Header */}
+      <Card className="border-l-4 border-l-primary">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Bot className="w-5 h-5 text-primary" />
+                AI Chatbot Configuration
+              </CardTitle>
+              <CardDescription>
+                Customize your AI-powered conversational commerce assistant
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-3">
+              <Badge variant={chatbotActive ? "default" : "secondary"}>
+                {chatbotActive ? "Active" : "Inactive"}
+              </Badge>
+              <Switch
+                checked={chatbotActive}
+                onCheckedChange={setChatbotActive}
+              />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="settings" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="settings" className="flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                Settings
+              </TabsTrigger>
+              <TabsTrigger value="personality" className="flex items-center gap-2">
+                <MessageSquare className="w-4 h-4" />
+                Personality
+              </TabsTrigger>
+              <TabsTrigger value="integrations" className="flex items-center gap-2">
+                <Zap className="w-4 h-4" />
+                Integrations
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="settings" className="space-y-6 mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Basic Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Business Name</label>
+                    <Input
+                      value={businessName}
+                      onChange={(e) => setBusinessName(e.target.value)}
+                      placeholder="Enter your business name"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Welcome Message</label>
+                    <Textarea
+                      value={welcomeMessage}
+                      onChange={(e) => setWelcomeMessage(e.target.value)}
+                      placeholder="Enter your welcome message"
+                      rows={3}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Business Description</label>
+                    <Textarea
+                      value={businessDescription}
+                      onChange={(e) => setBusinessDescription(e.target.value)}
+                      placeholder="Describe your business"
+                      rows={3}
+                    />
+                  </div>
+                  <Button variant="default" className="w-full">
+                    Save Settings
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Response Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <label className="text-sm font-medium">Auto-confirm orders</label>
+                      <p className="text-xs text-muted-foreground">
+                        Automatically confirm orders without manual intervention
+                      </p>
+                    </div>
+                    <Switch
+                      checked={autoConfirmOrders}
+                      onCheckedChange={setAutoConfirmOrders}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <label className="text-sm font-medium">Send order receipts</label>
+                      <p className="text-xs text-muted-foreground">
+                        Send receipt messages after order completion
+                      </p>
+                    </div>
+                    <Switch
+                      checked={sendReceipts}
+                      onCheckedChange={setSendReceipts}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <label className="text-sm font-medium">Inventory alerts</label>
+                      <p className="text-xs text-muted-foreground">
+                        Notify about low stock items
+                      </p>
+                    </div>
+                    <Switch
+                      checked={inventoryAlerts}
+                      onCheckedChange={setInventoryAlerts}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="personality" className="space-y-6 mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Chatbot Personality</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Communication Tone</label>
+                    <Select value={communicationTone} onValueChange={setCommunicationTone}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="friendly">Friendly & Casual</SelectItem>
+                        <SelectItem value="professional">Professional</SelectItem>
+                        <SelectItem value="warm">Warm & Personal</SelectItem>
+                        <SelectItem value="energetic">Energetic & Enthusiastic</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Custom Personality Prompt</label>
+                    <Textarea
+                      value={customPersonality}
+                      onChange={(e) => setCustomPersonality(e.target.value)}
+                      placeholder="Add custom instructions for your chatbot's personality..."
+                      rows={4}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Fallback Responses</label>
+                    <Textarea
+                      value={fallbackResponses}
+                      onChange={(e) => setFallbackResponses(e.target.value)}
+                      placeholder="Default replies when the bot doesn't understand..."
+                      rows={3}
+                    />
+                  </div>
+                  <Button variant="default" className="w-full">
+                    Update Personality
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="integrations" className="space-y-6 mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageCircle className="w-5 h-5" />
+                    WhatsApp Integration
+                  </CardTitle>
+                  <CardDescription>
+                    Connect your WhatsApp Business account to enable chatbot functionality
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Button variant="outline" className="w-full">
+                    Connect WhatsApp
+                  </Button>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Webhook URL</label>
+                    <Input
+                      value="https://your-webhook-url.com/whatsapp"
+                      readOnly
+                      className="bg-muted"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Payment Integration</CardTitle>
+                  <CardDescription>
+                    Enable payment processing through your chatbot
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-1">
+                      <p className="font-medium">Flutterwave</p>
+                      <p className="text-sm text-muted-foreground">
+                        Accept payments via Flutterwave gateway
+                      </p>
+                    </div>
+                    <Switch
+                      checked={flutterwaveEnabled}
+                      onCheckedChange={setFlutterwaveEnabled}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-1">
+                      <p className="font-medium">Paystack</p>
+                      <p className="text-sm text-muted-foreground">
+                        Accept payments via Paystack gateway
+                      </p>
+                    </div>
+                    <Switch
+                      checked={paystackEnabled}
+                      onCheckedChange={setPaystackEnabled}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Chat List */}
@@ -193,107 +406,6 @@ export function ChatSupport() {
                 <Button>Send</Button>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Analytics */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Common Queries */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Most Common Queries</CardTitle>
-            <CardDescription>What customers ask about most</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {commonQueries.map((query, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">{query.query}</span>
-                    <span className="text-sm text-muted-foreground">{query.count} times</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="flex-1 bg-muted rounded-full h-2">
-                      <div 
-                        className="h-2 rounded-full bg-primary"
-                        style={{ width: `${query.percentage}%` }}
-                      />
-                    </div>
-                    <span className="text-sm font-medium w-12">{query.percentage}%</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* AI Training Status */}
-        <Card>
-          <CardHeader>
-            <CardTitle>AI Training & Setup</CardTitle>
-            <CardDescription>Configure your AI assistant</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="settings">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="settings">Settings</TabsTrigger>
-                <TabsTrigger value="training">Training</TabsTrigger>
-              </TabsList>
-              <TabsContent value="settings" className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Response Style</label>
-                  <Select defaultValue="friendly">
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="formal">Formal</SelectItem>
-                      <SelectItem value="friendly">Friendly</SelectItem>
-                      <SelectItem value="casual">Casual</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Auto-escalation After</label>
-                  <Select defaultValue="3">
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">1 failed attempt</SelectItem>
-                      <SelectItem value="3">3 failed attempts</SelectItem>
-                      <SelectItem value="5">5 failed attempts</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </TabsContent>
-              <TabsContent value="training" className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="w-4 h-4 text-success" />
-                      <span className="text-sm">Menu knowledge</span>
-                    </div>
-                    <Badge variant="default">Complete</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="w-4 h-4 text-success" />
-                      <span className="text-sm">Pricing information</span>
-                    </div>
-                    <Badge variant="default">Complete</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <AlertTriangle className="w-4 h-4 text-secondary" />
-                      <span className="text-sm">Local slang patterns</span>
-                    </div>
-                    <Badge variant="secondary">Training</Badge>
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
           </CardContent>
         </Card>
       </div>

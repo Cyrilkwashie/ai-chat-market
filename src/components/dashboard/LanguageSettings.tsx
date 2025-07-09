@@ -1,9 +1,10 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
-import { Globe, Users, MessageCircle, TrendingUp } from "lucide-react";
+import { Globe, Users, MessageCircle, TrendingUp, Clock } from "lucide-react";
 
 const languages = [
   { code: "en", name: "English", native: "English", usage: 45, orders: 276, status: "active", accuracy: 98 },
@@ -14,44 +15,41 @@ const languages = [
   { code: "fr", name: "French", native: "Français", usage: 0, orders: 0, status: "inactive", accuracy: 85 }
 ];
 
+const languageStats = [
+  { label: "Languages Supported", value: "6", change: "+1", icon: Globe, trend: "up" },
+  { label: "Multi-language Orders", value: "614", change: "+43", icon: MessageCircle, trend: "up" },
+  { label: "Avg Accuracy", value: "93%", change: "+2%", icon: TrendingUp, trend: "up" },
+  { label: "Translation Time", value: "2.1s", change: "-0.2s", icon: Clock, trend: "up" }
+];
+
 export function LanguageSettings() {
   return (
     <div className="space-y-6">
-      {/* Language Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">6</div>
-                <div className="text-sm text-muted-foreground">Languages Supported</div>
+      {/* Enhanced Language Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {languageStats.map((stat, index) => (
+          <Card key={index} className="hover-lift border-l-4 border-l-primary">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
+                  <p className="text-3xl font-bold text-foreground">{stat.value}</p>
+                  <div className="flex items-center text-xs text-success">
+                    <span className="bg-success/10 text-success px-2 py-1 rounded-full">{stat.change}</span>
+                    <span className="ml-2 text-muted-foreground">vs yesterday</span>
+                  </div>
+                </div>
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <stat.icon className="w-6 h-6 text-primary" />
+                </div>
               </div>
-              <Globe className="w-8 h-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold">614</div>
-            <div className="text-sm text-muted-foreground">Multi-language Orders</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold">93%</div>
-            <div className="text-sm text-muted-foreground">Avg Accuracy</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold">2.1s</div>
-            <div className="text-sm text-muted-foreground">Translation Time</div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Language Management */}
-      <Card>
+      <Card className="shadow-warm">
         <CardHeader>
           <CardTitle>Language Configuration</CardTitle>
           <CardDescription>Manage AI language support for your customers</CardDescription>

@@ -4,8 +4,7 @@ import {
   ShoppingCart, 
   Package,
   MessageCircle,
-  Settings,
-  Globe,
+  Truck,
   CreditCard,
   Home,
   Users,
@@ -42,8 +41,7 @@ const menuItems = [
   { id: "chat", title: "Chat Support", icon: MessageCircle },
   { id: "customers", title: "Customers", icon: Users },
   { id: "payments", title: "Payments", icon: CreditCard },
-  { id: "language", title: "Languages", icon: Globe },
-  { id: "settings", title: "Settings", icon: Settings },
+  { id: "deliveries", title: "Deliveries", icon: Truck },
 ];
 
 export function DashboardSidebar({ activeSection, setActiveSection }: DashboardSidebarProps) {

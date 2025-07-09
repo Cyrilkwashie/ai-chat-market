@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -83,34 +84,9 @@ const recentTransactions = [
   { id: "TXN004", customer: "Adunni Lagos", amount: "₵28.00", method: "Paystack", status: "failed", time: "32 min ago" }
 ];
 
-const paymentStats = [
-  { label: "Total Revenue", value: "₵24,310", change: "+18%", period: "This month" },
-  { label: "Transactions", value: "3,396", change: "+12%", period: "This month" },
-  { label: "Success Rate", value: "97.8%", change: "+0.5%", period: "Last 30 days" },
-  { label: "Avg Transaction", value: "₵21.50", change: "+3%", period: "This month" }
-];
-
 export function PaymentSettings() {
   return (
     <div className="space-y-6">
-      {/* Payment Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {paymentStats.map((stat, index) => (
-          <Card key={index}>
-            <CardContent className="p-4">
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
-                <p className="text-2xl font-bold">{stat.value}</p>
-                <div className="flex items-center text-sm text-success">
-                  <TrendingUp className="w-3 h-3 mr-1" />
-                  {stat.change} {stat.period}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
       {/* Payment Methods */}
       <Card>
         <CardHeader>
@@ -283,46 +259,6 @@ export function PaymentSettings() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Payment Insights */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Payment Insights</CardTitle>
-          <CardDescription>Understand your payment performance</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <h4 className="font-medium">Most Popular Method</h4>
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center">
-                  <Smartphone className="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <p className="font-medium">MTN Mobile Money</p>
-                  <p className="text-sm text-muted-foreground">37% of all transactions</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <h4 className="font-medium">Peak Payment Hours</h4>
-              <div className="space-y-1">
-                <p className="text-2xl font-bold">6-9 PM</p>
-                <p className="text-sm text-muted-foreground">42% of daily transactions</p>
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <h4 className="font-medium">Failed Payment Rate</h4>
-              <div className="space-y-1">
-                <p className="text-2xl font-bold">2.2%</p>
-                <p className="text-sm text-muted-foreground">Mostly due to insufficient funds</p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

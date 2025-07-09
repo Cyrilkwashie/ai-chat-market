@@ -1,212 +1,448 @@
+
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TrendingUp, TrendingDown, Users, ShoppingCart, MessageCircle, Globe } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Progress } from "@/components/ui/progress";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { 
+  TrendingUp, 
+  TrendingDown, 
+  Users, 
+  ShoppingCart, 
+  DollarSign, 
+  BarChart3,
+  CalendarIcon,
+  FileText,
+  Download,
+  PieChart
+} from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar, Cell, PieChart as RechartsPieChart, Pie } from "recharts";
 
-const salesData = [
-  { period: "Today", revenue: "₵2,450", orders: 24, customers: 18, change: "+12%" },
-  { period: "Yesterday", revenue: "₵2,190", orders: 21, customers: 16, change: "+8%" },
-  { period: "This Week", revenue: "₵15,680", orders: 143, customers: 89, change: "+18%" },
-  { period: "This Month", revenue: "₵68,420", orders: 612, customers: 347, change: "+25%" }
+const revenueData = [
+  { month: "Jan", revenue: 8500, orders: 145, customers: 89 },
+  { month: "Feb", revenue: 9200, orders: 156, customers: 95 },
+  { month: "Mar", revenue: 10100, orders: 172, customers: 103 },
+  { month: "Apr", revenue: 11300, orders: 189, customers: 112 },
+  { month: "May", revenue: 12700, orders: 198, customers: 125 },
+  { month: "Jun", revenue: 11800, orders: 183, customers: 118 }
+];
+
+const productData = [
+  { name: "Waakye", value: 3500, color: "#8B5CF6" },
+  { name: "Kente Cloth", value: 2800, color: "#EF4444" },
+  { name: "Sobolo", value: 2200, color: "#F59E0B" },
+  { name: "Banku", value: 1900, color: "#10B981" },
+  { name: "Others", value: 2300, color: "#6B7280" }
 ];
 
 const topProducts = [
-  { name: "Jollof Rice", orders: 156, revenue: "₵2,340", trend: "up" },
-  { name: "Waakye", orders: 134, revenue: "₵1,876", trend: "up" },
-  { name: "Banku + Tilapia", orders: 98, revenue: "₵2,156", trend: "down" },
-  { name: "Fried Rice", orders: 87, revenue: "₵1,653", trend: "up" },
-  { name: "Kelewele", orders: 76, revenue: "₵912", trend: "up" }
+  { name: "Waakye", revenue: "₵3,500", sales: 245, change: "+12%" },
+  { name: "Kente Cloth", revenue: "₵2,800", sales: 198, change: "+8%" },
+  { name: "Sobolo", revenue: "₵2,200", sales: 167, change: "+15%" },
+  { name: "Banku", revenue: "₵1,900", sales: 143, change: "+5%" },
+  { name: "Kelewele", revenue: "₵1,600", sales: 128, change: "+18%" }
 ];
 
-const languageStats = [
-  { language: "English", percentage: 45, orders: 276, color: "bg-blue-500" },
-  { language: "Pidgin", percentage: 30, orders: 184, color: "bg-green-500" },
-  { language: "Twi", percentage: 15, orders: 92, color: "bg-yellow-500" },
-  { language: "Hausa", percentage: 6, orders: 37, color: "bg-purple-500" },
-  { language: "Yoruba", percentage: 4, orders: 25, color: "bg-red-500" }
+const customerSegments = [
+  { name: "Returning", value: 45, color: "#10B981" },
+  { name: "New", value: 35, color: "#F59E0B" },
+  { name: "VIP", value: 20, color: "#8B5CF6" }
 ];
 
-const customerInsights = [
-  { metric: "New Customers", value: "47", change: "+23%", trend: "up" },
-  { metric: "Returning Customers", value: "89", change: "+12%", trend: "up" },
-  { metric: "Customer Satisfaction", value: "97%", change: "+2%", trend: "up" },
-  { metric: "Avg Order Value", value: "₵28.50", change: "+5%", trend: "up" }
+const regions = [
+  { rank: 1, name: "Greater Accra", orders: 1245, revenue: "₵45,600", avgOrder: "₵36.65" },
+  { rank: 2, name: "Ashanti", orders: 987, revenue: "₵32,400", avgOrder: "₵32.82" },
+  { rank: 3, name: "Northern", orders: 543, revenue: "₵18,200", avgOrder: "₵33.52" },
+  { rank: 4, name: "Western", orders: 432, revenue: "₵14,800", avgOrder: "₵34.26" },
+  { rank: 5, name: "Eastern", orders: 398, revenue: "₵13,100", avgOrder: "₵32.91" }
 ];
+
+const chartConfig = {
+  revenue: { label: "Revenue", color: "hsl(var(--primary))" },
+  orders: { label: "Orders", color: "hsl(142, 76%, 36%)" },
+  customers: { label: "Customers", color: "hsl(45, 93%, 47%)" },
+  value: { label: "Value", color: "hsl(var(--primary))" }
+};
 
 export function AnalyticsDashboard() {
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [reportType, setReportType] = useState("Monthly");
+
   return (
     <div className="space-y-6">
-      {/* Time Period Selector */}
-      <div className="flex justify-between items-center">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold">Business Analytics</h2>
-          <p className="text-muted-foreground">Track your business performance and insights</p>
+          <p className="text-muted-foreground">Overview of your business performance</p>
         </div>
-        <Select defaultValue="week">
-          <SelectTrigger className="w-48">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="today">Today</SelectItem>
-            <SelectItem value="week">This Week</SelectItem>
-            <SelectItem value="month">This Month</SelectItem>
-            <SelectItem value="quarter">This Quarter</SelectItem>
-          </SelectContent>
-        </Select>
+        
+        {/* Controls Row */}
+        <div className="flex items-center gap-4">
+          {/* Date Picker */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className={cn("w-64 justify-start text-left font-normal")}>
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {selectedDate ? format(selectedDate, "MMMM dd, yyyy") : "Select date"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={(date) => date && setSelectedDate(date)}
+                initialFocus
+                className="p-3 pointer-events-auto"
+              />
+            </PopoverContent>
+          </Popover>
+
+          {/* Report Type Dropdown */}
+          <Select value={reportType} onValueChange={setReportType}>
+            <SelectTrigger className="w-48">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Daily">Daily</SelectItem>
+              <SelectItem value="Weekly">Weekly</SelectItem>
+              <SelectItem value="Monthly">Monthly</SelectItem>
+              <SelectItem value="Yearly">Yearly</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      {/* Sales Overview */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Sales Overview</CardTitle>
-          <CardDescription>Revenue and order trends</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {salesData.map((data, index) => (
-              <div key={index} className="bg-muted/30 p-4 rounded-lg">
-                <h3 className="font-medium text-sm text-muted-foreground">{data.period}</h3>
-                <div className="mt-2 space-y-1">
-                  <div className="text-2xl font-bold">{data.revenue}</div>
-                  <div className="text-sm">{data.orders} orders • {data.customers} customers</div>
-                  <div className="flex items-center text-sm text-success">
-                    <TrendingUp className="w-3 h-3 mr-1" />
-                    {data.change}
-                  </div>
+      {/* Key Metrics Dashboard */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Total Revenue Card */}
+        <Card className="shadow-warm border-l-4 border-l-primary">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+                <p className="text-3xl font-bold text-success">₵12,700</p>
+                <div className="flex items-center text-xs text-success">
+                  <TrendingUp className="w-3 h-3 mr-1" />
+                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+23.5% from last month</span>
                 </div>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Top Products */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Top Selling Products</CardTitle>
-            <CardDescription>Best performing items this month</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {topProducts.map((product, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-sm font-medium">
-                      {index + 1}
-                    </div>
-                    <div>
-                      <p className="font-medium">{product.name}</p>
-                      <p className="text-sm text-muted-foreground">{product.orders} orders</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium">{product.revenue}</p>
-                    <div className="flex items-center text-sm">
-                      {product.trend === "up" ? (
-                        <TrendingUp className="w-3 h-3 text-success mr-1" />
-                      ) : (
-                        <TrendingDown className="w-3 h-3 text-destructive mr-1" />
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
+              <div className="w-12 h-12 bg-yellow-500/10 rounded-xl flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-yellow-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Language Usage */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Language Usage</CardTitle>
-            <CardDescription>Customer communication preferences</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {languageStats.map((lang, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">{lang.language}</span>
-                    <span className="text-sm text-muted-foreground">{lang.orders} orders</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="flex-1 bg-muted rounded-full h-2">
-                      <div 
-                        className={`h-2 rounded-full ${lang.color}`}
-                        style={{ width: `${lang.percentage}%` }}
-                      />
-                    </div>
-                    <span className="text-sm font-medium w-12">{lang.percentage}%</span>
-                  </div>
+        {/* Total Orders Card */}
+        <Card className="shadow-warm border-l-4 border-l-primary">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Total Orders</p>
+                <p className="text-3xl font-bold text-success">422</p>
+                <div className="flex items-center text-xs text-success">
+                  <TrendingUp className="w-3 h-3 mr-1" />
+                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+18.2% from last month</span>
                 </div>
-              ))}
+              </div>
+              <div className="w-12 h-12 bg-yellow-500/10 rounded-xl flex items-center justify-center">
+                <ShoppingCart className="w-6 h-6 text-yellow-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* New Customers Card */}
+        <Card className="shadow-warm border-l-4 border-l-primary">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">New Customers</p>
+                <p className="text-3xl font-bold text-success">89</p>
+                <div className="flex items-center text-xs text-destructive">
+                  <TrendingDown className="w-3 h-3 mr-1" />
+                  <span className="bg-destructive/10 text-destructive px-2 py-1 rounded-full">-5.1% from last month</span>
+                </div>
+              </div>
+              <div className="w-12 h-12 bg-yellow-500/10 rounded-xl flex items-center justify-center">
+                <Users className="w-6 h-6 text-yellow-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Average Order Value Card */}
+        <Card className="shadow-warm border-l-4 border-l-primary">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Average Order Value</p>
+                <p className="text-3xl font-bold text-success">₵30.12</p>
+                <div className="flex items-center text-xs text-success">
+                  <TrendingUp className="w-3 h-3 mr-1" />
+                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+4.3% from last month</span>
+                </div>
+              </div>
+              <div className="w-12 h-12 bg-yellow-500/10 rounded-xl flex items-center justify-center">
+                <BarChart3 className="w-6 h-6 text-yellow-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Customer Insights */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Customer Insights</CardTitle>
-          <CardDescription>Understanding your customer behavior</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {customerInsights.map((insight, index) => (
-              <div key={index} className="bg-muted/30 p-4 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <Users className="w-5 h-5 text-primary" />
-                  <Badge variant="outline" className="text-xs">
-                    {insight.trend === "up" ? "↑" : "↓"} {insight.change}
-                  </Badge>
-                </div>
-                <div className="text-2xl font-bold">{insight.value}</div>
-                <div className="text-sm text-muted-foreground">{insight.metric}</div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Tabbed Reports Section */}
+      <Tabs defaultValue="sales" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="sales">Sales Report</TabsTrigger>
+          <TabsTrigger value="products">Product Analysis</TabsTrigger>
+          <TabsTrigger value="customers">Customer Insights</TabsTrigger>
+          <TabsTrigger value="regional">Regional Performance</TabsTrigger>
+        </TabsList>
 
-      {/* AI Performance */}
-      <Card>
-        <CardHeader>
-          <CardTitle>AI Chatbot Performance</CardTitle>
-          <CardDescription>How well your AI assistant is performing</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <MessageCircle className="w-4 h-4 text-primary" />
-                <span className="font-medium">Response Time</span>
-              </div>
-              <div className="text-2xl font-bold">2.3 sec</div>
-              <div className="text-sm text-muted-foreground">Average response time</div>
-            </div>
-            
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <TrendingUp className="w-4 h-4 text-success" />
-                <span className="font-medium">Resolution Rate</span>
-              </div>
-              <div className="text-2xl font-bold">94%</div>
-              <div className="text-sm text-muted-foreground">Issues resolved without human help</div>
-            </div>
-            
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Globe className="w-4 h-4 text-primary" />
-                <span className="font-medium">Multi-language</span>
-              </div>
-              <div className="text-2xl font-bold">6</div>
-              <div className="text-sm text-muted-foreground">Languages supported</div>
-            </div>
+        {/* Tab 1: Sales Report */}
+        <TabsContent value="sales" className="space-y-6">
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* Revenue Trend Chart */}
+            <Card className="shadow-warm">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Revenue Trend</CardTitle>
+                  <CardDescription>Monthly revenue performance</CardDescription>
+                </div>
+                <Button variant="outline" size="sm">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={chartConfig} className="h-64">
+                  <LineChart data={revenueData}>
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Line dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={3} />
+                  </LineChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+
+            {/* Orders & Customers Chart */}
+            <Card className="shadow-warm">
+              <CardHeader>
+                <CardTitle>Orders & Customers</CardTitle>
+                <CardDescription>Monthly comparison</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={chartConfig} className="h-64">
+                  <BarChart data={revenueData}>
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Bar dataKey="orders" fill="var(--color-orders)" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="customers" fill="var(--color-customers)" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
           </div>
-        </CardContent>
-      </Card>
+
+          {/* Generate Reports Section */}
+          <Card className="shadow-warm">
+            <CardHeader>
+              <CardTitle>Generate Reports</CardTitle>
+              <CardDescription>Download detailed reports for analysis</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Button variant="outline" className="h-16 flex-col">
+                  <FileText className="w-6 h-6 mb-2" />
+                  Sales Summary PDF
+                </Button>
+                <Button variant="outline" className="h-16 flex-col">
+                  <Download className="w-6 h-6 mb-2" />
+                  Transaction CSV
+                </Button>
+                <Button variant="outline" className="h-16 flex-col">
+                  <FileText className="w-6 h-6 mb-2" />
+                  Tax Report PDF
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Tab 2: Product Analysis */}
+        <TabsContent value="products" className="space-y-6">
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* Product Performance Pie Chart */}
+            <Card className="shadow-warm">
+              <CardHeader>
+                <CardTitle>Product Performance</CardTitle>
+                <CardDescription>Revenue breakdown by products</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={chartConfig} className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RechartsPieChart>
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Pie
+                        data={productData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={80}
+                        paddingAngle={2}
+                        dataKey="value"
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        labelLine={false}
+                      >
+                        {productData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                    </RechartsPieChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+
+            {/* Top Products List */}
+            <Card className="shadow-warm">
+              <CardHeader>
+                <CardTitle>Top Products</CardTitle>
+                <CardDescription>Best performing products</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {topProducts.map((product, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-sm font-medium text-primary">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <p className="font-medium">{product.name}</p>
+                          <p className="text-sm text-muted-foreground">{product.sales} sales</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-medium">{product.revenue}</p>
+                        <Badge variant="secondary" className="text-xs">
+                          {product.change}
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Tab 3: Customer Insights */}
+        <TabsContent value="customers" className="space-y-6">
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* Customer Segments Donut Chart */}
+            <Card className="shadow-warm">
+              <CardHeader>
+                <CardTitle>Customer Segments</CardTitle>
+                <CardDescription>Distribution of customer types</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={chartConfig} className="h-64">
+                  <RechartsPieChart>
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Pie
+                      data={customerSegments}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={40}
+                      outerRadius={80}
+                      dataKey="value"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
+                      {customerSegments.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </RechartsPieChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+
+            {/* Customer Metrics Panel */}
+            <Card className="shadow-warm">
+              <CardHeader>
+                <CardTitle>Customer Metrics</CardTitle>
+                <CardDescription>Key performance indicators</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Customer Retention Rate</span>
+                    <span className="font-medium">78%</span>
+                  </div>
+                  <Progress value={78} className="h-2" />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Average Order Frequency</span>
+                    <span className="font-medium">2.3/month</span>
+                  </div>
+                  <Progress value={76} className="h-2" />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Customer Satisfaction</span>
+                    <span className="font-medium">4.6/5</span>
+                  </div>
+                  <Progress value={92} className="h-2" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Tab 4: Regional Performance */}
+        <TabsContent value="regional" className="space-y-6">
+          <Card className="shadow-warm">
+            <CardHeader>
+              <CardTitle>Regional Performance</CardTitle>
+              <CardDescription>Performance across Ghana regions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4">
+                {regions.map((region) => (
+                  <div key={region.rank} className="flex items-center justify-between p-4 bg-muted/20 rounded-lg hover:bg-muted/30 transition-colors">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                        <span className="font-bold text-primary">#{region.rank}</span>
+                      </div>
+                      <div>
+                        <h3 className="font-medium">{region.name}</h3>
+                        <p className="text-sm text-muted-foreground">{region.orders} orders</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-lg">{region.revenue}</p>
+                      <p className="text-sm text-muted-foreground">Avg: {region.avgOrder}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
