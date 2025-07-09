@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +22,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar, Cell, PieChart as RechartsPieChart } from "recharts";
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar, Cell, PieChart as RechartsPieChart, Pie } from "recharts";
 
 const revenueData = [
   { month: "Jan", revenue: 8500, orders: 145, customers: 89 },
@@ -292,11 +291,19 @@ export function AnalyticsDashboard() {
                 <ChartContainer config={chartConfig} className="h-64">
                   <RechartsPieChart>
                     <ChartTooltip content={<ChartTooltipContent />} />
-                    <RechartsPieChart data={productData} cx="50%" cy="50%" outerRadius={80}>
+                    <Pie
+                      data={productData}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      dataKey="value"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
                       {productData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
-                    </RechartsPieChart>
+                    </Pie>
                   </RechartsPieChart>
                 </ChartContainer>
               </CardContent>
@@ -348,11 +355,19 @@ export function AnalyticsDashboard() {
                 <ChartContainer config={chartConfig} className="h-64">
                   <RechartsPieChart>
                     <ChartTooltip content={<ChartTooltipContent />} />
-                    <RechartsPieChart data={customerSegments} cx="50%" cy="50%" outerRadius={80}>
+                    <Pie
+                      data={customerSegments}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      dataKey="value"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
                       {customerSegments.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
-                    </RechartsPieChart>
+                    </Pie>
                   </RechartsPieChart>
                 </ChartContainer>
               </CardContent>
