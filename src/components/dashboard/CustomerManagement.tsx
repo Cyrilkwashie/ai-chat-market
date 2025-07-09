@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Search, Crown, Star, Calendar, Phone, Mail, MapPin, MessageCircle, Eye } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -124,7 +123,6 @@ export function CustomerManagement() {
     <div className="space-y-6">
       {/* Header Section */}
       <div>
-        <h2 className="text-3xl font-bold text-foreground">Customer Management</h2>
         <p className="text-muted-foreground mt-1">Manage your customer relationships and track their journey</p>
       </div>
 
