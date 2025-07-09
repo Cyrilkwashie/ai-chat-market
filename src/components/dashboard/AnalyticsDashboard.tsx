@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -79,7 +80,8 @@ export function AnalyticsDashboard() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <p className="text-muted-foreground">Overview of your business performance</p>
+          <h2 className="text-3xl font-bold text-foreground">Analytics</h2>
+          <p className="text-muted-foreground mt-1">Overview of your business performance</p>
         </div>
         
         {/* Controls Row */}
