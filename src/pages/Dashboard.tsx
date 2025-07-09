@@ -15,7 +15,6 @@ import {
   CreditCard,
   Bell,
   Search,
-  Plus,
   Menu
 } from "lucide-react";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
@@ -42,13 +41,19 @@ const DashboardContent = () => {
     { label: "Customers", value: "1,248", change: "+24", icon: Users, trend: "up" }
   ];
 
-  const monthlyData = [
+  const yearlyData = [
     { month: "Jan", amount: 45200 },
     { month: "Feb", amount: 52800 },
     { month: "Mar", amount: 48900 },
     { month: "Apr", amount: 61500 },
     { month: "May", amount: 55300 },
     { month: "Jun", amount: 68400 },
+    { month: "Jul", amount: 72100 },
+    { month: "Aug", amount: 59800 },
+    { month: "Sep", amount: 66200 },
+    { month: "Oct", amount: 78300 },
+    { month: "Nov", amount: 84600 },
+    { month: "Dec", amount: 91200 },
   ];
 
   const chartConfig = {
@@ -82,10 +87,6 @@ const DashboardContent = () => {
                   <h2 className="text-xl md:text-2xl font-bold mb-2">Welcome back! 👋</h2>
                   <p className="text-white/80 text-sm md:text-base">Here's what's happening with your business today</p>
                 </div>
-                <div className="text-center sm:text-right">
-                  <div className="text-2xl md:text-3xl font-bold">₵2,450</div>
-                  <div className="text-white/80 text-sm">Today's Revenue</div>
-                </div>
               </div>
             </div>
 
@@ -116,19 +117,19 @@ const DashboardContent = () => {
 
             {/* Main Dashboard Grid - Improved Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Monthly Revenue Chart - Smaller Size */}
+              {/* Monthly Revenue Chart */}
               <div className="lg:col-span-2">
                 <Card>
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center text-lg">
                       <BarChart3 className="w-5 h-5 mr-2 text-primary" />
-                      Monthly Revenue
+                      Yearly Revenue
                     </CardTitle>
-                    <CardDescription>Revenue performance over the last 6 months</CardDescription>
+                    <CardDescription>Revenue performance over the last 12 months</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <ChartContainer config={chartConfig} className="h-64">
-                      <BarChart data={monthlyData}>
+                      <BarChart data={yearlyData}>
                         <XAxis dataKey="month" />
                         <YAxis />
                         <ChartTooltip content={<ChartTooltipContent />} />
@@ -273,10 +274,6 @@ const DashboardContent = () => {
                   {activeSection === "overview" ? "Dashboard" : 
                    activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
                 </h1>
-                <p className="text-muted-foreground text-sm md:text-base hidden md:block">
-                  {activeSection === "overview" ? "Welcome back! Here's what's happening with your business." :
-                   `Manage your ${activeSection} here`}
-                </p>
               </div>
             </div>
             
@@ -288,10 +285,6 @@ const DashboardContent = () => {
               <Button variant="outline" size="sm" className="px-2 md:px-3">
                 <Bell className="w-4 h-4 md:mr-2" />
                 <span className="hidden md:inline">3</span>
-              </Button>
-              <Button size="sm" className="px-2 md:px-3">
-                <Plus className="w-4 h-4 md:mr-2" />
-                <span className="hidden md:inline">Add Product</span>
               </Button>
             </div>
           </div>
