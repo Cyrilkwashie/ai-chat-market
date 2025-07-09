@@ -2,11 +2,13 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageCircle, Bot, User, Phone, Clock, CheckCircle, AlertTriangle, TrendingUp } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { MessageCircle, Bot, User, Phone, Clock, CheckCircle, AlertTriangle, TrendingUp, Settings, Zap, Globe, MessageSquare } from "lucide-react";
 
 const activeChats = [
   {
@@ -58,9 +60,297 @@ const commonQueries = [
 
 export function ChatSupport() {
   const [selectedChat, setSelectedChat] = useState(activeChats[0]);
+  const [chatbotActive, setChatbotActive] = useState(true);
+  const [businessName, setBusinessName] = useState("My Restaurant");
+  const [welcomeMessage, setWelcomeMessage] = useState("Hello! Welcome to our restaurant. How can I help you today?");
+  const [businessDescription, setBusinessDescription] = useState("We serve delicious local dishes with fast delivery.");
+  const [autoConfirmOrders, setAutoConfirmOrders] = useState(false);
+  const [sendReceipts, setSendReceipts] = useState(true);
+  const [inventoryAlerts, setInventoryAlerts] = useState(true);
+  const [communicationTone, setCommunicationTone] = useState("friendly");
+  const [customPersonality, setCustomPersonality] = useState("");
+  const [fallbackResponses, setFallbackResponses] = useState("I'm sorry, I didn't understand that. Could you please rephrase?");
+  const [flutterwaveEnabled, setFlutterwaveEnabled] = useState(false);
+  const [paystackEnabled, setPaystackEnabled] = useState(false);
 
   return (
     <div className="space-y-6">
+      {/* Chatbot Configuration Header */}
+      <Card className="border-l-4 border-l-primary">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Bot className="w-5 h-5 text-primary" />
+                AI Chatbot Configuration
+              </CardTitle>
+              <CardDescription>
+                Customize your AI-powered conversational commerce assistant
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-3">
+              <Badge variant={chatbotActive ? "default" : "secondary"}>
+                {chatbotActive ? "Active" : "Inactive"}
+              </Badge>
+              <Switch
+                checked={chatbotActive}
+                onCheckedChange={setChatbotActive}
+              />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="settings" className="w-full">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="settings" className="flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                Settings
+              </TabsTrigger>
+              <TabsTrigger value="personality" className="flex items-center gap-2">
+                <MessageSquare className="w-4 h-4" />
+                Personality
+              </TabsTrigger>
+              <TabsTrigger value="integrations" className="flex items-center gap-2">
+                <Zap className="w-4 h-4" />
+                Integrations
+              </TabsTrigger>
+              <TabsTrigger value="languages" className="flex items-center gap-2">
+                <Globe className="w-4 h-4" />
+                Languages
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="settings" className="space-y-6 mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Basic Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Business Name</label>
+                    <Input
+                      value={businessName}
+                      onChange={(e) => setBusinessName(e.target.value)}
+                      placeholder="Enter your business name"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Welcome Message</label>
+                    <Textarea
+                      value={welcomeMessage}
+                      onChange={(e) => setWelcomeMessage(e.target.value)}
+                      placeholder="Enter your welcome message"
+                      rows={3}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Business Description</label>
+                    <Textarea
+                      value={businessDescription}
+                      onChange={(e) => setBusinessDescription(e.target.value)}
+                      placeholder="Describe your business"
+                      rows={3}
+                    />
+                  </div>
+                  <Button variant="default" className="w-full">
+                    Save Settings
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Response Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <label className="text-sm font-medium">Auto-confirm orders</label>
+                      <p className="text-xs text-muted-foreground">
+                        Automatically confirm orders without manual intervention
+                      </p>
+                    </div>
+                    <Switch
+                      checked={autoConfirmOrders}
+                      onCheckedChange={setAutoConfirmOrders}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <label className="text-sm font-medium">Send order receipts</label>
+                      <p className="text-xs text-muted-foreground">
+                        Send receipt messages after order completion
+                      </p>
+                    </div>
+                    <Switch
+                      checked={sendReceipts}
+                      onCheckedChange={setSendReceipts}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <label className="text-sm font-medium">Inventory alerts</label>
+                      <p className="text-xs text-muted-foreground">
+                        Notify about low stock items
+                      </p>
+                    </div>
+                    <Switch
+                      checked={inventoryAlerts}
+                      onCheckedChange={setInventoryAlerts}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="personality" className="space-y-6 mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Chatbot Personality</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Communication Tone</label>
+                    <Select value={communicationTone} onValueChange={setCommunicationTone}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="friendly">Friendly & Casual</SelectItem>
+                        <SelectItem value="professional">Professional</SelectItem>
+                        <SelectItem value="warm">Warm & Personal</SelectItem>
+                        <SelectItem value="energetic">Energetic & Enthusiastic</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Custom Personality Prompt</label>
+                    <Textarea
+                      value={customPersonality}
+                      onChange={(e) => setCustomPersonality(e.target.value)}
+                      placeholder="Add custom instructions for your chatbot's personality..."
+                      rows={4}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Fallback Responses</label>
+                    <Textarea
+                      value={fallbackResponses}
+                      onChange={(e) => setFallbackResponses(e.target.value)}
+                      placeholder="Default replies when the bot doesn't understand..."
+                      rows={3}
+                    />
+                  </div>
+                  <Button variant="default" className="w-full">
+                    Update Personality
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="integrations" className="space-y-6 mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageCircle className="w-5 h-5" />
+                    WhatsApp Integration
+                  </CardTitle>
+                  <CardDescription>
+                    Connect your WhatsApp Business account to enable chatbot functionality
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Button variant="outline" className="w-full">
+                    Connect WhatsApp
+                  </Button>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Webhook URL</label>
+                    <Input
+                      value="https://your-webhook-url.com/whatsapp"
+                      readOnly
+                      className="bg-muted"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Payment Integration</CardTitle>
+                  <CardDescription>
+                    Enable payment processing through your chatbot
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-1">
+                      <p className="font-medium">Flutterwave</p>
+                      <p className="text-sm text-muted-foreground">
+                        Accept payments via Flutterwave gateway
+                      </p>
+                    </div>
+                    <Switch
+                      checked={flutterwaveEnabled}
+                      onCheckedChange={setFlutterwaveEnabled}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-1">
+                      <p className="font-medium">Paystack</p>
+                      <p className="text-sm text-muted-foreground">
+                        Accept payments via Paystack gateway
+                      </p>
+                    </div>
+                    <Switch
+                      checked={paystackEnabled}
+                      onCheckedChange={setPaystackEnabled}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="languages" className="space-y-6 mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Language Settings</CardTitle>
+                  <CardDescription>
+                    Configure language support for your chatbot
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Primary Language</label>
+                    <Select defaultValue="english">
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="english">English</SelectItem>
+                        <SelectItem value="twi">Twi</SelectItem>
+                        <SelectItem value="hausa">Hausa</SelectItem>
+                        <SelectItem value="pidgin">Pidgin</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-sm font-medium">Additional Languages</label>
+                    <div className="space-y-2">
+                      {["Twi", "Hausa", "Pidgin", "French"].map((lang) => (
+                        <div key={lang} className="flex items-center space-x-2">
+                          <input type="checkbox" id={lang} className="rounded" />
+                          <label htmlFor={lang} className="text-sm">{lang}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+
       {/* Enhanced AI Performance Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="hover-lift border-l-4 border-l-success">
