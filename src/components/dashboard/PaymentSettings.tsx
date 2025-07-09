@@ -5,7 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { CreditCard, Smartphone, Building, TrendingUp, CheckCircle, AlertTriangle, Settings } from "lucide-react";
+import { CreditCard, Smartphone, Building, TrendingUp, CheckCircle, AlertTriangle, Settings, DollarSign } from "lucide-react";
 
 const paymentMethods = [
   {
@@ -93,22 +93,79 @@ const paymentStats = [
 export function PaymentSettings() {
   return (
     <div className="space-y-6">
-      {/* Payment Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {paymentStats.map((stat, index) => (
-          <Card key={index}>
-            <CardContent className="p-4">
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
-                <p className="text-2xl font-bold">{stat.value}</p>
-                <div className="flex items-center text-sm text-success">
-                  <TrendingUp className="w-3 h-3 mr-1" />
-                  {stat.change} {stat.period}
+      {/* Enhanced Payment Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="hover-lift border-l-4 border-l-primary">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+                <p className="text-3xl font-bold text-foreground">₵24,310</p>
+                <div className="flex items-center text-xs text-success">
+                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+18%</span>
+                  <span className="ml-2 text-muted-foreground">This month</span>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        ))}
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-primary" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover-lift border-l-4 border-l-accent">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Transactions</p>
+                <p className="text-3xl font-bold text-foreground">3,396</p>
+                <div className="flex items-center text-xs text-success">
+                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+12%</span>
+                  <span className="ml-2 text-muted-foreground">This month</span>
+                </div>
+              </div>
+              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                <CreditCard className="w-6 h-6 text-accent" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover-lift border-l-4 border-l-success">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Success Rate</p>
+                <p className="text-3xl font-bold text-foreground">97.8%</p>
+                <div className="flex items-center text-xs text-success">
+                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+0.5%</span>
+                  <span className="ml-2 text-muted-foreground">Last 30 days</span>
+                </div>
+              </div>
+              <div className="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-success" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover-lift border-l-4 border-l-secondary">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Avg Transaction</p>
+                <p className="text-3xl font-bold text-foreground">₵21.50</p>
+                <div className="flex items-center text-xs text-success">
+                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+3%</span>
+                  <span className="ml-2 text-muted-foreground">This month</span>
+                </div>
+              </div>
+              <div className="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-secondary-foreground" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Payment Methods */}

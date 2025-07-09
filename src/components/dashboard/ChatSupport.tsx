@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageCircle, Bot, User, Phone, Clock, CheckCircle, AlertTriangle } from "lucide-react";
+import { MessageCircle, Bot, User, Phone, Clock, CheckCircle, AlertTriangle, TrendingUp } from "lucide-react";
 
 const activeChats = [
   {
@@ -61,24 +61,79 @@ export function ChatSupport() {
 
   return (
     <div className="space-y-6">
-      {/* AI Performance Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {aiPerformance.map((metric, index) => (
-          <Card key={index}>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold">{metric.value}</div>
-                  <div className="text-sm text-muted-foreground">{metric.metric}</div>
-                  <div className="text-xs text-muted-foreground">Target: {metric.target}</div>
+      {/* Enhanced AI Performance Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="hover-lift border-l-4 border-l-success">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Response Time</p>
+                <p className="text-3xl font-bold text-foreground">2.3 sec</p>
+                <div className="flex items-center text-xs text-success">
+                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">-0.2s</span>
+                  <span className="ml-2 text-muted-foreground">vs yesterday</span>
                 </div>
-                <div className={`w-3 h-3 rounded-full ${
-                  metric.status === "excellent" ? "bg-success" : "bg-primary"
-                }`} />
               </div>
-            </CardContent>
-          </Card>
-        ))}
+              <div className="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center">
+                <Clock className="w-6 h-6 text-success" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover-lift border-l-4 border-l-primary">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Resolution Rate</p>
+                <p className="text-3xl font-bold text-foreground">94%</p>
+                <div className="flex items-center text-xs text-success">
+                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+2%</span>
+                  <span className="ml-2 text-muted-foreground">vs yesterday</span>
+                </div>
+              </div>
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-primary" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover-lift border-l-4 border-l-accent">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Customer Satisfaction</p>
+                <p className="text-3xl font-bold text-foreground">97%</p>
+                <div className="flex items-center text-xs text-success">
+                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+2%</span>
+                  <span className="ml-2 text-muted-foreground">vs yesterday</span>
+                </div>
+              </div>
+              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-accent" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover-lift border-l-4 border-l-secondary">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Escalation Rate</p>
+                <p className="text-3xl font-bold text-foreground">6%</p>
+                <div className="flex items-center text-xs">
+                  <span className="bg-secondary/10 text-secondary-foreground px-2 py-1 rounded-full">-1%</span>
+                  <span className="ml-2 text-muted-foreground">vs yesterday</span>
+                </div>
+              </div>
+              <div className="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-secondary-foreground" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">

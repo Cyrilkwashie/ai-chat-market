@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -99,54 +100,75 @@ export function ProductManagement() {
 
   return (
     <div className="space-y-6">
-      {/* Header Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
+      {/* Enhanced Header Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="hover-lift border-l-4 border-l-primary">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">67</div>
-                <div className="text-sm text-muted-foreground">Total Products</div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Total Products</p>
+                <p className="text-3xl font-bold text-foreground">67</p>
+                <div className="flex items-center text-xs text-success">
+                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+5</span>
+                  <span className="ml-2 text-muted-foreground">vs last month</span>
+                </div>
               </div>
-              <Package className="w-8 h-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">54</div>
-                <div className="text-sm text-muted-foreground">In Stock</div>
-              </div>
-              <div className="w-8 h-8 bg-success/20 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-success" />
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                <Package className="w-6 h-6 text-primary" />
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4">
+
+        <Card className="hover-lift border-l-4 border-l-success">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">8</div>
-                <div className="text-sm text-muted-foreground">Low Stock</div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">In Stock</p>
+                <p className="text-3xl font-bold text-foreground">54</p>
+                <div className="flex items-center text-xs text-success">
+                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+8%</span>
+                  <span className="ml-2 text-muted-foreground">vs yesterday</span>
+                </div>
               </div>
-              <div className="w-8 h-8 bg-secondary/20 rounded-lg flex items-center justify-center">
-                <TrendingDown className="w-5 h-5 text-secondary-foreground" />
+              <div className="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-success" />
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4">
+
+        <Card className="hover-lift border-l-4 border-l-accent">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">5</div>
-                <div className="text-sm text-muted-foreground">Out of Stock</div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Low Stock</p>
+                <p className="text-3xl font-bold text-foreground">8</p>
+                <div className="flex items-center text-xs">
+                  <span className="bg-accent/10 text-accent px-2 py-1 rounded-full">-2</span>
+                  <span className="ml-2 text-muted-foreground">vs yesterday</span>
+                </div>
               </div>
-              <div className="w-8 h-8 bg-destructive/20 rounded-lg flex items-center justify-center">
-                <Trash2 className="w-5 h-5 text-destructive" />
+              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                <TrendingDown className="w-6 h-6 text-accent" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover-lift border-l-4 border-l-destructive">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Out of Stock</p>
+                <p className="text-3xl font-bold text-foreground">5</p>
+                <div className="flex items-center text-xs text-destructive">
+                  <span className="bg-destructive/10 text-destructive px-2 py-1 rounded-full">+1</span>
+                  <span className="ml-2 text-muted-foreground">vs yesterday</span>
+                </div>
+              </div>
+              <div className="w-12 h-12 bg-destructive/10 rounded-xl flex items-center justify-center">
+                <Trash2 className="w-6 h-6 text-destructive" />
               </div>
             </div>
           </CardContent>
