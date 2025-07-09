@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Search, Edit, Trash2, Package, TrendingUp, TrendingDown, Grid3X3, List } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 const mockProducts = [
   {
@@ -147,12 +146,16 @@ const mockProducts = [
 ];
 
 const productPerformanceData = [
-  { month: "Jan", sales: 156, revenue: 2340 },
-  { month: "Feb", sales: 178, revenue: 2680 },
-  { month: "Mar", sales: 145, revenue: 2180 },
-  { month: "Apr", sales: 203, revenue: 3045 },
-  { month: "May", sales: 189, revenue: 2835 },
-  { month: "Jun", sales: 234, revenue: 3510 },
+  { name: "Jollof Rice with Chicken", orders: 156, fill: "hsl(var(--primary))" },
+  { name: "Waakye with Fish", orders: 134, fill: "hsl(var(--secondary))" },
+  { name: "Banku with Tilapia", orders: 98, fill: "hsl(var(--accent))" },
+  { name: "Kelewele", orders: 89, fill: "hsl(var(--muted))" },
+  { name: "Sobolo", orders: 67, fill: "hsl(var(--destructive))" },
+  { name: "Samsung Smart TV", orders: 23, fill: "hsl(var(--success))" },
+  { name: "LG Refrigerator", orders: 31, fill: "hsl(var(--warning))" },
+  { name: "iPhone 15 Pro", orders: 42, fill: "hsl(var(--info))" },
+  { name: "Washing Machine", orders: 18, fill: "hsl(var(--border))" },
+  { name: "Office Chair", orders: 67, fill: "hsl(var(--ring))" },
 ];
 
 const topProductsData = [
@@ -279,30 +282,35 @@ export function ProductManagement() {
         <Card className="shadow-warm">
           <CardHeader>
             <CardTitle>Product Performance</CardTitle>
-            <CardDescription>Sales and revenue trends over time</CardDescription>
+            <CardDescription>Order distribution across all products</CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer
               config={{
-                sales: {
-                  label: "Sales",
+                orders: {
+                  label: "Orders",
                   color: "hsl(var(--primary))",
-                },
-                revenue: {
-                  label: "Revenue (₵)",
-                  color: "hsl(var(--secondary))",
                 },
               }}
               className="h-64"
             >
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={productPerformanceData}>
-                  <XAxis dataKey="month" />
-                  <YAxis />
+                <PieChart>
+                  <Pie
+                    data={productPerformanceData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={40}
+                    outerRadius={80}
+                    paddingAngle={2}
+                    dataKey="orders"
+                  >
+                    {productPerformanceData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Pie>
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="sales" fill="var(--color-sales)" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="revenue" fill="var(--color-revenue)" radius={[4, 4, 0, 0]} />
-                </BarChart>
+                </PieChart>
               </ResponsiveContainer>
             </ChartContainer>
           </CardContent>
