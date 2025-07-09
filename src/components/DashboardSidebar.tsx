@@ -4,7 +4,6 @@ import {
   ShoppingCart, 
   Package,
   MessageCircle,
-  Settings,
   Truck,
   CreditCard,
   Home,
@@ -43,7 +42,6 @@ const menuItems = [
   { id: "customers", title: "Customers", icon: Users },
   { id: "payments", title: "Payments", icon: CreditCard },
   { id: "deliveries", title: "Deliveries", icon: Truck },
-  { id: "settings", title: "Settings", icon: Settings },
 ];
 
 export function DashboardSidebar({ activeSection, setActiveSection }: DashboardSidebarProps) {
