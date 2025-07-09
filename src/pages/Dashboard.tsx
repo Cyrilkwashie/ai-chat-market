@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,6 +27,8 @@ import { ChatSupport } from "@/components/dashboard/ChatSupport";
 import { PaymentSettings } from "@/components/dashboard/PaymentSettings";
 import { LanguageSettings } from "@/components/dashboard/LanguageSettings";
 import { Input } from "@/components/ui/input";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 
 // Dashboard Content Component
 const DashboardContent = () => {
@@ -38,6 +41,22 @@ const DashboardContent = () => {
     { label: "Active Products", value: "67", change: "+3", icon: Package, trend: "up" },
     { label: "Customers", value: "1,248", change: "+24", icon: Users, trend: "up" }
   ];
+
+  const monthlyData = [
+    { month: "Jan", amount: 45200 },
+    { month: "Feb", amount: 52800 },
+    { month: "Mar", amount: 48900 },
+    { month: "Apr", amount: 61500 },
+    { month: "May", amount: 55300 },
+    { month: "Jun", amount: 68400 },
+  ];
+
+  const chartConfig = {
+    amount: {
+      label: "Revenue (₵)",
+      color: "hsl(var(--primary))",
+    },
+  };
 
   const renderContent = () => {
     switch (activeSection) {
@@ -95,30 +114,24 @@ const DashboardContent = () => {
               ))}
             </div>
 
-            {/* Quick Actions - Mobile Optimized */}
+            {/* Monthly Revenue Chart */}
             <Card>
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center text-lg">
-                  <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2 text-primary" />
-                  Quick Actions
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <BarChart3 className="w-5 h-5 mr-2 text-primary" />
+                  Monthly Revenue
                 </CardTitle>
-                <CardDescription className="text-sm">Common tasks to manage your business</CardDescription>
+                <CardDescription>Revenue performance over the last 6 months</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-3 gap-2 md:gap-4">
-                  <Button variant="outline" className="h-14 md:h-16 flex-col space-y-1 md:space-y-2 p-2">
-                    <Package className="w-4 h-4 md:w-5 md:h-5" />
-                    <span className="text-xs md:text-sm">Add Product</span>
-                  </Button>
-                  <Button variant="outline" className="h-14 md:h-16 flex-col space-y-1 md:space-y-2 p-2">
-                    <MessageCircle className="w-4 h-4 md:w-5 md:h-5" />
-                    <span className="text-xs md:text-sm">View Chats</span>
-                  </Button>
-                  <Button variant="outline" className="h-14 md:h-16 flex-col space-y-1 md:space-y-2 p-2">
-                    <BarChart3 className="w-4 h-4 md:w-5 md:h-5" />
-                    <span className="text-xs md:text-sm">Analytics</span>
-                  </Button>
-                </div>
+                <ChartContainer config={chartConfig} className="h-80">
+                  <BarChart data={monthlyData}>
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Bar dataKey="amount" fill="var(--color-amount)" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ChartContainer>
               </CardContent>
             </Card>
 
@@ -195,42 +208,8 @@ const DashboardContent = () => {
                 </Card>
               </div>
 
-              {/* Right Column - AI Insights - Mobile First */}
+              {/* Right Column - Simplified Insights */}
               <div className="space-y-4 md:space-y-6 order-1 lg:order-2">
-                {/* AI Chat Performance */}
-                <Card>
-                  <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center text-base md:text-lg">
-                      <MessageCircle className="w-4 h-4 md:w-5 md:h-5 mr-2 text-primary" />
-                      AI Performance
-                    </CardTitle>
-                    <CardDescription className="text-sm">Chatbot daily stats</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-4 rounded-lg">
-                      <div className="text-center">
-                        <div className="text-xl md:text-2xl font-bold text-primary">47</div>
-                        <div className="text-xs md:text-sm text-muted-foreground">Customers Served</div>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs md:text-sm">Response Time</span>
-                        <span className="text-xs md:text-sm font-medium">2.3s</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs md:text-sm">Satisfaction Rate</span>
-                        <span className="text-xs md:text-sm font-medium text-success">97%</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs md:text-sm">Order Conversion</span>
-                        <span className="text-xs md:text-sm font-medium text-success">84%</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
                 {/* Top Products - Mobile Optimized */}
                 <Card>
                   <CardHeader className="pb-4">
@@ -291,71 +270,6 @@ const DashboardContent = () => {
                   </CardContent>
                 </Card>
               </div>
-            </div>
-
-            {/* Business Insights */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Bell className="w-5 h-5 mr-2 text-primary" />
-                    Recent Activity
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {[
-                    { action: "New order from WhatsApp", time: "2 mins ago", icon: MessageCircle },
-                    { action: "Payment received via MTN MoMo", time: "5 mins ago", icon: CreditCard },
-                    { action: "Product 'Jollof Rice' updated", time: "1 hour ago", icon: Package },
-                    { action: "Customer gave 5-star rating", time: "2 hours ago", icon: Users }
-                  ].map((activity, index) => (
-                    <div key={index} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
-                      <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <activity.icon className="w-4 h-4 text-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">{activity.action}</p>
-                        <p className="text-xs text-muted-foreground">{activity.time}</p>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Settings className="w-5 h-5 mr-2 text-primary" />
-                    Business Health
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Profile Completion</span>
-                      <span className="text-sm font-medium">95%</span>
-                    </div>
-                    <div className="w-full bg-muted rounded-full h-2">
-                      <div className="bg-success h-2 rounded-full w-[95%]" />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2 text-sm">
-                      <div className="w-2 h-2 bg-success rounded-full" />
-                      <span>Payment methods configured</span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-sm">
-                      <div className="w-2 h-2 bg-success rounded-full" />
-                      <span>AI assistant active</span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-sm">
-                      <div className="w-2 h-2 bg-warning rounded-full" />
-                      <span>Add more product photos</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         );
