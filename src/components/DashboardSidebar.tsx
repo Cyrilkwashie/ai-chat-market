@@ -37,18 +37,18 @@ const menuItems = [
   { id: "customers", label: "Customers", icon: Users },
   { id: "chat", label: "Chat Support", icon: MessageCircle },
   { id: "payments", label: "Payments", icon: CreditCard },
-  { id: "language", label: "Language", icon: Globe },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
 export function DashboardSidebar({ activeSection, setActiveSection }: DashboardSidebarProps) {
-  const { collapsed } = useSidebar();
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
 
   return (
-    <Sidebar className={cn("border-r", collapsed ? "w-14" : "w-64")} collapsible>
+    <Sidebar className={cn("border-r", isCollapsed ? "w-14" : "w-64")} collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className={cn(collapsed && "sr-only")}>
+          <SidebarGroupLabel className={cn(isCollapsed && "sr-only")}>
             Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -68,8 +68,8 @@ export function DashboardSidebar({ activeSection, setActiveSection }: DashboardS
                       onClick={() => setActiveSection(item.id)}
                       className="w-full justify-start"
                     >
-                      <item.icon className={cn("h-4 w-4", !collapsed && "mr-3")} />
-                      {!collapsed && <span>{item.label}</span>}
+                      <item.icon className={cn("h-4 w-4", !isCollapsed && "mr-3")} />
+                      {!isCollapsed && <span>{item.label}</span>}
                     </Button>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
