@@ -5,7 +5,7 @@ import {
   Package,
   MessageCircle,
   Settings,
-  Globe,
+  Truck,
   CreditCard,
   Home,
   Users,
@@ -42,7 +42,7 @@ const menuItems = [
   { id: "chat", title: "Chat Support", icon: MessageCircle },
   { id: "customers", title: "Customers", icon: Users },
   { id: "payments", title: "Payments", icon: CreditCard },
-  { id: "language", title: "Languages", icon: Globe },
+  { id: "deliveries", title: "Deliveries", icon: Truck },
   { id: "settings", title: "Settings", icon: Settings },
 ];
 

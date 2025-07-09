@@ -11,7 +11,7 @@ import {
   Package,
   MessageCircle,
   Settings,
-  Globe,
+  Truck,
   CreditCard,
   Bell,
   Search,
@@ -25,7 +25,7 @@ import { AnalyticsDashboard } from "@/components/dashboard/AnalyticsDashboard";
 import { ProductManagement } from "@/components/dashboard/ProductManagement";
 import { ChatSupport } from "@/components/dashboard/ChatSupport";
 import { PaymentSettings } from "@/components/dashboard/PaymentSettings";
-import { LanguageSettings } from "@/components/dashboard/LanguageSettings";
+import { DeliveryManagement } from "@/components/dashboard/DeliveryManagement";
 import { Input } from "@/components/ui/input";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
@@ -79,8 +79,8 @@ const DashboardContent = () => {
         return <ChatSupport />;
       case "payments":
         return <PaymentSettings />;
-      case "language":
-        return <LanguageSettings />;
+      case "deliveries":
+        return <DeliveryManagement />;
       default:
         return (
           <div className="space-y-6">
@@ -276,6 +276,7 @@ const DashboardContent = () => {
                   {activeSection === "overview" ? "Dashboard" : 
                    activeSection === "customers" ? "Customer Management" :
                    activeSection === "analytics" ? "Analytics" :
+                   activeSection === "deliveries" ? "Delivery Management" :
                    activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
                 </h1>
               </div>
