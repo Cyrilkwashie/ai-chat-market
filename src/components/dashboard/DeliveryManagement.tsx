@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,10 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Truck, MapPin, Clock, Package, CheckCircle, AlertCircle, TrendingUp, Users } from "lucide-react";
 
 const deliveryStats = [
+  { label: "Pending", value: "5", change: "+2", icon: AlertCircle, trend: "up" },
   { label: "Active Deliveries", value: "12", change: "+3", icon: Truck, trend: "up" },
   { label: "Completed Today", value: "28", change: "+6", icon: CheckCircle, trend: "up" },
-  { label: "Avg Delivery Time", value: "42min", change: "-5min", icon: Clock, trend: "up" },
-  { label: "Delivery Success Rate", value: "96%", change: "+2%", icon: TrendingUp, trend: "up" }
+  { label: "Total Deliveries", value: "96", change: "+8", icon: Package, trend: "up" }
 ];
 
 const activeDeliveries = [
