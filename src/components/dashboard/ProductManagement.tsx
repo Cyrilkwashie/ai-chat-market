@@ -157,6 +157,9 @@ export function ProductManagement() {
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
 
   const filteredProducts = mockProducts.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -164,6 +167,17 @@ export function ProductManagement() {
     const matchesStatus = statusFilter === "all" || product.status === statusFilter;
     return matchesSearch && matchesCategory && matchesStatus;
   });
+
+  const handleCategoryChange = (value: string) => {
+    if (value === "create_new") {
+      setShowNewCategoryInput(true);
+      setSelectedCategory("");
+    } else {
+      setShowNewCategoryInput(false);
+      setSelectedCategory(value);
+      setNewCategoryName("");
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -290,9 +304,9 @@ export function ProductManagement() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="category">Category</Label>
-                      <Select>
+                      <Select onValueChange={handleCategoryChange} value={selectedCategory}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select category" />
+                          <SelectValue placeholder="Select or create category" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="main">Main Course</SelectItem>
@@ -301,9 +315,21 @@ export function ProductManagement() {
                           <SelectItem value="electronics">Electronics</SelectItem>
                           <SelectItem value="appliances">Appliances</SelectItem>
                           <SelectItem value="furniture">Furniture</SelectItem>
+                          <SelectItem value="create_new">+ Create New Category</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
+                    {showNewCategoryInput && (
+                      <div className="space-y-2">
+                        <Label htmlFor="newCategory">New Category Name</Label>
+                        <Input 
+                          id="newCategory" 
+                          placeholder="e.g., Home & Garden" 
+                          value={newCategoryName}
+                          onChange={(e) => setNewCategoryName(e.target.value)}
+                        />
+                      </div>
+                    )}
                     <div className="space-y-2">
                       <Label htmlFor="stock">Initial Stock</Label>
                       <Input id="stock" type="number" placeholder="50" />
