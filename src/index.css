@@ -8,22 +8,22 @@ All colors MUST be HSL for optimal theming support.
 
 @layer base {
   :root {
-    /* Base colors - warm African earth tones */
-    --background: 35 20% 98%;
+    /* Base colors - clean white backgrounds */
+    --background: 0 0% 100%;
     --foreground: 25 25% 15%;
 
-    /* Card system - subtle warmth */
-    --card: 35 30% 97%;
+    /* Card system - pure white */
+    --card: 0 0% 100%;
     --card-foreground: 25 25% 15%;
 
     /* Popover system */
-    --popover: 35 30% 97%;
+    --popover: 0 0% 100%;
     --popover-foreground: 25 25% 15%;
 
-    /* Primary - Beautiful emerald green */
-    --primary: 160 75% 45%;
-    --primary-foreground: 35 20% 98%;
-    --primary-glow: 155 80% 55%;
+    /* Primary - Beautiful vibrant emerald green */
+    --primary: 152 85% 40%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 150 90% 50%;
 
     /* Secondary - warm earth */
     --secondary: 35 35% 88%;
@@ -37,9 +37,9 @@ All colors MUST be HSL for optimal theming support.
     --accent: 45 85% 65%;
     --accent-foreground: 25 25% 15%;
 
-    /* Success - forest green */
-    --success: 145 65% 45%;
-    --success-foreground: 35 20% 98%;
+    /* Success - vibrant forest green */
+    --success: 148 85% 42%;
+    --success-foreground: 0 0% 100%;
 
     /* Destructive - warm red */
     --destructive: 5 75% 55%;
@@ -52,11 +52,11 @@ All colors MUST be HSL for optimal theming support.
 
     --radius: 0.75rem;
 
-    /* Gradients - African sunset inspired */
+    /* Gradients - Pure green variations */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--muted)));
-    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--primary-glow)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--success)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
 
     /* Shadows - warm and elevated */
     --shadow-warm: 0 4px 20px hsl(var(--primary) / 0.15);
@@ -67,7 +67,7 @@ All colors MUST be HSL for optimal theming support.
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-    --sidebar-background: 35 30% 97%;
+    --sidebar-background: 0 0% 100%;
 
     --sidebar-foreground: 240 5.3% 26.1%;
 
