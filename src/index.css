@@ -20,10 +20,10 @@ All colors MUST be HSL for optimal theming support.
     --popover: 0 0% 100%;
     --popover-foreground: 25 25% 15%;
 
-    /* Primary - Beautiful emerald green */
-    --primary: 160 75% 45%;
-    --primary-foreground: 35 20% 98%;
-    --primary-glow: 155 80% 55%;
+    /* Primary - Beautiful vibrant emerald green */
+    --primary: 152 85% 40%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 150 90% 50%;
 
     /* Secondary - warm earth */
     --secondary: 35 35% 88%;
@@ -37,9 +37,9 @@ All colors MUST be HSL for optimal theming support.
     --accent: 45 85% 65%;
     --accent-foreground: 25 25% 15%;
 
-    /* Success - forest green */
-    --success: 145 65% 45%;
-    --success-foreground: 35 20% 98%;
+    /* Success - vibrant forest green */
+    --success: 148 85% 42%;
+    --success-foreground: 0 0% 100%;
 
     /* Destructive - warm red */
     --destructive: 5 75% 55%;
