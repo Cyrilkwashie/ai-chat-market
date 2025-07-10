@@ -122,77 +122,45 @@ export function AnalyticsDashboard() {
       {/* Key Metrics Dashboard */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Revenue Card */}
-        <Card className="shadow-warm border-l-4 border-l-primary">
+        <Card className="shadow-warm">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
-                <p className="text-3xl font-bold text-success">₵12,700</p>
-                <div className="flex items-center text-xs text-success">
-                  <TrendingUp className="w-3 h-3 mr-1" />
-                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+23.5% from last month</span>
-                </div>
-              </div>
-              <div className="w-12 h-12 bg-yellow-500/10 rounded-xl flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-yellow-600" />
-              </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+              <p className="text-3xl font-bold text-primary">₵12,700</p>
+              <p className="text-xs text-muted-foreground">+23.5% from last month</p>
             </div>
           </CardContent>
         </Card>
 
         {/* Total Orders Card */}
-        <Card className="shadow-warm border-l-4 border-l-primary">
+        <Card className="shadow-warm">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Total Orders</p>
-                <p className="text-3xl font-bold text-success">422</p>
-                <div className="flex items-center text-xs text-success">
-                  <TrendingUp className="w-3 h-3 mr-1" />
-                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+18.2% from last month</span>
-                </div>
-              </div>
-              <div className="w-12 h-12 bg-yellow-500/10 rounded-xl flex items-center justify-center">
-                <ShoppingCart className="w-6 h-6 text-yellow-600" />
-              </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Total Orders</p>
+              <p className="text-3xl font-bold text-primary">422</p>
+              <p className="text-xs text-muted-foreground">+18.2% from last month</p>
             </div>
           </CardContent>
         </Card>
 
         {/* New Customers Card */}
-        <Card className="shadow-warm border-l-4 border-l-primary">
+        <Card className="shadow-warm">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">New Customers</p>
-                <p className="text-3xl font-bold text-success">89</p>
-                <div className="flex items-center text-xs text-destructive">
-                  <TrendingDown className="w-3 h-3 mr-1" />
-                  <span className="bg-destructive/10 text-destructive px-2 py-1 rounded-full">-5.1% from last month</span>
-                </div>
-              </div>
-              <div className="w-12 h-12 bg-yellow-500/10 rounded-xl flex items-center justify-center">
-                <Users className="w-6 h-6 text-yellow-600" />
-              </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">New Customers</p>
+              <p className="text-3xl font-bold text-primary">89</p>
+              <p className="text-xs text-muted-foreground">-5.1% from last month</p>
             </div>
           </CardContent>
         </Card>
 
         {/* Average Order Value Card */}
-        <Card className="shadow-warm border-l-4 border-l-primary">
+        <Card className="shadow-warm">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Average Order Value</p>
-                <p className="text-3xl font-bold text-success">₵30.12</p>
-                <div className="flex items-center text-xs text-success">
-                  <TrendingUp className="w-3 h-3 mr-1" />
-                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+4.3% from last month</span>
-                </div>
-              </div>
-              <div className="w-12 h-12 bg-yellow-500/10 rounded-xl flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-yellow-600" />
-              </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Average Order Value</p>
+              <p className="text-3xl font-bold text-primary">₵30.12</p>
+              <p className="text-xs text-muted-foreground">+4.3% from last month</p>
             </div>
           </CardContent>
         </Card>
