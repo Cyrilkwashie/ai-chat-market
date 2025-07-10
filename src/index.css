@@ -8,16 +8,16 @@ All colors MUST be HSL for optimal theming support.
 
 @layer base {
   :root {
-    /* Base colors - warm African earth tones */
-    --background: 35 20% 98%;
+    /* Base colors - clean white backgrounds */
+    --background: 0 0% 100%;
     --foreground: 25 25% 15%;
 
-    /* Card system - subtle warmth */
-    --card: 35 30% 97%;
+    /* Card system - pure white */
+    --card: 0 0% 100%;
     --card-foreground: 25 25% 15%;
 
     /* Popover system */
-    --popover: 35 30% 97%;
+    --popover: 0 0% 100%;
     --popover-foreground: 25 25% 15%;
 
     /* Primary - Beautiful emerald green */
@@ -67,7 +67,7 @@ All colors MUST be HSL for optimal theming support.
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-    --sidebar-background: 35 30% 97%;
+    --sidebar-background: 0 0% 100%;
 
     --sidebar-foreground: 240 5.3% 26.1%;
 
