@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Crown, Star, Calendar, Phone, Mail, MapPin, MessageCircle, Eye } from "lucide-react";
+import { Search, Crown, Star, Calendar, Phone, Mail, MapPin, MessageCircle, Eye, Users, DollarSign } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -156,45 +156,74 @@ export function CustomerManagement() {
 
       {/* Customer Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="shadow-warm">
+        <Card className="hover-lift border-l-4 border-l-primary">
           <CardContent className="p-6">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Total Customers</p>
-              <p className="text-3xl font-bold text-green-600">1,248</p>
-              <p className="text-xs text-muted-foreground">+12% from last month</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-warm">
-          <CardContent className="p-6">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Active Customers</p>
-              <p className="text-3xl font-bold text-blue-600">892</p>
-              <p className="text-xs text-muted-foreground">Ordered in last 7 days</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-warm">
-          <CardContent className="p-6">
-            <div className="space-y-2 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">VIP Customers</p>
-                <p className="text-3xl font-bold text-purple-600">156</p>
-                <p className="text-xs text-muted-foreground">₵500+ spent or 15+ orders</p>
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Total Customers</p>
+                <p className="text-3xl font-bold text-foreground">1,248</p>
+                <div className="flex items-center text-xs text-success">
+                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">+12%</span>
+                  <span className="ml-2 text-muted-foreground">from last month</span>
+                </div>
               </div>
-              <Crown className="w-8 h-8 text-purple-600" />
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                <Users className="w-6 h-6 text-primary" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="shadow-warm">
+        <Card className="hover-lift border-l-4 border-l-accent">
           <CardContent className="p-6">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Customer Revenue</p>
-              <p className="text-3xl font-bold text-green-600">₵68,400</p>
-              <p className="text-xs text-muted-foreground">Total lifetime value</p>
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Active Customers</p>
+                <p className="text-3xl font-bold text-foreground">892</p>
+                <div className="flex items-center text-xs">
+                  <span className="bg-accent/10 text-accent px-2 py-1 rounded-full">7 days</span>
+                  <span className="ml-2 text-muted-foreground">activity window</span>
+                </div>
+              </div>
+              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                <Users className="w-6 h-6 text-accent" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover-lift border-l-4 border-l-secondary">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">VIP Customers</p>
+                <p className="text-3xl font-bold text-foreground">156</p>
+                <div className="flex items-center text-xs">
+                  <span className="bg-secondary/10 text-secondary px-2 py-1 rounded-full">₵500+</span>
+                  <span className="ml-2 text-muted-foreground">or 15+ orders</span>
+                </div>
+              </div>
+              <div className="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center">
+                <Crown className="w-6 h-6 text-secondary" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover-lift border-l-4 border-l-success">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Customer Revenue</p>
+                <p className="text-3xl font-bold text-foreground">₵68,400</p>
+                <div className="flex items-center text-xs">
+                  <span className="bg-success/10 text-success px-2 py-1 rounded-full">LTV</span>
+                  <span className="ml-2 text-muted-foreground">lifetime value</span>
+                </div>
+              </div>
+              <div className="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-success" />
+              </div>
             </div>
           </CardContent>
         </Card>
