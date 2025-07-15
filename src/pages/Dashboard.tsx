@@ -133,12 +133,14 @@ const DashboardContent = () => {
                   </CardHeader>
                   <CardContent>
                     <ChartContainer config={chartConfig} className="h-48 sm:h-64">
-                      <BarChart data={yearlyData}>
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Bar dataKey="amount" fill="var(--color-amount)" radius={[4, 4, 0, 0]} />
-                      </BarChart>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={yearlyData}>
+                          <XAxis dataKey="month" />
+                          <YAxis />
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                          <Bar dataKey="amount" fill="var(--color-amount)" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
                     </ChartContainer>
                   </CardContent>
                 </Card>
