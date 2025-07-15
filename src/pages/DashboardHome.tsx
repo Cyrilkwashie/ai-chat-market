@@ -8,32 +8,18 @@ import {
   Users, 
   TrendingUp,
   Package,
-  MessageCircle,
-  Settings,
-  Truck,
-  CreditCard,
   Bell,
   Search,
-  Menu,
-  DollarSign
+  Menu
 } from "lucide-react";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
-import { OrdersOverview } from "@/components/dashboard/OrdersOverview";
-import { AnalyticsDashboard } from "@/components/dashboard/AnalyticsDashboard";
-import { ProductManagement } from "@/components/dashboard/ProductManagement";
-import { ChatSupport } from "@/components/dashboard/ChatSupport";
-import { PaymentSettings } from "@/components/dashboard/PaymentSettings";
-import { DeliveryManagement } from "@/components/dashboard/DeliveryManagement";
 import { Input } from "@/components/ui/input";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
-import { CustomerManagement } from "@/components/dashboard/CustomerManagement";
-import { SettingsManagement } from "@/components/dashboard/SettingsManagement";
 
 // Dashboard Content Component
-const DashboardContent = () => {
-  const [activeSection, setActiveSection] = useState("overview");
+const DashboardHomeContent = () => {
   const { toggleSidebar } = useSidebar();
 
   const stats = [
@@ -65,26 +51,47 @@ const DashboardContent = () => {
     },
   };
 
-  const renderContent = () => {
-    switch (activeSection) {
-      case "orders":
-        return <OrdersOverview />;
-      case "analytics":
-        return <AnalyticsDashboard />;
-      case "products":
-        return <ProductManagement />;
-      case "customers":
-        return <CustomerManagement />;
-      case "chat":
-        return <ChatSupport />;
-      case "payments":
-        return <PaymentSettings />;
-      case "deliveries":
-        return <DeliveryManagement />;
-      case "settings":
-        return <SettingsManagement />;
-      default:
-        return (
+  return (
+    <div className="min-h-screen flex w-full bg-background">
+      <DashboardSidebar />
+      
+      <main className="flex-1 flex flex-col min-w-0">
+        {/* Header - Mobile Optimized */}
+        <header className="border-b border-border p-4 md:p-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center space-x-3 min-w-0 flex-1">
+              {/* Mobile Menu Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="md:hidden p-2"
+                onClick={toggleSidebar}
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+              
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl md:text-2xl font-bold text-foreground truncate">
+                  Dashboard
+                </h1>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-2 md:space-x-4">
+              <div className="relative hidden md:block">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input placeholder="Search..." className="pl-10 w-40 lg:w-64" />
+              </div>
+              <Button variant="outline" size="sm" className="px-2 md:px-3">
+                <Bell className="w-4 h-4 md:mr-2" />
+                <span className="hidden md:inline">3</span>
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        {/* Content - Mobile Optimized */}
+        <div className="flex-1 p-4 md:p-6 overflow-auto">
           <div className="space-y-6">
             {/* Welcome Banner - Mobile Optimized */}
             <div className="hero-gradient rounded-lg md:rounded-xl p-4 md:p-6 text-white">
@@ -252,56 +259,6 @@ const DashboardContent = () => {
               </CardContent>
             </Card>
           </div>
-        );
-    }
-  };
-
-  return (
-    <div className="min-h-screen flex w-full bg-background">
-      <DashboardSidebar activeSection={activeSection} setActiveSection={setActiveSection} />
-      
-      <main className="flex-1 flex flex-col min-w-0">
-        {/* Header - Mobile Optimized */}
-        <header className="border-b border-border p-4 md:p-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center space-x-3 min-w-0 flex-1">
-              {/* Mobile Menu Button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="md:hidden p-2"
-                onClick={toggleSidebar}
-              >
-                <Menu className="w-5 h-5" />
-              </Button>
-              
-              <div className="min-w-0 flex-1">
-                <h1 className="text-xl md:text-2xl font-bold text-foreground truncate">
-                  {activeSection === "overview" ? "Dashboard" : 
-                   activeSection === "customers" ? "Customer Management" :
-                   activeSection === "analytics" ? "Analytics" :
-                   activeSection === "deliveries" ? "Delivery Management" :
-                   activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
-                </h1>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-2 md:space-x-4">
-              <div className="relative hidden md:block">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input placeholder="Search..." className="pl-10 w-40 lg:w-64" />
-              </div>
-              <Button variant="outline" size="sm" className="px-2 md:px-3">
-                <Bell className="w-4 h-4 md:mr-2" />
-                <span className="hidden md:inline">3</span>
-              </Button>
-            </div>
-          </div>
-        </header>
-
-        {/* Content - Mobile Optimized */}
-        <div className="flex-1 p-4 md:p-6 overflow-auto">
-          {renderContent()}
         </div>
       </main>
     </div>
@@ -309,7 +266,7 @@ const DashboardContent = () => {
 };
 
 // Main Dashboard Component with SidebarProvider
-const Dashboard = () => {
+const DashboardHome = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -325,9 +282,9 @@ const Dashboard = () => {
 
   return (
     <SidebarProvider defaultOpen={!isMobile}>
-      <DashboardContent />
+      <DashboardHomeContent />
     </SidebarProvider>
   );
 };
 
-export default Dashboard;
+export default DashboardHome;

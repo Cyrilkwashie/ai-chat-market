@@ -10,7 +10,8 @@ import {
   Users,
   User,
   LogOut,
-  ChevronUp
+  ChevronUp,
+  Settings as SettingsIcon
 } from "lucide-react";
 import {
   Sidebar,
@@ -25,27 +26,24 @@ import {
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
-interface DashboardSidebarProps {
-  activeSection: string;
-  setActiveSection: (section: string) => void;
-}
-
 const menuItems = [
-  { id: "overview", title: "Overview", icon: Home },
-  { id: "orders", title: "Orders", icon: ShoppingCart },
-  { id: "products", title: "Products", icon: Package },
-  { id: "analytics", title: "Analytics", icon: BarChart3 },
-  { id: "chat", title: "Chat Support", icon: MessageCircle },
-  { id: "customers", title: "Customers", icon: Users },
-  { id: "payments", title: "Payments", icon: CreditCard },
-  { id: "deliveries", title: "Deliveries", icon: Truck },
+  { id: "overview", title: "Overview", icon: Home, path: "/dashboard" },
+  { id: "orders", title: "Orders", icon: ShoppingCart, path: "/dashboard/orders" },
+  { id: "products", title: "Products", icon: Package, path: "/dashboard/products" },
+  { id: "analytics", title: "Analytics", icon: BarChart3, path: "/dashboard/analytics" },
+  { id: "chat", title: "Chat Support", icon: MessageCircle, path: "/dashboard/chat" },
+  { id: "customers", title: "Customers", icon: Users, path: "/dashboard/customers" },
+  { id: "payments", title: "Payments", icon: CreditCard, path: "/dashboard/payments" },
+  { id: "deliveries", title: "Deliveries", icon: Truck, path: "/dashboard/deliveries" },
+  { id: "settings", title: "Settings", icon: SettingsIcon, path: "/dashboard/settings" },
 ];
 
-export function DashboardSidebar({ activeSection, setActiveSection }: DashboardSidebarProps) {
+export function DashboardSidebar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const [profileOpen, setProfileOpen] = useState(false);
 
@@ -88,12 +86,14 @@ export function DashboardSidebar({ activeSection, setActiveSection }: DashboardS
               <SidebarMenu>
                 {menuItems.map((item) => (
                   <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton 
-                      onClick={() => setActiveSection(item.id)}
-                      className={activeSection === item.id ? "bg-primary text-primary-foreground" : "hover:bg-muted"}
-                    >
-                      <item.icon className="mr-2 h-4 w-4" />
-                      <span>{item.title}</span>
+                    <SidebarMenuButton asChild>
+                      <Link 
+                        to={item.path}
+                        className={location.pathname === item.path ? "bg-primary text-primary-foreground" : "hover:bg-muted"}
+                      >
+                        <item.icon className="mr-2 h-4 w-4" />
+                        <span>{item.title}</span>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
