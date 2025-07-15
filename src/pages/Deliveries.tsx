@@ -4,7 +4,8 @@ import {
   Bell,
   Search,
   Menu,
-  CalendarIcon
+  CalendarIcon,
+  Download
 } from "lucide-react";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
@@ -102,6 +103,12 @@ const DeliveriesContent = () => {
                   <SelectItem value="Yearly">Yearly</SelectItem>
                 </SelectContent>
               </Select>
+
+              {/* Download Button */}
+              <Button variant="outline" className="flex items-center gap-2">
+                <Download className="w-4 h-4" />
+                Download
+              </Button>
             </div>
           </div>
           

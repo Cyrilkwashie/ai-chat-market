@@ -115,8 +115,14 @@ export function AnalyticsDashboard() {
               <SelectItem value="Monthly">Monthly</SelectItem>
               <SelectItem value="Yearly">Yearly</SelectItem>
             </SelectContent>
-          </Select>
-        </div>
+            </Select>
+
+            {/* Download Button */}
+            <Button variant="outline" className="flex items-center gap-2">
+              <Download className="w-4 h-4" />
+              Download
+            </Button>
+          </div>
       </div>
 
       {/* Key Metrics Dashboard */}
