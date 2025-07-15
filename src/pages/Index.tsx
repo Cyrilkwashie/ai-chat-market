@@ -296,7 +296,7 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-muted text-muted-foreground py-12">
+      <footer className="bg-foreground text-background py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="space-y-4">
