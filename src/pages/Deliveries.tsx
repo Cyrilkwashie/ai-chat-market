@@ -3,16 +3,24 @@ import { Button } from "@/components/ui/button";
 import { 
   Bell,
   Search,
-  Menu
+  Menu,
+  CalendarIcon
 } from "lucide-react";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
 import { DeliveryManagement } from "@/components/dashboard/DeliveryManagement";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 // Deliveries Content Component
 const DeliveriesContent = () => {
   const { toggleSidebar } = useSidebar();
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [reportType, setReportType] = useState("Monthly");
 
   return (
     <div className="min-h-screen flex w-full bg-background">
@@ -55,6 +63,48 @@ const DeliveriesContent = () => {
 
         {/* Content - Mobile Optimized */}
         <div className="flex-1 p-4 md:p-6 overflow-auto">
+          {/* Header Section */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div>
+              <p className="text-muted-foreground">Track and manage your deliveries</p>
+            </div>
+            
+            {/* Controls Row */}
+            <div className="flex items-center gap-4">
+              {/* Date Picker */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className={cn("w-64 justify-start text-left font-normal")}>
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {selectedDate ? format(selectedDate, "MMMM dd, yyyy") : "Select date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={(date) => date && setSelectedDate(date)}
+                    initialFocus
+                    className="p-3 pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
+
+              {/* Report Type Dropdown */}
+              <Select value={reportType} onValueChange={setReportType}>
+                <SelectTrigger className="w-48">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Daily">Daily</SelectItem>
+                  <SelectItem value="Weekly">Weekly</SelectItem>
+                  <SelectItem value="Monthly">Monthly</SelectItem>
+                  <SelectItem value="Yearly">Yearly</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          
           <DeliveryManagement />
         </div>
       </main>
