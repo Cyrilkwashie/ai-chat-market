@@ -10,36 +10,36 @@ const ChatbotPage = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 w-full bg-background/95 backdrop-blur-sm border-b border-border z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
             <Button 
               variant="ghost" 
               size="sm"
               onClick={() => navigate("/")}
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
+              <span className="hidden sm:inline">Back</span>
             </Button>
             
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 hero-gradient rounded-lg flex items-center justify-center">
-                <MessageCircle className="w-5 h-5 text-white" />
+            <div className="flex items-center space-x-2 min-w-0 flex-1">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 hero-gradient rounded-lg flex items-center justify-center flex-shrink-0">
+                <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-foreground">AfriCommerce Chat</span>
+              <span className="text-lg sm:text-xl font-bold text-foreground truncate">AfriCommerce Chat</span>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Chat Interface */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <div className="text-center mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">
               Shop with Our AI Assistant
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base sm:text-lg text-muted-foreground px-4">
               Discover amazing local food and get instant support from our AI shopping assistant
             </p>
           </div>
