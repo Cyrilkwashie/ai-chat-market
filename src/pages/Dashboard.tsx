@@ -97,21 +97,21 @@ const DashboardContent = () => {
             </div>
 
             {/* Enhanced Key Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {stats.map((stat, index) => (
                 <Card key={index} className="hover-lift border-l-4 border-l-primary">
-                  <CardContent className="p-6">
+                  <CardContent className="p-4 sm:p-6">
                     <div className="flex items-center justify-between">
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
-                        <p className="text-3xl font-bold text-foreground">{stat.value}</p>
+                      <div className="space-y-1 sm:space-y-2 min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm font-medium text-muted-foreground">{stat.label}</p>
+                        <p className="text-2xl sm:text-3xl font-bold text-foreground">{stat.value}</p>
                         <div className="flex items-center text-xs text-success">
                           <span className="bg-success/10 text-success px-2 py-1 rounded-full">{stat.change}</span>
-                          <span className="ml-2 text-muted-foreground">vs yesterday</span>
+                          <span className="ml-2 text-muted-foreground hidden sm:inline">vs yesterday</span>
                         </div>
                       </div>
-                      <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <stat.icon className="w-6 h-6 text-primary" />
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                       </div>
                     </div>
                   </CardContent>
@@ -120,19 +120,19 @@ const DashboardContent = () => {
             </div>
 
             {/* Main Dashboard Grid - Improved Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
               {/* Monthly Revenue Chart */}
               <div className="lg:col-span-2">
                 <Card className="shadow-warm">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center text-lg">
-                      <BarChart3 className="w-5 h-5 mr-2 text-primary" />
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="flex items-center text-base sm:text-lg">
+                      <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-primary" />
                       Yearly Revenue
                     </CardTitle>
-                    <CardDescription>Revenue performance over the last 12 months</CardDescription>
+                    <CardDescription className="text-sm">Revenue performance over the last 12 months</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <ChartContainer config={chartConfig} className="h-64">
+                    <ChartContainer config={chartConfig} className="h-48 sm:h-64">
                       <BarChart data={yearlyData}>
                         <XAxis dataKey="month" />
                         <YAxis />
@@ -147,14 +147,14 @@ const DashboardContent = () => {
               {/* Top Products - Compact */}
               <div>
                 <Card className="shadow-warm">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center text-lg">
-                      <TrendingUp className="w-5 h-5 mr-2 text-primary" />
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="flex items-center text-base sm:text-lg">
+                      <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-primary" />
                       Top Products
                     </CardTitle>
-                    <CardDescription>Best sellers this month</CardDescription>
+                    <CardDescription className="text-sm">Best sellers this month</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-3">
+                  <CardContent className="space-y-2 sm:space-y-3">
                     {[
                       { name: "Jollof Rice", orders: 23, revenue: "₵690" },
                       { name: "Waakye", orders: 18, revenue: "₵540" },
@@ -162,16 +162,16 @@ const DashboardContent = () => {
                       { name: "Fried Rice", orders: 8, revenue: "₵320" }
                     ].map((product, index) => (
                       <div key={product.name} className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3 min-w-0 flex-1">
-                          <div className="w-6 h-6 bg-primary/10 rounded text-xs flex items-center justify-center font-medium text-primary flex-shrink-0">
+                        <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+                          <div className="w-5 h-5 sm:w-6 sm:h-6 bg-primary/10 rounded text-xs flex items-center justify-center font-medium text-primary flex-shrink-0">
                             {index + 1}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="font-medium text-sm truncate">{product.name}</p>
+                            <p className="font-medium text-xs sm:text-sm truncate">{product.name}</p>
                             <p className="text-xs text-muted-foreground">{product.orders} orders</p>
                           </div>
                         </div>
-                        <span className="font-medium text-sm flex-shrink-0">{product.revenue}</span>
+                        <span className="font-medium text-xs sm:text-sm flex-shrink-0">{product.revenue}</span>
                       </div>
                     ))}
                   </CardContent>
@@ -181,17 +181,17 @@ const DashboardContent = () => {
 
             {/* Recent Orders - Full Width */}
             <Card className="shadow-warm">
-              <CardHeader className="pb-4">
+              <CardHeader className="pb-3 sm:pb-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-lg">Recent Orders</CardTitle>
+                    <CardTitle className="text-base sm:text-lg">Recent Orders</CardTitle>
                     <CardDescription className="text-sm">Latest customer orders and status</CardDescription>
                   </div>
-                  <Button variant="outline" size="sm" className="text-xs px-3">View All</Button>
+                  <Button variant="outline" size="sm" className="text-xs px-2 sm:px-3">View All</Button>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                   {[
                     { 
                       id: "#1234", 
@@ -218,14 +218,14 @@ const DashboardContent = () => {
                       time: "1 hour ago"
                     }
                   ].map((order) => (
-                    <div key={order.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
-                      <div className="flex items-center space-x-3 flex-1 min-w-0">
-                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <ShoppingCart className="w-5 h-5 text-primary" />
+                    <div key={order.id} className="flex items-center justify-between p-3 sm:p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                         </div>
                         <div className="space-y-1 min-w-0 flex-1">
-                          <div className="flex items-center space-x-2">
-                            <p className="font-medium text-sm truncate">{order.customer}</p>
+                          <div className="flex items-center space-x-1 sm:space-x-2">
+                            <p className="font-medium text-xs sm:text-sm truncate">{order.customer}</p>
                             <span className="text-xs text-muted-foreground">({order.id})</span>
                           </div>
                           <p className="text-xs text-muted-foreground truncate">{order.items}</p>
@@ -233,7 +233,7 @@ const DashboardContent = () => {
                         </div>
                       </div>
                       <div className="text-right space-y-1 flex-shrink-0">
-                        <p className="font-semibold text-lg">{order.amount}</p>
+                        <p className="font-semibold text-base sm:text-lg">{order.amount}</p>
                         <Badge 
                           variant={
                             order.status === "delivered" ? "default" : 
@@ -309,7 +309,7 @@ const DashboardContent = () => {
 // Main Dashboard Component with SidebarProvider
 const Dashboard = () => {
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={false}>
       <DashboardContent />
     </SidebarProvider>
   );

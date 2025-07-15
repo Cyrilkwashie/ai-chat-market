@@ -26,14 +26,15 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b border-border z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 hero-gradient rounded-lg flex items-center justify-center">
-              <MessageCircle className="w-5 h-5 text-white" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 hero-gradient rounded-lg flex items-center justify-center">
+              <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-foreground">AfriCommerce</span>
+            <span className="text-lg sm:text-xl font-bold text-foreground">AfriCommerce</span>
           </div>
           
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             <a href="#features" className="text-muted-foreground hover:text-foreground transition-smooth">Features</a>
             <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-smooth">Pricing</a>
@@ -45,51 +46,61 @@ const Index = () => {
               Get Started
             </Button>
           </div>
+          
+          {/* Mobile Navigation */}
+          <div className="flex md:hidden items-center space-x-2">
+            <Button variant="outline" size="sm" onClick={() => navigate("/signin")} className="text-xs px-2">
+              Sign In
+            </Button>
+            <Button variant="hero" size="sm" onClick={() => navigate("/signin?mode=signup")} className="text-xs px-2">
+              Start
+            </Button>
+          </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-20 pb-16 px-4">
+      <section className="pt-16 sm:pt-20 pb-12 sm:pb-16 px-3 sm:px-4">
         <div className="container mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
+            <div className="space-y-6 sm:space-y-8 text-center lg:text-left">
               <div className="space-y-4">
-                <Badge variant="secondary" className="mb-4">
+                <Badge variant="secondary" className="mb-4 text-xs sm:text-sm">
                   🌍 Built for African Markets
                 </Badge>
-                <h1 className="text-5xl md:text-6xl font-bold text-foreground leading-tight">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
                   Conversational
                   <span className="block hero-gradient bg-clip-text text-transparent">
                     Commerce
                   </span>
                   for Africa
                 </h1>
-                <p className="text-xl text-muted-foreground leading-relaxed">
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed">
                   Empower your business with AI-powered chatbots that understand local languages, 
                   accept mobile money, and connect with customers across Ghana, Nigeria, and beyond.
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Button 
                   variant="hero" 
                   size="lg" 
-                  className="text-lg px-8 py-6"
+                  className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto"
                   onClick={() => navigate("/signin?mode=signup")}
                 >
-                  Start Selling <ArrowRight className="ml-2" />
+                  Start Selling <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
                 <Button 
                   variant="outline" 
                   size="lg" 
-                  className="text-lg px-8 py-6"
+                  className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto"
                   onClick={() => navigate("/chat")}
                 >
-                  Try Shopping <MessageCircle className="ml-2" />
+                  Try Shopping <MessageCircle className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
               </div>
 
-              <div className="flex items-center space-x-8 text-sm text-muted-foreground">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-3 sm:space-y-0 sm:space-x-6 lg:space-x-8 text-xs sm:text-sm text-muted-foreground">
                 <div className="flex items-center space-x-2">
                   <CheckCircle className="w-4 h-4 text-success" />
                   <span>Free to start</span>
@@ -105,21 +116,21 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="relative">
+            <div className="relative mt-8 lg:mt-0">
               <div className="card-elevated rounded-xl overflow-hidden">
                 <img 
                   src={heroImage} 
                   alt="African commerce platform" 
-                  className="w-full h-[400px] object-cover"
+                  className="w-full h-[250px] sm:h-[300px] md:h-[400px] object-cover"
                 />
               </div>
               
               {/* Floating elements */}
-              <div className="absolute -top-4 -right-4 bg-accent text-accent-foreground p-3 rounded-full shadow-warm">
-                <Star className="w-6 h-6" />
+              <div className="absolute -top-2 sm:-top-4 -right-2 sm:-right-4 bg-accent text-accent-foreground p-2 sm:p-3 rounded-full shadow-warm">
+                <Star className="w-4 h-4 sm:w-6 sm:h-6" />
               </div>
-              <div className="absolute -bottom-4 -left-4 bg-success text-success-foreground p-3 rounded-full shadow-warm">
-                <Truck className="w-6 h-6" />
+              <div className="absolute -bottom-2 sm:-bottom-4 -left-2 sm:-left-4 bg-success text-success-foreground p-2 sm:p-3 rounded-full shadow-warm">
+                <Truck className="w-4 h-4 sm:w-6 sm:h-6" />
               </div>
             </div>
           </div>
@@ -127,21 +138,21 @@ const Index = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <section className="py-12 sm:py-16 bg-muted/30">
+        <div className="container mx-auto px-3 sm:px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             {[
               { label: "Active Vendors", value: "1,200+", icon: Users },
               { label: "Daily Orders", value: "8,500+", icon: ShoppingCart },
               { label: "Cities Served", value: "25+", icon: MapPin },
               { label: "Customer Satisfaction", value: "98%", icon: Star }
             ].map((stat, index) => (
-              <div key={index} className="text-center space-y-2">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg mb-2">
-                  <stat.icon className="w-6 h-6 text-primary" />
+              <div key={index} className="text-center space-y-2 sm:space-y-3">
+                <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg mb-1 sm:mb-2">
+                  <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 </div>
-                <div className="text-2xl md:text-3xl font-bold text-foreground">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">{stat.value}</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </div>
