@@ -131,7 +131,7 @@ const DashboardContent = () => {
                     </CardTitle>
                     <CardDescription className="text-sm">Revenue performance over the last 12 months</CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pr-2 sm:pr-3">
                     <ChartContainer config={chartConfig} className="h-48 sm:h-64">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={yearlyData}>
