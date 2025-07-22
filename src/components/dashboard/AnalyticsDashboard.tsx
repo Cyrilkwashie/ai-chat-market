@@ -51,9 +51,9 @@ const topProducts = [
 ];
 
 const customerSegments = [
-  { name: "Returning", value: 45, color: "hsl(var(--success))" },
-  { name: "New", value: 35, color: "hsl(var(--accent))" },
-  { name: "VIP", value: 20, color: "hsl(var(--primary))" }
+  { name: "Returning", value: 45, color: "hsl(var(--primary))" },
+  { name: "New", value: 35, color: "hsl(var(--secondary))" },
+  { name: "VIP", value: 20, color: "hsl(var(--destructive))" }
 ];
 
 const regions = [
