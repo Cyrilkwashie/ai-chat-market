@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { Search, Crown, Star, Calendar, Phone, Mail, MapPin, MessageCircle, Eye, Users, DollarSign } from "lucide-react";
+import { Search, Crown, Star, Calendar, Phone, Mail, MapPin, MessageCircle, Eye, Users, DollarSign, Settings } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
 
 const customersData = [
   {
@@ -93,12 +96,31 @@ const popularProducts = [
 
 export function CustomerManagement() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [vipSettings, setVipSettings] = useState({
+    minAmount: 500,
+    minOrders: 15
+  });
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  const { register, handleSubmit, setValue, watch } = useForm({
+    defaultValues: vipSettings
+  });
+
+  const handleVipSettingsSubmit = (data: typeof vipSettings) => {
+    setVipSettings(data);
+    setIsDialogOpen(false);
+  };
+
+  // Check if customer meets VIP criteria based on current settings
+  const isVipCustomer = (customer: any) => {
+    return customer.totalSpent >= vipSettings.minAmount || customer.orders >= vipSettings.minOrders;
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "vip":
         return (
-          <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200">
+          <Badge className="bg-purple-500/10 text-purple-700 hover:bg-purple-500/20 border-purple-500/20">
             <Crown className="w-3 h-3 mr-1" />
             VIP
           </Badge>
@@ -127,12 +149,56 @@ export function CustomerManagement() {
       </div>
 
       {/* VIP Status Explanation Card */}
-      <Card className="border-l-4 border-l-purple-500 bg-purple-50/50">
+      <Card className="border-l-4 border-l-purple-500 bg-purple-500/5">
         <CardHeader>
-          <CardTitle className="flex items-center text-purple-800">
-            <Crown className="w-5 h-5 mr-2" />
-            VIP Customer Status
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center text-purple-700">
+              <Crown className="w-5 h-5 mr-2" />
+              VIP Customer Status
+            </CardTitle>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="text-purple-700 border-purple-300 hover:bg-purple-50">
+                  <Settings className="w-4 h-4 mr-2" />
+                  Customize
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>VIP Customer Criteria</DialogTitle>
+                  <DialogDescription>
+                    Set the minimum requirements for customers to achieve VIP status
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit(handleVipSettingsSubmit)} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="minAmount">Minimum Total Spending (₵)</Label>
+                    <Input
+                      id="minAmount"
+                      type="number"
+                      {...register("minAmount", { valueAsNumber: true })}
+                      placeholder="500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="minOrders">Minimum Number of Orders</Label>
+                    <Input
+                      id="minOrders"
+                      type="number"
+                      {...register("minOrders", { valueAsNumber: true })}
+                      placeholder="15"
+                    />
+                  </div>
+                  <DialogFooter>
+                    <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button type="submit">Save Changes</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-3">
@@ -141,11 +207,11 @@ export function CustomerManagement() {
           <div className="space-y-2 mb-4">
             <div className="flex items-center text-sm">
               <Star className="w-4 h-4 mr-2 text-purple-600" />
-              <span>Total spending exceeds ₵500</span>
+              <span>Total spending exceeds ₵{vipSettings.minAmount}</span>
             </div>
             <div className="flex items-center text-sm">
               <Star className="w-4 h-4 mr-2 text-purple-600" />
-              <span>More than 15 total orders</span>
+              <span>More than {vipSettings.minOrders} total orders</span>
             </div>
           </div>
           <p className="text-xs text-purple-600">
@@ -192,19 +258,19 @@ export function CustomerManagement() {
           </CardContent>
         </Card>
 
-        <Card className="hover-lift border-l-4 border-l-secondary">
+        <Card className="hover-lift border-l-4 border-l-purple-500">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-muted-foreground">VIP Customers</p>
                 <p className="text-3xl font-bold text-foreground">156</p>
                 <div className="flex items-center text-xs">
-                  <span className="bg-secondary/10 text-secondary px-2 py-1 rounded-full">₵500+</span>
-                  <span className="ml-2 text-muted-foreground">or 15+ orders</span>
+                  <span className="bg-purple-500/10 text-purple-700 px-2 py-1 rounded-full">₵{vipSettings.minAmount}+</span>
+                  <span className="ml-2 text-muted-foreground">or {vipSettings.minOrders}+ orders</span>
                 </div>
               </div>
-              <div className="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center">
-                <Crown className="w-6 h-6 text-secondary" />
+              <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center">
+                <Crown className="w-6 h-6 text-purple-600" />
               </div>
             </div>
           </CardContent>
@@ -351,7 +417,8 @@ export function CustomerManagement() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-green-600">₵{customer.totalSpent}</p>
+                    <span className="bg-secondary/10 text-secondary px-2 py-1 rounded-full">₵{vipSettings.minAmount}+</span>
+                    <span className="ml-2 text-muted-foreground">or {vipSettings.minOrders}+ orders</span>
                   </div>
                 </div>
               ))}

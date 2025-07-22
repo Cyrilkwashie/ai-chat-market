@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Edit, Trash2, Package, TrendingUp, TrendingDown, Grid3X3, List } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Package, TrendingUp, TrendingDown, Grid3X3, List, Upload, Link, X } from "lucide-react";
 
 const mockProducts = [
   {
@@ -179,6 +179,12 @@ export function ProductManagement() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [newCategoryName, setNewCategoryName] = useState("");
   const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
+  
+  // Image upload states
+  const [imageMethod, setImageMethod] = useState<"url" | "upload">("url");
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const filteredProducts = mockProducts.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -196,6 +202,30 @@ export function ProductManagement() {
       setSelectedCategory(value);
       setNewCategoryName("");
     }
+  };
+
+  // Image handling functions
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageUrlChange = (url: string) => {
+    setImageUrl(url);
+    setImagePreview(url);
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImageUrl("");
+    setImagePreview(null);
   };
 
   return (
@@ -356,6 +386,93 @@ export function ProductManagement() {
                     <div className="col-span-2 space-y-2">
                       <Label htmlFor="description">Description</Label>
                       <Textarea id="description" placeholder="Describe your product..." />
+                    </div>
+                    
+                    {/* Product Image Section */}
+                    <div className="col-span-2 space-y-4">
+                      <Label>Product Image</Label>
+                      
+                      {/* Image Method Selection */}
+                      <div className="flex space-x-4 mb-4">
+                        <label className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="imageMethod"
+                            value="url"
+                            checked={imageMethod === "url"}
+                            onChange={() => setImageMethod("url")}
+                            className="w-4 h-4 text-primary"
+                          />
+                          <Link className="w-4 h-4" />
+                          <span className="text-sm">Image URL</span>
+                        </label>
+                        <label className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="imageMethod"
+                            value="upload"
+                            checked={imageMethod === "upload"}
+                            onChange={() => setImageMethod("upload")}
+                            className="w-4 h-4 text-primary"
+                          />
+                          <Upload className="w-4 h-4" />
+                          <span className="text-sm">Upload Image</span>
+                        </label>
+                      </div>
+
+                      {/* URL Input */}
+                      {imageMethod === "url" && (
+                        <div className="space-y-2">
+                          <Input
+                            placeholder="Enter image URL..."
+                            value={imageUrl}
+                            onChange={(e) => handleImageUrlChange(e.target.value)}
+                          />
+                        </div>
+                      )}
+
+                      {/* File Upload */}
+                      {imageMethod === "upload" && (
+                        <div className="space-y-2">
+                          <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleFileUpload}
+                              className="hidden"
+                              id="image-upload"
+                            />
+                            <label htmlFor="image-upload" className="cursor-pointer">
+                              <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+                              <p className="text-sm text-muted-foreground">
+                                Click to upload or drag and drop
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                PNG, JPG, GIF up to 10MB
+                              </p>
+                            </label>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Image Preview */}
+                      {imagePreview && (
+                        <div className="relative">
+                          <img
+                            src={imagePreview}
+                            alt="Product preview"
+                            className="w-full h-48 object-cover rounded-lg border"
+                          />
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="absolute top-2 right-2"
+                            onClick={removeImage}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="flex justify-end space-x-2">

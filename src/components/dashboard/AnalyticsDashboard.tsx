@@ -35,11 +35,11 @@ const revenueData = [
 ];
 
 const productData = [
-  { name: "Waakye", value: 3500, color: "#8B5CF6" },
-  { name: "Kente Cloth", value: 2800, color: "#EF4444" },
-  { name: "Sobolo", value: 2200, color: "#F59E0B" },
-  { name: "Banku", value: 1900, color: "#10B981" },
-  { name: "Others", value: 2300, color: "#6B7280" }
+  { name: "Waakye", value: 3500, color: "hsl(var(--primary))" },
+  { name: "Kente Cloth", value: 2800, color: "hsl(var(--secondary))" },
+  { name: "Sobolo", value: 2200, color: "hsl(var(--accent))" },
+  { name: "Banku", value: 1900, color: "hsl(var(--destructive))" },
+  { name: "Others", value: 2300, color: "hsl(240, 5%, 40%)" }
 ];
 
 const topProducts = [
@@ -51,9 +51,9 @@ const topProducts = [
 ];
 
 const customerSegments = [
-  { name: "Returning", value: 45, color: "#10B981" },
-  { name: "New", value: 35, color: "#F59E0B" },
-  { name: "VIP", value: 20, color: "#8B5CF6" }
+  { name: "Returning", value: 45, color: "hsl(var(--primary))" },
+  { name: "New", value: 35, color: "hsl(var(--secondary))" },
+  { name: "VIP", value: 20, color: "hsl(var(--destructive))" }
 ];
 
 const regions = [
@@ -66,8 +66,8 @@ const regions = [
 
 const chartConfig = {
   revenue: { label: "Revenue", color: "hsl(var(--primary))" },
-  orders: { label: "Orders", color: "hsl(142, 76%, 36%)" },
-  customers: { label: "Customers", color: "hsl(45, 93%, 47%)" },
+  orders: { label: "Orders", color: "hsl(var(--secondary))" },
+  customers: { label: "Customers", color: "hsl(var(--accent))" },
   value: { label: "Value", color: "hsl(var(--primary))" }
 };
 

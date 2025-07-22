@@ -38,7 +38,7 @@ const Onboarding = () => {
     paymentMethods: [] as string[],
     languages: [] as string[],
     workingHours: "",
-    deliveryRadius: ""
+    deliveryAreas: [] as string[]
   });
 
   const businessTypes = [
@@ -60,6 +60,20 @@ const Onboarding = () => {
     { id: "twi", label: "Twi" },
     { id: "hausa", label: "Hausa" },
     { id: "yoruba", label: "Yoruba" }
+  ];
+
+  const deliveryAreas = [
+    { id: "accra", label: "Accra" },
+    { id: "kumasi", label: "Kumasi" },
+    { id: "tamale", label: "Tamale" },
+    { id: "cape-coast", label: "Cape Coast" },
+    { id: "sekondi-takoradi", label: "Sekondi-Takoradi" },
+    { id: "ho", label: "Ho" },
+    { id: "koforidua", label: "Koforidua" },
+    { id: "sunyani", label: "Sunyani" },
+    { id: "wa", label: "Wa" },
+    { id: "bolgatanga", label: "Bolgatanga" },
+    { id: "worldwide", label: "Worldwide" }
   ];
 
   const handleNext = () => {
@@ -87,8 +101,29 @@ const Onboarding = () => {
     setFormData({ ...formData, [field]: value });
   };
 
-  const handleArrayToggle = (field: "paymentMethods" | "languages", value: string) => {
+  const handleArrayToggle = (field: "paymentMethods" | "languages" | "deliveryAreas", value: string) => {
     const currentArray = formData[field];
+    
+    // Special handling for delivery areas - if worldwide is selected, clear others
+    if (field === "deliveryAreas") {
+      if (value === "worldwide") {
+        setFormData({
+          ...formData,
+          [field]: ["worldwide"]
+        });
+        return;
+      }
+      
+      // If selecting a city while worldwide is selected, remove worldwide
+      if (currentArray.includes("worldwide")) {
+        setFormData({
+          ...formData,
+          [field]: [value]
+        });
+        return;
+      }
+    }
+    
     if (currentArray.includes(value)) {
       setFormData({
         ...formData,
@@ -192,19 +227,22 @@ const Onboarding = () => {
               </div>
 
               <div>
-                <Label htmlFor="deliveryRadius">Delivery Radius</Label>
-                <Select onValueChange={(value) => handleInputChange("deliveryRadius", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="How far do you deliver?" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1km">Within 1km</SelectItem>
-                    <SelectItem value="3km">Within 3km</SelectItem>
-                    <SelectItem value="5km">Within 5km</SelectItem>
-                    <SelectItem value="10km">Within 10km</SelectItem>
-                    <SelectItem value="city">Anywhere in city</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label className="mb-3 block">Where do you deliver? *</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {deliveryAreas.map((area) => (
+                    <div key={area.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={area.id}
+                        checked={formData.deliveryAreas.includes(area.id)}
+                        onCheckedChange={() => handleArrayToggle("deliveryAreas", area.id)}
+                      />
+                      <Label htmlFor={area.id}>{area.label}</Label>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Select multiple cities or choose "Worldwide" for global delivery
+                </p>
               </div>
             </div>
           </div>
@@ -246,26 +284,11 @@ const Onboarding = () => {
           <div className="space-y-4">
             <div className="text-center mb-6">
               <Globe className="w-12 h-12 text-primary mx-auto mb-2" />
-              <h3 className="text-xl font-semibold">Languages & Hours</h3>
-              <p className="text-muted-foreground">Final setup for your AI assistant</p>
+              <h3 className="text-xl font-semibold">Business Hours</h3>
+              <p className="text-muted-foreground">Set your operating schedule</p>
             </div>
 
             <div className="space-y-4">
-              <div>
-                <Label className="mb-3 block">Languages your AI assistant should speak *</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  {languageOptions.map((option) => (
-                    <div key={option.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={option.id}
-                        checked={formData.languages.includes(option.id)}
-                        onCheckedChange={() => handleArrayToggle("languages", option.id)}
-                      />
-                      <Label htmlFor={option.id}>{option.label}</Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
               <div>
                 <Label htmlFor="workingHours">Working Hours</Label>
@@ -274,7 +297,7 @@ const Onboarding = () => {
                     <SelectValue placeholder="When are you open?" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="24/7">24/7 (AI handles everything)</SelectItem>
+                    <SelectItem value="24/7">24/7</SelectItem>
                     <SelectItem value="9-17">9 AM - 5 PM</SelectItem>
                     <SelectItem value="8-20">8 AM - 8 PM</SelectItem>
                     <SelectItem value="6-22">6 AM - 10 PM</SelectItem>
@@ -286,7 +309,6 @@ const Onboarding = () => {
               <div className="bg-accent/20 p-4 rounded-lg">
                 <h4 className="font-medium mb-2">🤖 Your AI Assistant Will:</h4>
                 <ul className="text-sm space-y-1">
-                  <li>• Answer customer questions in selected languages</li>
                   <li>• Take orders and process payments</li>
                   <li>• Handle delivery coordination</li>
                   <li>• Send order updates via WhatsApp</li>
@@ -306,11 +328,11 @@ const Onboarding = () => {
       case 1:
         return formData.businessName && formData.businessType;
       case 2:
-        return formData.location && formData.phone;
+        return formData.location && formData.phone && formData.deliveryAreas.length > 0;
       case 3:
         return formData.paymentMethods.length > 0;
       case 4:
-        return formData.languages.length > 0;
+        return formData.workingHours;
       default:
         return false;
     }
