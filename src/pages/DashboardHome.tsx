@@ -153,9 +153,9 @@ const DashboardHomeContent = () => {
                 </Card>
               </div>
 
-              {/* Top Products - Compact */}
+              {/* Top Products - Same height as chart */}
               <div>
-                <Card className="shadow-warm">
+                <Card className="shadow-warm h-full">
                   <CardHeader className="pb-3 sm:pb-4">
                     <CardTitle className="flex items-center text-base sm:text-lg">
                       <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-primary" />
@@ -163,14 +163,14 @@ const DashboardHomeContent = () => {
                     </CardTitle>
                     <CardDescription className="text-sm">Best sellers this month</CardDescription>
                   </CardHeader>
-                   <CardContent className="space-y-2 sm:space-y-3 h-48 sm:h-64 overflow-y-auto">
-                     {[
-                       { name: "Jollof Rice", orders: 23, revenue: "₵690" },
-                       { name: "Waakye", orders: 18, revenue: "₵540" },
-                       { name: "Banku + Tilapia", orders: 12, revenue: "₵480" },
-                       { name: "Fried Rice", orders: 8, revenue: "₵320" },
-                       { name: "Kelewele", orders: 6, revenue: "₵180" }
-                     ].map((product, index) => (
+                  <CardContent className="space-y-2 sm:space-y-3 flex-1 overflow-y-auto">
+                    {[
+                      { name: "Jollof Rice", orders: 23, revenue: "₵690" },
+                      { name: "Waakye", orders: 18, revenue: "₵540" },
+                      { name: "Banku + Tilapia", orders: 12, revenue: "₵480" },
+                      { name: "Fried Rice", orders: 8, revenue: "₵320" },
+                      { name: "Kelewele", orders: 6, revenue: "₵180" }
+                    ].map((product, index) => (
                       <div key={product.name} className="flex items-center justify-between">
                         <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
                           <div className="w-5 h-5 sm:w-6 sm:h-6 bg-primary/10 rounded text-xs flex items-center justify-center font-medium text-primary flex-shrink-0">
