@@ -309,7 +309,6 @@ const Onboarding = () => {
               <div className="bg-accent/20 p-4 rounded-lg">
                 <h4 className="font-medium mb-2">🤖 Your AI Assistant Will:</h4>
                 <ul className="text-sm space-y-1">
-                  <li>• Answer customer questions in selected languages</li>
                   <li>• Take orders and process payments</li>
                   <li>• Handle delivery coordination</li>
                   <li>• Send order updates via WhatsApp</li>
