@@ -5,7 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Truck, MapPin, Clock, Package, CheckCircle, AlertCircle, TrendingUp, Users, Search } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Truck, MapPin, Clock, Package, CheckCircle, AlertCircle, TrendingUp, Users, Search, Phone, Mail } from "lucide-react";
 
 const deliveryStats = [
   { label: "Pending", value: "5", change: "+2", icon: AlertCircle, trend: "up" },
@@ -18,32 +20,47 @@ const activeDeliveries = [
   { 
     id: "DEL-001", 
     customer: "Kwame Asante", 
+    customerPhone: "+233 24 123 4567",
+    customerEmail: "kwame.asante@email.com",
     address: "East Legon, Accra", 
     items: "2x Jollof Rice, 1x Fried Chicken", 
     driver: "Samuel Boateng",
+    driverPhone: "+233 20 555 0123",
     estimatedTime: "15 mins",
     status: "on-route",
-    progress: 75
+    progress: 75,
+    orderValue: "₵85",
+    orderTime: "12:30 PM"
   },
   { 
     id: "DEL-002", 
     customer: "Fatima Musa", 
+    customerPhone: "+233 20 987 6543",
+    customerEmail: "fatima.musa@email.com",
     address: "Tema Community 1", 
     items: "1x Waakye + Fish", 
     driver: "Grace Mensah",
+    driverPhone: "+233 26 555 0456",
     estimatedTime: "22 mins",
     status: "pending",
-    progress: 25
+    progress: 25,
+    orderValue: "₵45",
+    orderTime: "1:15 PM"
   },
   { 
     id: "DEL-003", 
     customer: "Emmanuel Osei", 
+    customerPhone: "+233 26 456 7890",
+    customerEmail: "emmanuel.osei@email.com",
     address: "Achimota, Accra", 
     items: "3x Banku + Tilapia", 
     driver: "Kofi Danso",
+    driverPhone: "+233 24 555 0789",
     estimatedTime: "8 mins",
     status: "delivered",
-    progress: 100
+    progress: 100,
+    orderValue: "₵120",
+    orderTime: "11:45 AM"
   }
 ];
 
@@ -131,68 +148,110 @@ export function DeliveryManagement() {
         <TabsContent value="active" className="space-y-6">
           <Card className="shadow-warm">
             <CardHeader>
-              <CardTitle>Active Deliveries</CardTitle>
-              <CardDescription>Real-time tracking of ongoing deliveries</CardDescription>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <CardTitle>Active Deliveries</CardTitle>
+                  <CardDescription>Manage and track all ongoing deliveries</CardDescription>
+                </div>
+                <div className="relative w-full md:w-96">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search deliveries by customer, ID, address, or driver..."
+                    value={activeSearchTerm}
+                    onChange={(e) => setActiveSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
-              {/* Search Bar */}
-              <div className="relative mb-6">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search deliveries by customer, ID, address, or driver..."
-                  value={activeSearchTerm}
-                  onChange={(e) => setActiveSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <div className="space-y-4">
-                {filteredActiveDeliveries.map((delivery) => (
-                  <div key={delivery.id} className="border border-border rounded-lg p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="space-y-1">
-                        <div className="flex items-center space-x-2">
-                          <h3 className="font-medium">{delivery.customer}</h3>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Delivery ID</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Driver</TableHead>
+                    <TableHead>Address</TableHead>
+                    <TableHead>Items</TableHead>
+                    <TableHead>Value</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>ETA</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredActiveDeliveries.map((delivery) => (
+                    <TableRow key={delivery.id}>
+                      <TableCell>
+                        <div className="font-medium">{delivery.id}</div>
+                        <div className="text-xs text-muted-foreground">{delivery.orderTime}</div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-3">
+                          <Avatar className="w-8 h-8">
+                            <AvatarImage src="/placeholder.svg" />
+                            <AvatarFallback>{delivery.customer.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div className="font-medium">{delivery.customer}</div>
+                            <div className="flex items-center text-xs text-muted-foreground">
+                              <Phone className="w-3 h-3 mr-1" />
+                              {delivery.customerPhone}
+                            </div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="font-medium">{delivery.driver}</div>
+                        <div className="flex items-center text-xs text-muted-foreground">
+                          <Phone className="w-3 h-3 mr-1" />
+                          {delivery.driverPhone}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center text-sm">
+                          <MapPin className="w-3 h-3 mr-2 text-muted-foreground" />
+                          {delivery.address}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">{delivery.items}</div>
+                      </TableCell>
+                      <TableCell className="font-medium text-green-600">
+                        {delivery.orderValue}
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-2">
                           <Badge variant={getStatusColor(delivery.status)}>
                             {delivery.status}
                           </Badge>
+                          <div className="w-16">
+                            <Progress value={delivery.progress} className="h-1" />
+                          </div>
                         </div>
-                        <p className="text-sm text-muted-foreground">{delivery.id}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium">ETA: {delivery.estimatedTime}</p>
-                        <p className="text-xs text-muted-foreground">Driver: {delivery.driver}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <MapPin className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm">{delivery.address}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Package className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm">{delivery.items}</span>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>Delivery Progress</span>
-                        <span>{delivery.progress}%</span>
-                      </div>
-                      <Progress value={delivery.progress} className="h-2" />
-                    </div>
-
-                    <div className="mt-4 flex space-x-2">
-                      <Button size="sm" variant="outline">Track Order</Button>
-                      <Button size="sm" variant="outline">Contact Driver</Button>
-                      {delivery.status === "pending" && (
-                        <Button size="sm">Mark Ready</Button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+                      </TableCell>
+                      <TableCell className="text-sm font-medium">
+                        {delivery.estimatedTime}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <Button variant="ghost" size="sm">
+                            <Truck className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm">
+                            <Phone className="w-4 h-4" />
+                          </Button>
+                          {delivery.status === "pending" && (
+                            <Button size="sm" variant="outline">
+                              Ready
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>
