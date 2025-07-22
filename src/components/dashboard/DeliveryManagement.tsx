@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Truck, MapPin, Clock, Package, CheckCircle, AlertCircle, TrendingUp, Users } from "lucide-react";
+import { Truck, MapPin, Clock, Package, CheckCircle, AlertCircle, TrendingUp, Users, Search } from "lucide-react";
 
 const deliveryStats = [
   { label: "Pending", value: "5", change: "+2", icon: AlertCircle, trend: "up" },
@@ -66,6 +68,33 @@ const getStatusColor = (status: string) => {
 };
 
 export function DeliveryManagement() {
+  const [activeSearchTerm, setActiveSearchTerm] = useState("");
+  const [historySearchTerm, setHistorySearchTerm] = useState("");
+  const [driverSearchTerm, setDriverSearchTerm] = useState("");
+
+  // Filter functions
+  const filteredActiveDeliveries = activeDeliveries.filter(delivery =>
+    delivery.customer.toLowerCase().includes(activeSearchTerm.toLowerCase()) ||
+    delivery.id.toLowerCase().includes(activeSearchTerm.toLowerCase()) ||
+    delivery.address.toLowerCase().includes(activeSearchTerm.toLowerCase()) ||
+    delivery.driver.toLowerCase().includes(activeSearchTerm.toLowerCase())
+  );
+
+  const filteredHistory = deliveryHistory.filter(delivery =>
+    delivery.customer.toLowerCase().includes(historySearchTerm.toLowerCase()) ||
+    delivery.id.toLowerCase().includes(historySearchTerm.toLowerCase())
+  );
+
+  const drivers = [
+    { name: "Samuel Boateng", status: "active", deliveries: 8, rating: 4.9 },
+    { name: "Grace Mensah", status: "active", deliveries: 5, rating: 4.8 },
+    { name: "Kofi Danso", status: "off-duty", deliveries: 12, rating: 4.7 },
+    { name: "Ama Serwaa", status: "active", deliveries: 3, rating: 5.0 }
+  ];
+
+  const filteredDrivers = drivers.filter(driver =>
+    driver.name.toLowerCase().includes(driverSearchTerm.toLowerCase())
+  );
   return (
     <div className="space-y-6">
       {/* Delivery Stats */}
@@ -106,8 +135,18 @@ export function DeliveryManagement() {
               <CardDescription>Real-time tracking of ongoing deliveries</CardDescription>
             </CardHeader>
             <CardContent>
+              {/* Search Bar */}
+              <div className="relative mb-6">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search deliveries by customer, ID, address, or driver..."
+                  value={activeSearchTerm}
+                  onChange={(e) => setActiveSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
               <div className="space-y-4">
-                {activeDeliveries.map((delivery) => (
+                {filteredActiveDeliveries.map((delivery) => (
                   <div key={delivery.id} className="border border-border rounded-lg p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div className="space-y-1">
@@ -165,8 +204,18 @@ export function DeliveryManagement() {
               <CardDescription>Past deliveries and performance</CardDescription>
             </CardHeader>
             <CardContent>
+              {/* Search Bar */}
+              <div className="relative mb-6">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search delivery history by customer or ID..."
+                  value={historySearchTerm}
+                  onChange={(e) => setHistorySearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
               <div className="space-y-3">
-                {deliveryHistory.map((delivery) => (
+                {filteredHistory.map((delivery) => (
                   <div key={delivery.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center">
@@ -197,13 +246,18 @@ export function DeliveryManagement() {
               <CardDescription>Manage your delivery team</CardDescription>
             </CardHeader>
             <CardContent>
+              {/* Search Bar */}
+              <div className="relative mb-6">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search drivers by name..."
+                  value={driverSearchTerm}
+                  onChange={(e) => setDriverSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[
-                  { name: "Samuel Boateng", status: "active", deliveries: 8, rating: 4.9 },
-                  { name: "Grace Mensah", status: "active", deliveries: 5, rating: 4.8 },
-                  { name: "Kofi Danso", status: "off-duty", deliveries: 12, rating: 4.7 },
-                  { name: "Ama Serwaa", status: "active", deliveries: 3, rating: 5.0 }
-                ].map((driver) => (
+                {filteredDrivers.map((driver) => (
                   <div key={driver.name} className="border border-border rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-3">
