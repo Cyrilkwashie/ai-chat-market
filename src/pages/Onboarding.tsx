@@ -251,21 +251,6 @@ const Onboarding = () => {
             </div>
 
             <div className="space-y-4">
-              <div>
-                <Label className="mb-3 block">Languages your AI assistant should speak *</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  {languageOptions.map((option) => (
-                    <div key={option.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={option.id}
-                        checked={formData.languages.includes(option.id)}
-                        onCheckedChange={() => handleArrayToggle("languages", option.id)}
-                      />
-                      <Label htmlFor={option.id}>{option.label}</Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
               <div>
                 <Label htmlFor="workingHours">Working Hours</Label>
@@ -274,7 +259,7 @@ const Onboarding = () => {
                     <SelectValue placeholder="When are you open?" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="24/7">24/7 (AI handles everything)</SelectItem>
+                    <SelectItem value="24/7">24/7</SelectItem>
                     <SelectItem value="9-17">9 AM - 5 PM</SelectItem>
                     <SelectItem value="8-20">8 AM - 8 PM</SelectItem>
                     <SelectItem value="6-22">6 AM - 10 PM</SelectItem>
@@ -310,7 +295,7 @@ const Onboarding = () => {
       case 3:
         return formData.paymentMethods.length > 0;
       case 4:
-        return formData.languages.length > 0;
+        return formData.workingHours;
       default:
         return false;
     }
