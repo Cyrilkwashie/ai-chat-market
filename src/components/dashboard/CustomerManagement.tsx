@@ -258,19 +258,19 @@ export function CustomerManagement() {
           </CardContent>
         </Card>
 
-        <Card className="hover-lift border-l-4 border-l-secondary">
+        <Card className="hover-lift border-l-4 border-l-purple-500">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-muted-foreground">VIP Customers</p>
                 <p className="text-3xl font-bold text-foreground">156</p>
                 <div className="flex items-center text-xs">
-                  <span className="bg-secondary/10 text-secondary px-2 py-1 rounded-full">₵500+</span>
-                  <span className="ml-2 text-muted-foreground">or 15+ orders</span>
+                  <span className="bg-purple-500/10 text-purple-700 px-2 py-1 rounded-full">₵{vipSettings.minAmount}+</span>
+                  <span className="ml-2 text-muted-foreground">or {vipSettings.minOrders}+ orders</span>
                 </div>
               </div>
-              <div className="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center">
-                <Crown className="w-6 h-6 text-secondary" />
+              <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center">
+                <Crown className="w-6 h-6 text-purple-600" />
               </div>
             </div>
           </CardContent>
