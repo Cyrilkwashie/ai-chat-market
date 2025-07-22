@@ -38,8 +38,8 @@ const productData = [
   { name: "Waakye", value: 3500, color: "hsl(var(--primary))" },
   { name: "Kente Cloth", value: 2800, color: "hsl(var(--secondary))" },
   { name: "Sobolo", value: 2200, color: "hsl(var(--accent))" },
-  { name: "Banku", value: 1900, color: "hsl(var(--success))" },
-  { name: "Others", value: 2300, color: "hsl(var(--muted-foreground))" }
+  { name: "Banku", value: 1900, color: "hsl(var(--destructive))" },
+  { name: "Others", value: 2300, color: "hsl(240, 5%, 40%)" }
 ];
 
 const topProducts = [
