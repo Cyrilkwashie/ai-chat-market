@@ -69,6 +69,49 @@ const deliveryHistory = [
   { id: "DEL-095", customer: "Prince Owusu", time: "11:30 AM", amount: "₵55", status: "delivered" }
 ];
 
+const availableDrivers = [
+  { 
+    id: "DRV-001", 
+    name: "Samuel Boateng", 
+    phone: "+233 20 555 0123",
+    vehicle: "Honda CR-V",
+    status: "active",
+    currentDelivery: "DEL-001",
+    rating: 4.8,
+    deliveriesToday: 8
+  },
+  { 
+    id: "DRV-002", 
+    name: "Grace Mensah", 
+    phone: "+233 26 555 0456",
+    vehicle: "Toyota Camry",
+    status: "active",
+    currentDelivery: "DEL-002",
+    rating: 4.9,
+    deliveriesToday: 6
+  },
+  { 
+    id: "DRV-003", 
+    name: "Kofi Danso", 
+    phone: "+233 24 555 0789",
+    vehicle: "Nissan Sentra",
+    status: "available",
+    currentDelivery: null,
+    rating: 4.7,
+    deliveriesToday: 5
+  },
+  { 
+    id: "DRV-004", 
+    name: "Ama Asante", 
+    phone: "+233 26 555 0321",
+    vehicle: "Honda Civic",
+    status: "offline",
+    currentDelivery: null,
+    rating: 4.6,
+    deliveriesToday: 3
+  }
+];
+
 const getStatusColor = (status: string) => {
   switch (status) {
     case "delivered":
@@ -82,9 +125,23 @@ const getStatusColor = (status: string) => {
   }
 };
 
+const getDriverStatusColor = (status: string) => {
+  switch (status) {
+    case "active":
+      return "default";
+    case "available":
+      return "secondary";
+    case "offline":
+      return "outline";
+    default:
+      return "outline";
+  }
+};
+
 export function DeliveryManagement() {
   const [activeSearchTerm, setActiveSearchTerm] = useState("");
   const [historySearchTerm, setHistorySearchTerm] = useState("");
+  const [driversSearchTerm, setDriversSearchTerm] = useState("");
 
   // Filter functions
   const filteredActiveDeliveries = activeDeliveries.filter(delivery =>
@@ -97,6 +154,12 @@ export function DeliveryManagement() {
   const filteredHistory = deliveryHistory.filter(delivery =>
     delivery.customer.toLowerCase().includes(historySearchTerm.toLowerCase()) ||
     delivery.id.toLowerCase().includes(historySearchTerm.toLowerCase())
+  );
+
+  const filteredDrivers = availableDrivers.filter(driver =>
+    driver.name.toLowerCase().includes(driversSearchTerm.toLowerCase()) ||
+    driver.vehicle.toLowerCase().includes(driversSearchTerm.toLowerCase()) ||
+    driver.phone.toLowerCase().includes(driversSearchTerm.toLowerCase())
   );
 
   return (
@@ -134,8 +197,8 @@ export function DeliveryManagement() {
         ))}
       </div>
 
-      {/* Simplified Two-Section Layout */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      {/* Three-Section Layout */}
+      <div className="grid gap-6 lg:grid-cols-3">
         {/* Active Deliveries Section */}
         <Card className="shadow-warm">
           <CardHeader>
@@ -260,6 +323,85 @@ export function DeliveryManagement() {
                     <Badge variant="default" className="text-xs">
                       {delivery.status}
                     </Badge>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Available Drivers Section */}
+        <Card className="shadow-warm">
+          <CardHeader>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                  <Users className="w-5 h-5 text-accent" />
+                  Available Drivers
+                </CardTitle>
+                <CardDescription className="text-sm">Driver status and assignments</CardDescription>
+              </div>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search drivers..."
+                  value={driversSearchTerm}
+                  onChange={(e) => setDriversSearchTerm(e.target.value)}
+                  className="pl-10 w-full sm:w-64"
+                />
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {filteredDrivers.map((driver) => (
+                <div key={driver.id} className="border border-border rounded-lg p-4 hover:bg-muted/30 transition-colors">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <Avatar className="w-10 h-10">
+                        <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${driver.name}`} />
+                        <AvatarFallback>{driver.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-medium">{driver.name}</div>
+                        <div className="text-sm text-muted-foreground">{driver.vehicle}</div>
+                      </div>
+                    </div>
+                    <Badge variant={getDriverStatusColor(driver.status)}>
+                      {driver.status}
+                    </Badge>
+                  </div>
+                  
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Phone:</span>
+                      <span>{driver.phone}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Rating:</span>
+                      <span className="font-medium">⭐ {driver.rating}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Deliveries Today:</span>
+                      <span className="font-medium text-primary">{driver.deliveriesToday}</span>
+                    </div>
+                    {driver.currentDelivery && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Current Delivery:</span>
+                        <span className="font-medium text-accent">{driver.currentDelivery}</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex gap-2 mt-3">
+                    <Button variant="ghost" size="sm" className="flex-1">
+                      <Phone className="w-4 h-4 mr-2" />
+                      Call
+                    </Button>
+                    <Button variant="ghost" size="sm" className="flex-1">
+                      <MapPin className="w-4 h-4 mr-2" />
+                      Track
+                    </Button>
                   </div>
                 </div>
               ))}
