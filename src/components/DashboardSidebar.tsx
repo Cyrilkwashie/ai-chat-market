@@ -11,7 +11,10 @@ import {
   User,
   LogOut,
   ChevronUp,
-  Settings as SettingsIcon
+  Settings as SettingsIcon,
+  Wrench,
+  Calendar,
+  Download
 } from "lucide-react";
 import {
   Sidebar,
@@ -33,6 +36,9 @@ const menuItems = [
   { id: "overview", title: "Overview", icon: Home, path: "/dashboard" },
   { id: "orders", title: "Orders", icon: ShoppingCart, path: "/dashboard/orders" },
   { id: "products", title: "Products", icon: Package, path: "/dashboard/products" },
+  { id: "services", title: "Services", icon: Wrench, path: "/dashboard/services" },
+  { id: "bookings", title: "Bookings", icon: Calendar, path: "/dashboard/bookings" },
+  { id: "digital-products", title: "Digital Products", icon: Download, path: "/dashboard/digital-products" },
   { id: "analytics", title: "Analytics", icon: BarChart3, path: "/dashboard/analytics" },
   { id: "chat", title: "Chat Support", icon: MessageCircle, path: "/dashboard/chat" },
   { id: "customers", title: "Customers", icon: Users, path: "/dashboard/customers" },
