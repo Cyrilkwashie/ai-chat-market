@@ -89,10 +89,8 @@ const DigitalProductsContent = () => {
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:h-[60px] lg:px-6">
-          <SidebarTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="h-4 w-4" />
-            </Button>
+          <SidebarTrigger className="md:hidden">
+            <Menu className="h-4 w-4" />
           </SidebarTrigger>
           
           <div className="flex-1">
