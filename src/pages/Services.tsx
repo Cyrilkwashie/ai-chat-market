@@ -78,30 +78,37 @@ const ServicesContent = () => {
     <div className="flex min-h-screen w-full bg-background">
       <DashboardSidebar />
       
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:h-[60px] lg:px-6">
-          <SidebarTrigger className="md:hidden">
-            <Menu className="h-4 w-4" />
-          </SidebarTrigger>
-          
-          <div className="flex-1">
-            <h1 className="text-lg font-semibold">Services Management</h1>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search services..."
-                className="w-[200px] lg:w-[300px] pl-8"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Header - Mobile Optimized */}
+        <header className="border-b border-border p-4 md:p-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center space-x-3 min-w-0 flex-1">
+              <SidebarTrigger className="md:hidden p-2">
+                <Menu className="h-4 w-4" />
+              </SidebarTrigger>
+              
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl md:text-2xl font-bold text-foreground truncate">
+                  Services Management
+                </h1>
+              </div>
             </div>
-            <Button variant="ghost" size="icon">
-              <Bell className="h-4 w-4" />
-            </Button>
+            
+            <div className="flex items-center space-x-2 md:space-x-4">
+              <div className="relative flex-1 md:flex-initial">
+                <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search services..."
+                  className="w-full md:w-[200px] lg:w-[300px] pl-8"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <Button variant="outline" size="sm" className="px-2 md:px-3">
+                <Bell className="w-4 h-4 md:mr-2" />
+                <span className="hidden md:inline">3</span>
+              </Button>
+            </div>
           </div>
         </header>
 
@@ -188,18 +195,19 @@ const ServicesContent = () => {
           </div>
 
           {/* Services Table */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
+          <Card className="shadow-warm">
+            <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between space-y-2 sm:space-y-0">
               <div>
-                <CardTitle>Your Services</CardTitle>
-                <CardDescription>Manage your service offerings and track bookings</CardDescription>
+                <CardTitle className="text-base sm:text-lg">Your Services</CardTitle>
+                <CardDescription className="text-sm">Manage your service offerings and track bookings</CardDescription>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Dialog open={isAvailabilityOpen} onOpenChange={setIsAvailabilityOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline">
+                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
                       <Calendar className="mr-2 h-4 w-4" />
-                      Set Availability
+                      <span className="hidden sm:inline">Set Availability</span>
+                      <span className="sm:hidden">Availability</span>
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
@@ -293,60 +301,19 @@ const ServicesContent = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Service</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Duration</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Bookings</TableHead>
-                    <TableHead>Revenue</TableHead>
-                    <TableHead>Rating</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredServices.map((service) => (
-                    <TableRow key={service.id}>
-                      <TableCell>
-                        <div>
-                          <div className="font-medium">{service.name}</div>
-                          <div className="text-sm text-muted-foreground">{service.description}</div>
+              {/* Mobile Card View */}
+              <div className="block md:hidden space-y-4">
+                {filteredServices.map((service) => (
+                  <Card key={service.id} className="p-4">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-medium text-sm">{service.name}</h3>
+                          <p className="text-xs text-muted-foreground mt-1">{service.description}</p>
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">{service.category}</Badge>
-                      </TableCell>
-                      <TableCell>₵{service.price}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <span>{service.duration}m</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={service.type === "Online" ? "outline" : "default"}>
-                          {service.type}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-center">
-                          <div className="font-medium">{service.bookings}</div>
-                          <div className="text-xs text-muted-foreground">bookings</div>
-                        </div>
-                      </TableCell>
-                      <TableCell>₵{service.revenue.toLocaleString()}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <span>{service.rating}</span>
-                          <Star className="h-3 w-3 fill-current text-secondary" />
-                        </div>
-                      </TableCell>
-                      <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="sm">
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
@@ -365,11 +332,115 @@ const ServicesContent = () => {
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
-                      </TableCell>
+                      </div>
+                      
+                      <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary" className="text-xs">{service.category}</Badge>
+                          <Badge variant={service.type === "Online" ? "outline" : "default"} className="text-xs">
+                            {service.type}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span>{service.rating}</span>
+                          <Star className="h-3 w-3 fill-current text-accent" />
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="text-primary font-medium">₵{service.price}</div>
+                        <div className="text-muted-foreground">{service.duration}m</div>
+                        <div className="text-center">
+                          <div className="font-medium">{service.bookings}</div>
+                          <div className="text-xs text-muted-foreground">bookings</div>
+                        </div>
+                        <div className="font-medium">₵{service.revenue.toLocaleString()}</div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Service</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead>Price</TableHead>
+                      <TableHead>Duration</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Bookings</TableHead>
+                      <TableHead>Revenue</TableHead>
+                      <TableHead>Rating</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredServices.map((service) => (
+                      <TableRow key={service.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{service.name}</div>
+                            <div className="text-sm text-muted-foreground">{service.description}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="secondary">{service.category}</Badge>
+                        </TableCell>
+                        <TableCell>₵{service.price}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1">
+                            <span>{service.duration}m</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={service.type === "Online" ? "outline" : "default"}>
+                            {service.type}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-center">
+                            <div className="font-medium">{service.bookings}</div>
+                            <div className="text-xs text-muted-foreground">bookings</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>₵{service.revenue.toLocaleString()}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1">
+                            <span>{service.rating}</span>
+                            <Star className="h-3 w-3 fill-current text-accent" />
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem>
+                                <Edit2 className="mr-2 h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <Calendar className="mr-2 h-4 w-4" />
+                                Set Schedule
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-destructive">
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </main>

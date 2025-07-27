@@ -106,30 +106,37 @@ const BookingsContent = () => {
     <div className="flex min-h-screen w-full bg-background">
       <DashboardSidebar />
       
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:h-[60px] lg:px-6">
-          <SidebarTrigger className="md:hidden">
-            <Menu className="h-4 w-4" />
-          </SidebarTrigger>
-          
-          <div className="flex-1">
-            <h1 className="text-lg font-semibold">Service Bookings</h1>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by booking ID, customer, or service..."
-                className="w-[200px] lg:w-[300px] pl-8"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Header - Mobile Optimized */}
+        <header className="border-b border-border p-4 md:p-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center space-x-3 min-w-0 flex-1">
+              <SidebarTrigger className="md:hidden p-2">
+                <Menu className="h-4 w-4" />
+              </SidebarTrigger>
+              
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl md:text-2xl font-bold text-foreground truncate">
+                  Service Bookings
+                </h1>
+              </div>
             </div>
-            <Button variant="ghost" size="icon">
-              <Bell className="h-4 w-4" />
-            </Button>
+            
+            <div className="flex items-center space-x-2 md:space-x-4">
+              <div className="relative flex-1 md:flex-initial">
+                <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search bookings..."
+                  className="w-full md:w-[200px] lg:w-[300px] pl-8"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <Button variant="outline" size="sm" className="px-2 md:px-3">
+                <Bell className="w-4 h-4 md:mr-2" />
+                <span className="hidden md:inline">3</span>
+              </Button>
+            </div>
           </div>
         </header>
 
@@ -214,15 +221,15 @@ const BookingsContent = () => {
           </div>
 
           {/* Bookings Table */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
+          <Card className="shadow-warm">
+            <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between space-y-2 sm:space-y-0">
               <div>
-                <CardTitle>All Bookings</CardTitle>
-                <CardDescription>View and manage customer service bookings</CardDescription>
+                <CardTitle className="text-base sm:text-lg">All Bookings</CardTitle>
+                <CardDescription className="text-sm">View and manage customer service bookings</CardDescription>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[150px]">
+                  <SelectTrigger className="w-full sm:w-[150px]">
                     <SelectValue placeholder="All Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -234,7 +241,7 @@ const BookingsContent = () => {
                   </SelectContent>
                 </Select>
                 <Select value={dateFilter} onValueChange={setDateFilter}>
-                  <SelectTrigger className="w-[150px]">
+                  <SelectTrigger className="w-full sm:w-[150px]">
                     <SelectValue placeholder="All Dates" />
                   </SelectTrigger>
                   <SelectContent>
