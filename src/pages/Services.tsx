@@ -107,39 +107,81 @@ const ServicesContent = () => {
 
         {/* Main Content */}
         <main className="flex-1 p-4 lg:p-6 space-y-6">
-          {/* Stats Cards */}
+          {/* Welcome Banner */}
+          <div className="hero-gradient rounded-lg md:rounded-xl p-4 md:p-6 text-white">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl md:text-2xl font-bold mb-2">Manage Your Services 🛠️</h2>
+                <p className="text-white/80 text-sm md:text-base">Create and manage service offerings for your customers</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Enhanced Stats Cards */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Services</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-primary">4</div>
+            <Card className="hover-lift border-l-4 border-l-primary">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1 sm:space-y-2">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">Total Services</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground">4</p>
+                    <div className="flex items-center text-xs text-success">
+                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">+1 new</span>
+                    </div>
+                  </div>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <Star className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                  </div>
+                </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-accent">63</div>
+            <Card className="hover-lift border-l-4 border-l-accent">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1 sm:space-y-2">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">Total Bookings</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground">63</p>
+                    <div className="flex items-center text-xs text-success">
+                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">+12%</span>
+                    </div>
+                  </div>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                    <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-accent" />
+                  </div>
+                </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Service Revenue</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-success">₵11,100</div>
+            <Card className="hover-lift border-l-4 border-l-success">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1 sm:space-y-2">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">Service Revenue</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground">₵11,100</p>
+                    <div className="flex items-center text-xs text-success">
+                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">+18%</span>
+                    </div>
+                  </div>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-success/10 rounded-xl flex items-center justify-center">
+                    <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-success" />
+                  </div>
+                </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Avg. Rating</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-secondary flex items-center gap-1">
-                  4.8 <Star className="h-4 w-4 fill-current" />
+            <Card className="hover-lift border-l-4 border-l-secondary">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1 sm:space-y-2">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">Avg. Rating</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-1">
+                      4.8 <Star className="h-4 w-4 fill-current text-accent" />
+                    </p>
+                    <div className="flex items-center text-xs text-success">
+                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">Excellent</span>
+                    </div>
+                  </div>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-secondary/20 rounded-xl flex items-center justify-center">
+                    <Star className="w-5 h-5 sm:w-6 sm:h-6 text-secondary-foreground fill-current" />
+                  </div>
                 </div>
               </CardContent>
             </Card>

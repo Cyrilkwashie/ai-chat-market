@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bell, Search, Menu, Filter, Calendar, MoreHorizontal, Eye, MessageCircle } from "lucide-react";
+import { Bell, Search, Menu, Filter, Calendar, MoreHorizontal, Eye, MessageCircle, Clock, Users, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -135,38 +135,80 @@ const BookingsContent = () => {
 
         {/* Main Content */}
         <main className="flex-1 p-4 lg:p-6 space-y-6">
-          {/* Stats Cards */}
+          {/* Welcome Banner */}
+          <div className="hero-gradient rounded-lg md:rounded-xl p-4 md:p-6 text-white">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl md:text-2xl font-bold mb-2">Service Bookings 📅</h2>
+                <p className="text-white/80 text-sm md:text-base">Manage all your customer service appointments</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Enhanced Stats Cards */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-primary">4</div>
+            <Card className="hover-lift border-l-4 border-l-primary">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1 sm:space-y-2">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">Total Bookings</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground">4</p>
+                    <div className="flex items-center text-xs text-success">
+                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">Active</span>
+                    </div>
+                  </div>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                  </div>
+                </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Pending</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-secondary">1</div>
+            <Card className="hover-lift border-l-4 border-l-secondary">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1 sm:space-y-2">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">Pending</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground">1</p>
+                    <div className="flex items-center text-xs text-secondary">
+                      <span className="bg-secondary/10 text-secondary-foreground px-2 py-1 rounded-full">Review</span>
+                    </div>
+                  </div>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-secondary/20 rounded-xl flex items-center justify-center">
+                    <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-secondary-foreground" />
+                  </div>
+                </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Confirmed</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-accent">2</div>
+            <Card className="hover-lift border-l-4 border-l-accent">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1 sm:space-y-2">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">Confirmed</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground">2</p>
+                    <div className="flex items-center text-xs text-success">
+                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">Ready</span>
+                    </div>
+                  </div>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                    <Users className="w-5 h-5 sm:w-6 sm:h-6 text-accent" />
+                  </div>
+                </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Revenue</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-success">₵200</div>
+            <Card className="hover-lift border-l-4 border-l-success">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1 sm:space-y-2">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">Revenue</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground">₵430</p>
+                    <div className="flex items-center text-xs text-success">
+                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">+24%</span>
+                    </div>
+                  </div>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-success/10 rounded-xl flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-success" />
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
