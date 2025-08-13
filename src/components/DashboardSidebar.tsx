@@ -14,8 +14,7 @@ import {
   Settings as SettingsIcon,
   Wrench,
   Calendar,
-  Download,
-  Shield
+  Download
 } from "lucide-react";
 import {
   Sidebar,
@@ -45,7 +44,6 @@ const menuItems = [
   { id: "customers", title: "Customers", icon: Users, path: "/dashboard/customers" },
   { id: "payments", title: "Payments", icon: CreditCard, path: "/dashboard/payments" },
   { id: "deliveries", title: "Deliveries", icon: Truck, path: "/dashboard/deliveries" },
-  { id: "admin", title: "Admin Panel", icon: Shield, path: "/dashboard/admin" },
   { id: "settings", title: "Settings", icon: SettingsIcon, path: "/dashboard/settings" },
 ];
 
