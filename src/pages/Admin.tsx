@@ -44,7 +44,7 @@ import {
   Activity,
   Globe
 } from "lucide-react";
-import { DashboardSidebar } from "@/components/DashboardSidebar";
+import { AdminSidebar } from "@/components/AdminSidebar";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from "recharts";
 
@@ -126,7 +126,7 @@ const AdminContent = () => {
 
   return (
     <div className="min-h-screen flex w-full bg-background">
-      <DashboardSidebar />
+      <AdminSidebar />
       
       <main className="flex-1 flex flex-col min-w-0">
         {/* Header */}
