@@ -19,7 +19,6 @@ import ChatbotPage from "./pages/ChatbotPage";
 import Services from "./pages/Services";
 import Bookings from "./pages/Bookings";
 import DigitalProducts from "./pages/DigitalProducts";
-import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,7 +45,6 @@ const App = () => (
           <Route path="/dashboard/bookings" element={<Bookings />} />
           <Route path="/dashboard/digital-products" element={<DigitalProducts />} />
           <Route path="/dashboard/settings" element={<Settings />} />
-          <Route path="/admin" element={<Admin />} />
           <Route path="/chat" element={<ChatbotPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
