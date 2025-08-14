@@ -104,16 +104,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       if (error) {
-        if (error.message.includes('User already registered')) {
+        // Handle different types of signup errors
+        if (error.message.includes('User already registered') || 
+            error.message.includes('already registered') ||
+            error.message.includes('user_repeated_signup') ||
+            error.message.includes('email already exists')) {
           toast({
-            title: "Account exists",
+            title: "User already exists",
             description: "An account with this email already exists. Please sign in instead.",
+            variant: "destructive",
+          });
+        } else if (error.message.includes('Password should be at least')) {
+          toast({
+            title: "Password too weak",
+            description: "Password should be at least 6 characters long.",
+            variant: "destructive",
+          });
+        } else if (error.message.includes('Invalid email')) {
+          toast({
+            title: "Invalid email",
+            description: "Please enter a valid email address.",
             variant: "destructive",
           });
         } else {
           toast({
             title: "Signup failed",
-            description: error.message,
+            description: error.message || "An error occurred during signup.",
             variant: "destructive",
           });
         }
