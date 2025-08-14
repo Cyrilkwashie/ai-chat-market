@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   BarChart3, 
   ShoppingCart, 
@@ -32,6 +32,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const menuItems = [
   { id: "overview", title: "Overview", icon: Home, path: "/dashboard" },
@@ -48,10 +49,28 @@ export function DashboardSidebar() {
   const { toast } = useToast();
   const { user, signOut } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [businessProfile, setBusinessProfile] = useState<any>({});
 
-  // Get user info from localStorage (from onboarding) as fallback
-  const businessProfile = JSON.parse(localStorage.getItem("businessProfile") || "{}");
-  const businessName = businessProfile.businessName || user?.user_metadata?.full_name || "Your Business";
+  // Fetch user profile from database
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (user?.id) {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        
+        if (data && !error) {
+          setBusinessProfile(data);
+        }
+      }
+    };
+
+    fetchProfile();
+  }, [user?.id]);
+
+  const businessName = businessProfile.business_name || businessProfile.full_name || user?.user_metadata?.full_name || "Your Business";
   const userEmail = user?.email || "vendor@example.com";
 
   const handleSignOut = async () => {
@@ -129,7 +148,7 @@ export function DashboardSidebar() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Type:</span>
-                      <span>{businessProfile.businessType || "Not set"}</span>
+                      <span>{businessProfile.business_type || "Not set"}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Location:</span>
