@@ -21,7 +21,9 @@ const SignIn = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    businessName: ""
+    businessName: "",
+    fullName: "",
+    phone: ""
   });
 
   // Set signup mode if coming from "Get Started"
@@ -60,7 +62,7 @@ const SignIn = () => {
           return;
         }
 
-        const { error } = await signUp(formData.email, formData.password, formData.businessName);
+        const { error } = await signUp(formData.email, formData.password, formData.fullName);
         if (!error) {
           navigate("/onboarding");
         }
@@ -113,6 +115,34 @@ const SignIn = () => {
                     name="businessName"
                     placeholder="Enter your business name"
                     value={formData.businessName}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+              )}
+
+              {!isLogin && (
+                <div className="space-y-2">
+                  <Label htmlFor="fullName">Full Name</Label>
+                  <Input
+                    id="fullName"
+                    name="fullName"
+                    placeholder="Enter your full name"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+              )}
+
+              {!isLogin && (
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    placeholder="Enter your phone number"
+                    value={formData.phone}
                     onChange={handleInputChange}
                     required
                   />
