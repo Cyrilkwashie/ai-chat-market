@@ -20,6 +20,7 @@ import {
   CreditCard, 
   Globe, 
   CheckCircle,
+  AlertCircle,
   ArrowRight,
   ArrowLeft
 } from "lucide-react";
@@ -475,7 +476,7 @@ const SignIn = () => {
 
   const isStepValid = () => {
     if (currentStep === 1) {
-      return authData.email && authData.password && (!isLogin || true) && 
+      return authData.email && authData.password && authData.password.length >= 6 && (!isLogin || true) && 
              (isLogin || (authData.confirmPassword && authData.fullName));
     }
     switch (currentStep) {
@@ -645,6 +646,21 @@ const SignIn = () => {
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </Button>
                 </div>
+                {!isLogin && authData.password && (
+                  <div className="mt-2">
+                    {authData.password.length < 6 ? (
+                      <p className="text-sm text-destructive flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        Password must be at least 6 characters long
+                      </p>
+                    ) : (
+                      <p className="text-sm text-green-600 flex items-center gap-1">
+                        <CheckCircle className="w-3 h-3" />
+                        Password meets requirements
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
 
               {!isLogin && (
