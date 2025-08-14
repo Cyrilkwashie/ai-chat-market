@@ -55,12 +55,12 @@ const Index = () => {
             <a href="#features" className="text-muted-foreground hover:text-foreground transition-smooth">Features</a>
             <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-smooth">Pricing</a>
             <a href="#contact" className="text-muted-foreground hover:text-foreground transition-smooth">Contact</a>
-            <Link to="/auth">
+            <Link to="/signin">
               <Button variant="outline" size="sm">
                 Sign In
               </Button>
             </Link>
-            <Link to="/auth">
+            <Link to="/signin?mode=signup">
               <Button size="sm">
                 Get Started
               </Button>
@@ -69,12 +69,12 @@ const Index = () => {
           
           {/* Mobile Navigation */}
           <div className="flex md:hidden items-center space-x-2">
-            <Link to="/auth">
+            <Link to="/signin">
               <Button variant="outline" size="sm" className="text-xs px-2">
                 Sign In
               </Button>
             </Link>
-            <Link to="/auth">
+            <Link to="/signin?mode=signup">
               <Button size="sm" className="text-xs px-2">
                 Start
               </Button>
@@ -106,7 +106,7 @@ const Index = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link to="/auth">
+                <Link to="/signin?mode=signup">
                   <Button 
                     size="lg" 
                     className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto"
