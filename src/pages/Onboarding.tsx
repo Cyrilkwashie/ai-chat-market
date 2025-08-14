@@ -100,7 +100,14 @@ const Onboarding = () => {
           .from('profiles')
           .update({
             business_name: formData.businessName,
+            business_type: formData.businessType,
+            description: formData.description,
+            location: formData.location,
             phone: formData.phone,
+            working_hours: formData.workingHours,
+            payment_methods: formData.paymentMethods,
+            delivery_areas: formData.deliveryAreas,
+            full_name: formData.businessName // Use business name as display name
           })
           .eq('user_id', user.id);
 
