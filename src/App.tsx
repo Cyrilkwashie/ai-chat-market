@@ -3,7 +3,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
+import Auth from "./pages/Auth";
 import DashboardHome from "./pages/DashboardHome";
 import Orders from "./pages/Orders";
 import Analytics from "./pages/Analytics";
@@ -25,32 +28,35 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/onboarding" element={<Onboarding />} />
-          <Route path="/dashboard" element={<DashboardHome />} />
-          <Route path="/dashboard/orders" element={<Orders />} />
-          <Route path="/dashboard/analytics" element={<Analytics />} />
-          <Route path="/dashboard/products" element={<Products />} />
-          <Route path="/dashboard/customers" element={<Customers />} />
-          <Route path="/dashboard/chat" element={<ChatDashboard />} />
-          <Route path="/dashboard/payments" element={<Payments />} />
-          <Route path="/dashboard/deliveries" element={<Deliveries />} />
-          <Route path="/dashboard/services" element={<Services />} />
-          <Route path="/dashboard/bookings" element={<Bookings />} />
-          <Route path="/dashboard/digital-products" element={<DigitalProducts />} />
-          <Route path="/dashboard/settings" element={<Settings />} />
-          <Route path="/chat" element={<ChatbotPage />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardHome /></ProtectedRoute>} />
+            <Route path="/dashboard/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+            <Route path="/dashboard/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+            <Route path="/dashboard/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
+            <Route path="/dashboard/customers" element={<ProtectedRoute><Customers /></ProtectedRoute>} />
+            <Route path="/dashboard/chat" element={<ProtectedRoute><ChatDashboard /></ProtectedRoute>} />
+            <Route path="/dashboard/payments" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
+            <Route path="/dashboard/deliveries" element={<ProtectedRoute><Deliveries /></ProtectedRoute>} />
+            <Route path="/dashboard/services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
+            <Route path="/dashboard/bookings" element={<ProtectedRoute><Bookings /></ProtectedRoute>} />
+            <Route path="/dashboard/digital-products" element={<ProtectedRoute><DigitalProducts /></ProtectedRoute>} />
+            <Route path="/dashboard/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            <Route path="/chat" element={<ChatbotPage />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

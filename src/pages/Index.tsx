@@ -14,13 +14,29 @@ import {
   ArrowRight,
   CheckCircle
 } from "lucide-react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import heroImage from "@/assets/hero-commerce.jpg";
 import ChatInterface from "@/components/ChatInterface";
-import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("vendor");
+
+  // Show loading spinner while checking auth
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  // Redirect authenticated users to dashboard
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -39,22 +55,30 @@ const Index = () => {
             <a href="#features" className="text-muted-foreground hover:text-foreground transition-smooth">Features</a>
             <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-smooth">Pricing</a>
             <a href="#contact" className="text-muted-foreground hover:text-foreground transition-smooth">Contact</a>
-            <Button variant="outline" size="sm" onClick={() => navigate("/signin")}>
-              Sign In
-            </Button>
-            <Button variant="hero" size="sm" onClick={() => navigate("/signin?mode=signup")}>
-              Get Started
-            </Button>
+            <Link to="/auth">
+              <Button variant="outline" size="sm">
+                Sign In
+              </Button>
+            </Link>
+            <Link to="/auth">
+              <Button size="sm">
+                Get Started
+              </Button>
+            </Link>
           </div>
           
           {/* Mobile Navigation */}
           <div className="flex md:hidden items-center space-x-2">
-            <Button variant="outline" size="sm" onClick={() => navigate("/signin")} className="text-xs px-2">
-              Sign In
-            </Button>
-            <Button variant="hero" size="sm" onClick={() => navigate("/signin?mode=signup")} className="text-xs px-2">
-              Start
-            </Button>
+            <Link to="/auth">
+              <Button variant="outline" size="sm" className="text-xs px-2">
+                Sign In
+              </Button>
+            </Link>
+            <Link to="/auth">
+              <Button size="sm" className="text-xs px-2">
+                Start
+              </Button>
+            </Link>
           </div>
         </div>
       </nav>
@@ -82,22 +106,23 @@ const Index = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Button 
-                  variant="hero" 
-                  size="lg" 
-                  className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto"
-                  onClick={() => navigate("/signin?mode=signup")}
-                >
-                  Start Selling <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto"
-                  onClick={() => navigate("/chat")}
-                >
-                  Try Shopping <MessageCircle className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
-                </Button>
+                <Link to="/auth">
+                  <Button 
+                    size="lg" 
+                    className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto"
+                  >
+                    Start Selling <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
+                  </Button>
+                </Link>
+                <Link to="/chat">
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto"
+                  >
+                    Try Shopping <MessageCircle className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
+                  </Button>
+                </Link>
               </div>
 
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-3 sm:space-y-0 sm:space-x-6 lg:space-x-8 text-xs sm:text-sm text-muted-foreground">

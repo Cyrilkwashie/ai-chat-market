@@ -31,6 +31,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const menuItems = [
   { id: "overview", title: "Overview", icon: Home, path: "/dashboard" },
@@ -51,24 +52,16 @@ export function DashboardSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const { user, signOut } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
 
-  // Get user info from localStorage (from onboarding)
-  const userEmail = localStorage.getItem("userEmail") || "vendor@example.com";
+  // Get user info from localStorage (from onboarding) as fallback
   const businessProfile = JSON.parse(localStorage.getItem("businessProfile") || "{}");
-  const businessName = businessProfile.businessName || "Your Business";
+  const businessName = businessProfile.businessName || user?.user_metadata?.full_name || "Your Business";
+  const userEmail = user?.email || "vendor@example.com";
 
-  const handleSignOut = () => {
-    localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("isOnboarded");
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("businessProfile");
-    
-    toast({
-      title: "Signed out",
-      description: "You have been successfully signed out.",
-    });
-    
+  const handleSignOut = async () => {
+    await signOut();
     navigate("/");
   };
 
