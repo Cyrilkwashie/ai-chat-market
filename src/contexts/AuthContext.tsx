@@ -35,6 +35,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Handle business data update after email verification
+        if (event === 'SIGNED_IN' && session?.user) {
+          setTimeout(() => {
+            const pendingData = localStorage.getItem('pendingBusinessData');
+            if (pendingData) {
+              try {
+                const businessInfo = JSON.parse(pendingData);
+                
+                supabase
+                  .from('profiles')
+                  .update({
+                    business_name: businessInfo.businessName,
+                    business_type: businessInfo.businessType,
+                    description: businessInfo.description,
+                    location: businessInfo.location,
+                    phone: businessInfo.phone,
+                    whatsapp: businessInfo.whatsapp,
+                    working_hours: businessInfo.workingHours,
+                    payment_methods: businessInfo.paymentMethods,
+                    delivery_areas: businessInfo.deliveryAreas,
+                    full_name: businessInfo.fullName
+                  })
+                  .eq('user_id', session.user.id)
+                  .then(({ error: profileError }) => {
+                    if (!profileError) {
+                      localStorage.removeItem('pendingBusinessData');
+                      toast({
+                        title: "🎉 Welcome to AI Chat Market!",
+                        description: "Your business profile has been completed successfully!",
+                      });
+                    }
+                  });
+              } catch (error) {
+                console.error('Error processing pending business data:', error);
+                localStorage.removeItem('pendingBusinessData');
+              }
+            }
+          }, 0);
+        }
       }
     );
 
