@@ -126,9 +126,9 @@ const ServicesContent = () => {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1 sm:space-y-2">
                     <p className="text-xs sm:text-sm font-medium text-muted-foreground">Total Services</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-foreground">4</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground">{services.length}</p>
                     <div className="flex items-center text-xs text-success">
-                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">+1 new</span>
+                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">Active</span>
                     </div>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center">
@@ -141,10 +141,12 @@ const ServicesContent = () => {
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1 sm:space-y-2">
-                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">Total Bookings</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-foreground">63</p>
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">Avg Duration</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground">
+                      {services.length > 0 ? Math.round(services.reduce((sum, s) => sum + (s.duration_minutes || 0), 0) / services.length) : 0}m
+                    </p>
                     <div className="flex items-center text-xs text-success">
-                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">+12%</span>
+                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">Average</span>
                     </div>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 rounded-xl flex items-center justify-center">
@@ -157,10 +159,12 @@ const ServicesContent = () => {
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1 sm:space-y-2">
-                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">Service Revenue</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-foreground">₵11,100</p>
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">Avg Price</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground">
+                      ₵{services.length > 0 ? (services.reduce((sum, s) => sum + parseFloat(s.price?.toString() || "0"), 0) / services.length).toFixed(0) : 0}
+                    </p>
                     <div className="flex items-center text-xs text-success">
-                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">+18%</span>
+                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">Average</span>
                     </div>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-success/10 rounded-xl flex items-center justify-center">
@@ -173,12 +177,12 @@ const ServicesContent = () => {
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1 sm:space-y-2">
-                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">Avg. Rating</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-1">
-                      4.8 <Star className="h-4 w-4 fill-current text-accent" />
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">Categories</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground">
+                      {new Set(services.map(s => s.category).filter(Boolean)).size}
                     </p>
                     <div className="flex items-center text-xs text-success">
-                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">Excellent</span>
+                      <span className="bg-success/10 text-success px-2 py-1 rounded-full">Unique</span>
                     </div>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-secondary/20 rounded-xl flex items-center justify-center">
@@ -245,197 +249,141 @@ const ServicesContent = () => {
                       <DialogDescription>Create a new service offering for your customers to book.</DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="serviceName">Service Name</Label>
-                        <Input id="serviceName" placeholder="e.g., Hair Braiding Session" />
-                      </div>
-                      <div>
-                        <Label htmlFor="category">Category</Label>
-                        <Select>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select category" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="beauty">Beauty</SelectItem>
-                            <SelectItem value="consulting">Consulting</SelectItem>
-                            <SelectItem value="education">Education</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor="price">Price (₵)</Label>
-                        <Input id="price" type="number" placeholder="150.00" />
-                      </div>
-                      <div>
-                        <Label htmlFor="duration">Duration (minutes)</Label>
-                        <Input id="duration" type="number" placeholder="60" />
-                      </div>
-                      <div>
-                        <Label htmlFor="description">Description</Label>
-                        <Textarea id="description" placeholder="Describe your service offering..." />
-                      </div>
-                      <div>
-                        <Label>Service Type</Label>
-                        <div className="flex items-center space-x-4 mt-2">
-                          <div className="flex items-center space-x-2">
-                            <Checkbox id="online" />
-                            <Label htmlFor="online">Online Service (Video call)</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <Checkbox id="inPerson" defaultChecked />
-                            <Label htmlFor="inPerson">In-person Service</Label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <Button onClick={handleAddService} className="w-full">
-                      Create Service
+                  <div>
+                    <Label htmlFor="serviceName">Service Name</Label>
+                    <Input id="serviceName" placeholder="e.g., Hair Braiding Session" />
+                  </div>
+                  <div>
+                    <Label htmlFor="category">Category</Label>
+                    <Input id="category" placeholder="e.g., Beauty" />
+                  </div>
+                  <div>
+                    <Label htmlFor="price">Price (₵)</Label>
+                    <Input id="price" type="number" placeholder="150.00" />
+                  </div>
+                  <div>
+                    <Label htmlFor="duration">Duration (minutes)</Label>
+                    <Input id="duration" type="number" placeholder="60" />
+                  </div>
+                  <div>
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea id="description" placeholder="Describe your service offering..." />
+                  </div>
+                </div>
+                <Button onClick={handleAddService} className="w-full">
+                  Create Service
                     </Button>
                   </DialogContent>
                 </Dialog>
               </div>
             </CardHeader>
             <CardContent>
-              {/* Mobile Card View */}
-              <div className="block md:hidden space-y-4">
-                {filteredServices.map((service) => (
-                  <Card key={service.id} className="p-4">
-                    <div className="space-y-3">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-medium text-sm">{service.name}</h3>
-                          <p className="text-xs text-muted-foreground mt-1">{service.description}</p>
-                        </div>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                              <Edit2 className="mr-2 h-4 w-4" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Calendar className="mr-2 h-4 w-4" />
-                              Set Schedule
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive">
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                      
-                      <div className="flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="text-xs">{service.category}</Badge>
-                          <Badge variant={service.type === "Online" ? "outline" : "default"} className="text-xs">
-                            {service.type}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <span>{service.rating}</span>
-                          <Star className="h-3 w-3 fill-current text-accent" />
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="text-primary font-medium">₵{service.price}</div>
-                        <div className="text-muted-foreground">{service.duration}m</div>
-                        <div className="text-center">
-                          <div className="font-medium">{service.bookings}</div>
-                          <div className="text-xs text-muted-foreground">bookings</div>
-                        </div>
-                        <div className="font-medium">₵{service.revenue.toLocaleString()}</div>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-
-              {/* Desktop Table View */}
-              <div className="hidden md:block overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Service</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Price</TableHead>
-                      <TableHead>Duration</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Bookings</TableHead>
-                      <TableHead>Revenue</TableHead>
-                      <TableHead>Rating</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
+              {filteredServices.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">No services found</p>
+                </div>
+              ) : (
+                <>
+                  {/* Mobile Card View */}
+                  <div className="block md:hidden space-y-4">
                     {filteredServices.map((service) => (
-                      <TableRow key={service.id}>
-                        <TableCell>
-                          <div>
-                            <div className="font-medium">{service.name}</div>
-                            <div className="text-sm text-muted-foreground">{service.description}</div>
+                      <Card key={service.id} className="p-4">
+                        <div className="space-y-3">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h3 className="font-medium text-sm">{service.name}</h3>
+                              <p className="text-xs text-muted-foreground mt-1">{service.description}</p>
+                            </div>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="sm">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem>
+                                  <Edit2 className="mr-2 h-4 w-4" />
+                                  Edit
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  <Calendar className="mr-2 h-4 w-4" />
+                                  Set Schedule
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="text-destructive">
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary">{service.category}</Badge>
-                        </TableCell>
-                        <TableCell>₵{service.price}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-1">
-                            <span>{service.duration}m</span>
+                          
+                          <div className="flex items-center justify-between text-xs">
+                            <div className="flex items-center gap-2">
+                              <Badge variant="secondary" className="text-xs">{service.category}</Badge>
+                              <Badge variant="outline" className="text-xs">
+                                {service.status}
+                              </Badge>
+                            </div>
                           </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={service.type === "Online" ? "outline" : "default"}>
-                            {service.type}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="text-center">
-                            <div className="font-medium">{service.bookings}</div>
-                            <div className="text-xs text-muted-foreground">bookings</div>
+                          
+                          <div className="flex items-center justify-between text-sm">
+                            <div className="text-primary font-medium">₵{parseFloat(service.price?.toString() || "0").toFixed(2)}</div>
+                            <div className="text-muted-foreground">{service.duration_minutes || 0}m</div>
                           </div>
-                        </TableCell>
-                        <TableCell>₵{service.revenue.toLocaleString()}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-1">
-                            <span>{service.rating}</span>
-                            <Star className="h-3 w-3 fill-current text-accent" />
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>
-                                <Edit2 className="mr-2 h-4 w-4" />
-                                Edit
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Calendar className="mr-2 h-4 w-4" />
-                                Set Schedule
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="text-destructive">
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Delete
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
+                        </div>
+                      </Card>
                     ))}
-                  </TableBody>
-                </Table>
-              </div>
+                  </div>
+
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Service</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Price</TableHead>
+                          <TableHead>Duration</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredServices.map((service) => (
+                          <TableRow key={service.id}>
+                            <TableCell>
+                              <div>
+                                <p className="font-medium">{service.name}</p>
+                                <p className="text-xs text-muted-foreground">{service.description}</p>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="secondary">{service.category}</Badge>
+                            </TableCell>
+                            <TableCell>₵{parseFloat(service.price?.toString() || "0").toFixed(2)}</TableCell>
+                            <TableCell>{service.duration_minutes || 0} mins</TableCell>
+                            <TableCell>
+                              <Badge variant={service.status === 'active' ? 'default' : 'outline'}>
+                                {service.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex gap-1">
+                                <Button variant="ghost" size="sm">
+                                  <Edit2 className="h-4 w-4" />
+                                </Button>
+                                <Button variant="ghost" size="sm">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </>
+              )}
             </CardContent>
           </Card>
         </main>
