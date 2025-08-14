@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -21,12 +21,23 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const Onboarding = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
+  const [loading, setLoading] = useState(false);
   const totalSteps = 4;
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!user) {
+      navigate("/signin");
+    }
+  }, [user, navigate]);
   
   const [formData, setFormData] = useState({
     businessName: "",
@@ -76,18 +87,48 @@ const Onboarding = () => {
     { id: "worldwide", label: "Worldwide" }
   ];
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Complete onboarding
-      localStorage.setItem("isOnboarded", "true");
-      localStorage.setItem("businessProfile", JSON.stringify(formData));
-      toast({
-        title: "🎉 Welcome to AfriCommerce!",
-        description: "Your business profile is ready. Let's start selling!",
-      });
-      navigate("/dashboard");
+      // Complete onboarding - save to database
+      setLoading(true);
+      try {
+        if (!user) return;
+
+        const { error } = await supabase
+          .from('profiles')
+          .update({
+            business_name: formData.businessName,
+            phone: formData.phone,
+          })
+          .eq('user_id', user.id);
+
+        if (error) {
+          console.error('Error updating profile:', error);
+          toast({
+            title: "Error saving profile",
+            description: "There was an error saving your business profile. Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        toast({
+          title: "🎉 Welcome to AfriCommerce!",
+          description: "Your business profile is ready. Let's start selling!",
+        });
+        navigate("/dashboard");
+      } catch (error) {
+        console.error('Error during onboarding:', error);
+        toast({
+          title: "Error",
+          description: "An unexpected error occurred. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -384,10 +425,10 @@ const Onboarding = () => {
 
               <Button
                 onClick={handleNext}
-                disabled={!isStepValid()}
+                disabled={!isStepValid() || loading}
                 variant={currentStep === totalSteps ? "hero" : "default"}
               >
-                {currentStep === totalSteps ? (
+                {loading ? "Saving..." : currentStep === totalSteps ? (
                   <>
                     Complete Setup <CheckCircle className="w-4 h-4 ml-2" />
                   </>

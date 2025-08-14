@@ -7,13 +7,16 @@ import { Separator } from "@/components/ui/separator";
 import { MessageCircle, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const SignIn = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signIn, signUp, user } = useAuth();
   const [searchParams] = useSearchParams();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -29,29 +32,41 @@ const SignIn = () => {
     }
   }, [searchParams]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Mock authentication
-    if (isLogin) {
-      // Simulate login
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("isOnboarded", "true");
-      toast({
-        title: "Welcome back!",
-        description: "Successfully signed in to your account.",
-      });
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (user) {
       navigate("/dashboard");
-    } else {
-      // Simulate signup - redirect to onboarding
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("isOnboarded", "false");
-      localStorage.setItem("userEmail", formData.email);
-      toast({
-        title: "Account created!",
-        description: "Let's set up your business profile.",
-      });
-      navigate("/onboarding");
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      if (isLogin) {
+        const { error } = await signIn(formData.email, formData.password);
+        if (!error) {
+          navigate("/dashboard");
+        }
+      } else {
+        // Validate passwords match for signup
+        if (formData.password !== formData.confirmPassword) {
+          toast({
+            title: "Passwords don't match",
+            description: "Please make sure your passwords match.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        const { error } = await signUp(formData.email, formData.password, formData.businessName);
+        if (!error) {
+          navigate("/onboarding");
+        }
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -166,8 +181,8 @@ const SignIn = () => {
                 </div>
               )}
 
-              <Button type="submit" className="w-full" variant="hero">
-                {isLogin ? "Sign In" : "Create Account"}
+              <Button type="submit" className="w-full" variant="hero" disabled={loading}>
+                {loading ? "Please wait..." : (isLogin ? "Sign In" : "Create Account")}
               </Button>
             </form>
 
