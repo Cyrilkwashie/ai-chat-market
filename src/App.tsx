@@ -16,7 +16,7 @@ import Payments from "./pages/Payments";
 import Deliveries from "./pages/Deliveries";
 import Settings from "./pages/Settings";
 import SignIn from "./pages/SignIn";
-import Onboarding from "./pages/Onboarding";
+
 import ChatbotPage from "./pages/ChatbotPage";
 import Services from "./pages/Services";
 import Bookings from "./pages/Bookings";
@@ -35,7 +35,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/signin" element={<SignIn />} />
-            <Route path="/onboarding" element={<Onboarding />} />
+            
             <Route path="/dashboard" element={<ProtectedRoute><DashboardHome /></ProtectedRoute>} />
             <Route path="/dashboard/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
             <Route path="/dashboard/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
