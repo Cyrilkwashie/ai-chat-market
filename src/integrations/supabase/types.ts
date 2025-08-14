@@ -26,7 +26,7 @@ export type Database = {
           phone: string | null
           status: string
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           avatar_url?: string | null
@@ -39,7 +39,7 @@ export type Database = {
           phone?: string | null
           status?: string
           updated_at?: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           avatar_url?: string | null
@@ -52,7 +52,7 @@ export type Database = {
           phone?: string | null
           status?: string
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -71,7 +71,7 @@ export type Database = {
           status: string
           tracking_number: string | null
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           actual_delivery?: string | null
@@ -87,7 +87,7 @@ export type Database = {
           status?: string
           tracking_number?: string | null
           updated_at?: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           actual_delivery?: string | null
@@ -103,18 +103,18 @@ export type Database = {
           status?: string
           tracking_number?: string | null
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "deliveries_customer_id_fkey"
+            foreignKeyName: "fk_deliveries_customer"
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "deliveries_order_id_fkey"
+            foreignKeyName: "fk_deliveries_order"
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
@@ -126,7 +126,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          order_id: string | null
+          order_id: string
           product_id: string | null
           quantity: number
           service_id: string | null
@@ -136,7 +136,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          order_id?: string | null
+          order_id: string
           product_id?: string | null
           quantity?: number
           service_id?: string | null
@@ -146,7 +146,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
-          order_id?: string | null
+          order_id?: string
           product_id?: string | null
           quantity?: number
           service_id?: string | null
@@ -155,21 +155,21 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "order_items_order_id_fkey"
+            foreignKeyName: "fk_order_items_order"
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "order_items_product_id_fkey"
+            foreignKeyName: "fk_order_items_product"
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "order_items_service_id_fkey"
+            foreignKeyName: "fk_order_items_service"
             columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "services"
@@ -184,12 +184,13 @@ export type Database = {
           id: string
           notes: string | null
           order_number: string
+          payment_method: string | null
           payment_status: string
           shipping_address: string | null
           status: string
           total_amount: number
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string
@@ -197,12 +198,13 @@ export type Database = {
           id?: string
           notes?: string | null
           order_number: string
+          payment_method?: string | null
           payment_status?: string
           shipping_address?: string | null
           status?: string
           total_amount: number
           updated_at?: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           created_at?: string
@@ -210,16 +212,17 @@ export type Database = {
           id?: string
           notes?: string | null
           order_number?: string
+          payment_method?: string | null
           payment_status?: string
           shipping_address?: string | null
           status?: string
           total_amount?: number
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "orders_customer_id_fkey"
+            foreignKeyName: "fk_orders_customer"
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
@@ -240,7 +243,7 @@ export type Database = {
           status: string
           stock_quantity: number
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           category: string
@@ -254,7 +257,7 @@ export type Database = {
           status?: string
           stock_quantity?: number
           updated_at?: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           category?: string
@@ -268,7 +271,7 @@ export type Database = {
           status?: string
           stock_quantity?: number
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -276,35 +279,56 @@ export type Database = {
         Row: {
           avatar_url: string | null
           business_name: string | null
+          business_type: string | null
           created_at: string
+          delivery_areas: string[] | null
+          description: string | null
           email: string
           full_name: string | null
           id: string
+          languages: string[] | null
+          location: string | null
+          payment_methods: string[] | null
           phone: string | null
           updated_at: string
           user_id: string
+          working_hours: string | null
         }
         Insert: {
           avatar_url?: string | null
           business_name?: string | null
+          business_type?: string | null
           created_at?: string
+          delivery_areas?: string[] | null
+          description?: string | null
           email: string
           full_name?: string | null
           id?: string
+          languages?: string[] | null
+          location?: string | null
+          payment_methods?: string[] | null
           phone?: string | null
           updated_at?: string
           user_id: string
+          working_hours?: string | null
         }
         Update: {
           avatar_url?: string | null
           business_name?: string | null
+          business_type?: string | null
           created_at?: string
+          delivery_areas?: string[] | null
+          description?: string | null
           email?: string
           full_name?: string | null
           id?: string
+          languages?: string[] | null
+          location?: string | null
+          payment_methods?: string[] | null
           phone?: string | null
           updated_at?: string
           user_id?: string
+          working_hours?: string | null
         }
         Relationships: []
       }
@@ -319,7 +343,7 @@ export type Database = {
           price: number
           status: string
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           category: string
@@ -331,7 +355,7 @@ export type Database = {
           price: number
           status?: string
           updated_at?: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           category?: string
@@ -343,7 +367,7 @@ export type Database = {
           price?: number
           status?: string
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -352,7 +376,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_order_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
