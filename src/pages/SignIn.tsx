@@ -37,7 +37,7 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 4;
+  const totalSteps = 5;
 
   // Basic auth form data
   const [authData, setAuthData] = useState({
@@ -376,8 +376,8 @@ const SignIn = () => {
           <div className="space-y-4">
             <div className="text-center mb-6">
               <CreditCard className="w-12 h-12 text-primary mx-auto mb-2" />
-              <h3 className="text-xl font-semibold">Payment & Hours</h3>
-              <p className="text-muted-foreground">Final setup steps</p>
+              <h3 className="text-xl font-semibold">Payment Methods</h3>
+              <p className="text-muted-foreground">How customers can pay you</p>
             </div>
 
             <div className="space-y-4">
@@ -402,7 +402,20 @@ const SignIn = () => {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+        );
 
+      case 5:
+        return (
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <Globe className="w-12 h-12 text-primary mx-auto mb-2" />
+              <h3 className="text-xl font-semibold">Business Hours</h3>
+              <p className="text-muted-foreground">When are you available?</p>
+            </div>
+
+            <div className="space-y-4">
               <div>
                 <Label htmlFor="workingHours">Working Hours *</Label>
                 <Select onValueChange={(value) => handleBusinessInputChange("workingHours", value)}>
@@ -447,7 +460,9 @@ const SignIn = () => {
       case 3:
         return businessData.location && businessData.phone && businessData.deliveryAreas.length > 0;
       case 4:
-        return businessData.workingHours && businessData.paymentMethods.length > 0;
+        return businessData.paymentMethods.length > 0;
+      case 5:
+        return businessData.workingHours;
       default:
         return false;
     }
