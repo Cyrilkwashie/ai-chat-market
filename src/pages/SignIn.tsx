@@ -141,53 +141,18 @@ const SignIn = () => {
         return;
       }
 
-      // Wait a moment for the user to be created and profile trigger to run
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Get the current user
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
-      if (!currentUser) {
-        toast({
-          title: "Error",
-          description: "Failed to get user information. Please try again.",
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
-      }
-
-      // Update the profile with business information
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({
-          business_name: businessData.businessName,
-          business_type: businessData.businessType,
-          description: businessData.description,
-          location: businessData.location,
-          phone: businessData.phone,
-          whatsapp: businessData.whatsapp || businessData.phone, // Use phone as fallback if whatsapp is empty
-          working_hours: businessData.workingHours,
-          payment_methods: businessData.paymentMethods,
-          delivery_areas: businessData.deliveryAreas,
-          full_name: authData.fullName
-        })
-        .eq('user_id', currentUser.id);
-
-      if (profileError) {
-        console.error('Error updating profile:', profileError);
-        toast({
-          title: "Profile setup incomplete",
-          description: "Your account was created but profile setup failed. You can complete it later in settings.",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "🎉 Welcome to AfriCommerce!",
-          description: "Your business profile is ready. Let's start selling!",
-        });
-      }
+      // For email confirmation flow, the user won't be immediately authenticated
+      // Show success message about email verification
+      toast({
+        title: "Account created successfully!",
+        description: "Please check your email to verify your account, then sign in to complete your profile setup.",
+      });
       
-      navigate("/dashboard");
+      // Reset to login mode so user can sign in after email verification
+      setIsLogin(true);
+      setCurrentStep(1);
+      setLoading(false);
+      return;
     } catch (error) {
       console.error('Error during signup:', error);
       toast({
