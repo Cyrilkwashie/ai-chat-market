@@ -165,6 +165,7 @@ const SignIn = () => {
           description: businessData.description,
           location: businessData.location,
           phone: businessData.phone,
+          whatsapp: businessData.whatsapp || businessData.phone, // Use phone as fallback if whatsapp is empty
           working_hours: businessData.workingHours,
           payment_methods: businessData.paymentMethods,
           delivery_areas: businessData.deliveryAreas,
