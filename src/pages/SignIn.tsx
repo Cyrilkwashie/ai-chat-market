@@ -110,6 +110,51 @@ const SignIn = () => {
       if (isLogin) {
         const { error } = await signIn(authData.email, authData.password);
         if (!error) {
+          // Check if there's pending business data from signup
+          const pendingData = localStorage.getItem('pendingBusinessData');
+          if (pendingData) {
+            try {
+              const businessInfo = JSON.parse(pendingData);
+              
+              // Get current user to update profile
+              const { data: { user: currentUser } } = await supabase.auth.getUser();
+              if (currentUser) {
+                const { error: profileError } = await supabase
+                  .from('profiles')
+                  .update({
+                    business_name: businessInfo.businessName,
+                    business_type: businessInfo.businessType,
+                    description: businessInfo.description,
+                    location: businessInfo.location,
+                    phone: businessInfo.phone,
+                    whatsapp: businessInfo.whatsapp,
+                    working_hours: businessInfo.workingHours,
+                    payment_methods: businessInfo.paymentMethods,
+                    delivery_areas: businessInfo.deliveryAreas,
+                    full_name: businessInfo.fullName
+                  })
+                  .eq('user_id', currentUser.id);
+
+                if (!profileError) {
+                  localStorage.removeItem('pendingBusinessData');
+                  toast({
+                    title: "🎉 Welcome to AI Chat Market!",
+                    description: "Your business profile has been completed successfully!",
+                  });
+                } else {
+                  console.error('Error updating profile:', profileError);
+                  toast({
+                    title: "Profile update needed",
+                    description: "Please complete your profile setup in the Settings page.",
+                    variant: "destructive",
+                  });
+                }
+              }
+            } catch (error) {
+              console.error('Error processing pending business data:', error);
+              localStorage.removeItem('pendingBusinessData');
+            }
+          }
           navigate("/dashboard");
         }
       } else {
@@ -141,7 +186,20 @@ const SignIn = () => {
         return;
       }
 
-      // For email confirmation flow, the user won't be immediately authenticated
+      // Store business data in localStorage temporarily for after email confirmation
+      localStorage.setItem('pendingBusinessData', JSON.stringify({
+        businessName: businessData.businessName,
+        businessType: businessData.businessType,
+        description: businessData.description,
+        location: businessData.location,
+        phone: businessData.phone,
+        whatsapp: businessData.whatsapp || businessData.phone,
+        workingHours: businessData.workingHours,
+        paymentMethods: businessData.paymentMethods,
+        deliveryAreas: businessData.deliveryAreas,
+        fullName: authData.fullName
+      }));
+
       // Show success message about email verification
       toast({
         title: "Account created successfully!",
