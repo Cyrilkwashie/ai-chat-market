@@ -90,23 +90,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string, fullName?: string) => {
     try {
-      // First check if user already exists by attempting to sign in
-      const { error: existingUserError } = await supabase.auth.signInWithPassword({
-        email,
-        password: 'dummy_password_check'
-      });
-
-      // If we get anything other than invalid credentials, the user might exist
-      if (existingUserError && !existingUserError.message.includes('Invalid login credentials')) {
-        // User likely exists, show appropriate error
-        toast({
-          title: "User already exists",
-          description: "An account with this email already exists. Please use a different email or sign in instead.",
-          variant: "destructive",
-        });
-        return { error: { message: "User already exists" } };
-      }
-
       const redirectUrl = `${window.location.origin}/dashboard`;
       
       const { data, error } = await supabase.auth.signUp({
@@ -120,7 +103,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       });
 
+      console.log('SignUp response:', { data, error });
+
       if (error) {
+        console.log('SignUp error:', error);
         // Handle different types of signup errors
         if (error.message.includes('User already registered') || 
             error.message.includes('already registered') ||
@@ -150,26 +136,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             variant: "destructive",
           });
         }
-      } else {
-        // Check if user was actually created or already exists
-        if (data.user && !data.user.email_confirmed_at && data.user.created_at) {
-          toast({
-            title: "Account created!",
-            description: "Please check your email to verify your account.",
-          });
-        } else if (data.user && data.user.email_confirmed_at) {
-          // User already exists and is confirmed
+      } else if (data) {
+        console.log('SignUp success data:', data);
+        // Check if this is a new user or existing user
+        // If user exists but not confirmed, Supabase returns the user without sending email
+        if (data.user && data.user.identities && data.user.identities.length === 0) {
+          // User already exists - identities array is empty for existing users
           toast({
             title: "User already exists",
             description: "An account with this email already exists. Please use a different email or sign in instead.",
             variant: "destructive",
           });
           return { error: { message: "User already exists" } };
+        } else {
+          // New user created
+          toast({
+            title: "Account created!",
+            description: "Please check your email to verify your account.",
+          });
         }
       }
       
       return { error };
     } catch (error: any) {
+      console.log('SignUp catch error:', error);
       toast({
         title: "Signup failed",
         description: "An unexpected error occurred. Please try again.",
