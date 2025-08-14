@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
-import { OrdersOverview } from "@/components/dashboard/OrdersOverview";
+import { OrdersOverview } from "@/components/dashboard/OrdersOverviewReal";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";

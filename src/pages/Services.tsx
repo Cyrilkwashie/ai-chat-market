@@ -15,55 +15,53 @@ import { SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sid
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { useToast } from "@/hooks/use-toast";
 
-const servicesData = [
-  {
-    id: "SV-001",
-    name: "Hair Braiding Session",
-    description: "Professional hair braiding with traditional patterns",
-    category: "Beauty",
-    price: 80,
-    duration: 120,
-    type: "In-person",
-    bookings: 25,
-    revenue: 2000,
-    rating: 4.8,
-  },
-  {
-    id: "SV-002", 
-    name: "Business Consultation",
-    description: "One-on-one business strategy consultation",
-    category: "Consulting",
-    price: 150,
-    duration: 60,
-    type: "Online",
-    bookings: 18,
-    revenue: 2700,
-    rating: 4.9,
-  },
-  {
-    id: "SV-003",
-    name: "Kente Weaving Workshop",
-    description: "Learn traditional kente weaving techniques",
-    category: "Education",
-    price: 200,
-    duration: 180,
-    type: "In-person",
-    bookings: 12,
-    revenue: 2400,
-    rating: 4.7,
-  },
-];
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const ServicesContent = () => {
   const { toggleSidebar } = useSidebar();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddServiceOpen, setIsAddServiceOpen] = useState(false);
   const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false);
-  const { toast } = useToast();
+  const [services, setServices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredServices = servicesData.filter(service =>
-    service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    service.category.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    if (user) {
+      fetchServices();
+    }
+  }, [user]);
+
+  const fetchServices = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setServices(data || []);
+    } catch (error) {
+      console.error('Error fetching services:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch services",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredServices = services.filter(service =>
+    service.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    service.category?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleAddService = () => {

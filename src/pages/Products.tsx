@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
-import { ProductManagement } from "@/components/dashboard/ProductManagement";
+import { ProductManagement } from "@/components/dashboard/ProductManagementReal";
 import { Input } from "@/components/ui/input";
 
 // Products Content Component

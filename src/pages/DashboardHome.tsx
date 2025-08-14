@@ -17,32 +17,171 @@ import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
-// Dashboard Content Component
 const DashboardHomeContent = () => {
   const { toggleSidebar } = useSidebar();
+  const { user } = useAuth();
+  const [stats, setStats] = useState({
+    todaysSales: 0,
+    totalOrders: 0,
+    activeProducts: 0,
+    customers: 0
+  });
+  const [topProducts, setTopProducts] = useState<any[]>([]);
+  const [recentOrders, setRecentOrders] = useState<any[]>([]);
+  const [yearlyData, setYearlyData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const stats = [
-    { label: "Today's Sales", value: "₵2,450", change: "+12%", icon: TrendingUp, trend: "up" },
-    { label: "Total Orders", value: "143", change: "+8%", icon: ShoppingCart, trend: "up" },
-    { label: "Active Products", value: "67", change: "+3", icon: Package, trend: "up" },
-    { label: "Customers", value: "1,248", change: "+24", icon: Users, trend: "up" }
-  ];
+  useEffect(() => {
+    if (user) {
+      fetchDashboardData();
+    }
+  }, [user]);
 
-  const yearlyData = [
-    { month: "Jan", amount: 45200 },
-    { month: "Feb", amount: 52800 },
-    { month: "Mar", amount: 48900 },
-    { month: "Apr", amount: 61500 },
-    { month: "May", amount: 55300 },
-    { month: "Jun", amount: 68400 },
-    { month: "Jul", amount: 72100 },
-    { month: "Aug", amount: 59800 },
-    { month: "Sep", amount: 66200 },
-    { month: "Oct", amount: 78300 },
-    { month: "Nov", amount: 84600 },
-    { month: "Dec", amount: 91200 },
-  ];
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch orders for stats and charts
+      const { data: orders } = await supabase
+        .from('orders')
+        .select('*, order_items(*)')
+        .eq('user_id', user.id);
+
+      // Fetch products for stats
+      const { data: products } = await supabase
+        .from('products')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('status', 'active');
+
+      // Fetch customers
+      const { data: customers } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('user_id', user.id);
+
+      // Calculate stats
+      const today = new Date().toISOString().split('T')[0];
+      const todaysOrders = orders?.filter(order => 
+        order.created_at.startsWith(today)
+      ) || [];
+      
+      const todaysSales = todaysOrders.reduce((sum, order) => 
+        sum + parseFloat(order.total_amount?.toString() || "0"), 0
+      );
+
+      setStats({
+        todaysSales,
+        totalOrders: orders?.length || 0,
+        activeProducts: products?.length || 0,
+        customers: customers?.length || 0
+      });
+
+      // Calculate top products from order items
+      const productSales = new Map();
+      orders?.forEach(order => {
+        order.order_items?.forEach((item: any) => {
+          if (item.product_id) {
+            const existing = productSales.get(item.product_id) || { 
+              quantity: 0, 
+              revenue: 0,
+              name: `Product ${item.product_id}` 
+            };
+            existing.quantity += item.quantity;
+            existing.revenue += parseFloat(item.total_price?.toString() || "0");
+            productSales.set(item.product_id, existing);
+          }
+        });
+      });
+
+      // Get product names
+      const productIds = Array.from(productSales.keys());
+      if (productIds.length > 0) {
+        const { data: productNames } = await supabase
+          .from('products')
+          .select('id, name')
+          .in('id', productIds);
+        
+        productNames?.forEach(product => {
+          if (productSales.has(product.id)) {
+            productSales.get(product.id).name = product.name;
+          }
+        });
+      }
+
+      const topProductsArray = Array.from(productSales.entries())
+        .map(([id, data]) => ({
+          name: data.name,
+          orders: data.quantity,
+          revenue: `₵${data.revenue.toFixed(2)}`
+        }))
+        .sort((a, b) => b.orders - a.orders)
+        .slice(0, 5);
+
+      setTopProducts(topProductsArray);
+
+      // Recent orders with customer info
+      const recentOrdersWithCustomers = await Promise.all(
+        (orders?.slice(-3).reverse() || []).map(async (order) => {
+          let customerName = 'Unknown Customer';
+          if (order.customer_id) {
+            const { data: customer } = await supabase
+              .from('customers')
+              .select('name')
+              .eq('id', order.customer_id)
+              .single();
+            customerName = customer?.name || customerName;
+          }
+
+          return {
+            id: order.order_number,
+            customer: customerName,
+            items: `${order.order_items?.length || 0} items`,
+            amount: `₵${parseFloat(order.total_amount?.toString() || "0").toFixed(2)}`,
+            status: order.status,
+            time: getTimeAgo(order.created_at)
+          };
+        })
+      );
+
+      setRecentOrders(recentOrdersWithCustomers);
+
+      // Generate yearly revenue data
+      const monthlyRevenue = Array.from({ length: 12 }, (_, i) => {
+        const month = new Date(2024, i).toLocaleDateString('en', { month: 'short' });
+        const monthOrders = orders?.filter(order => {
+          const orderMonth = new Date(order.created_at).getMonth();
+          return orderMonth === i;
+        }) || [];
+        
+        const amount = monthOrders.reduce((sum, order) => 
+          sum + parseFloat(order.total_amount?.toString() || "0"), 0
+        );
+
+        return { month, amount };
+      });
+
+      setYearlyData(monthlyRevenue);
+
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getTimeAgo = (dateString: string) => {
+    const now = new Date();
+    const date = new Date(dateString);
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    
+    if (diffInMinutes < 60) return `${diffInMinutes} mins ago`;
+    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)} hours ago`;
+    return `${Math.floor(diffInMinutes / 1440)} days ago`;
+  };
 
   const chartConfig = {
     amount: {
@@ -50,6 +189,17 @@ const DashboardHomeContent = () => {
       color: "hsl(var(--primary))",
     },
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex w-full bg-background">
+        <DashboardSidebar />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex w-full bg-background">
@@ -105,25 +255,74 @@ const DashboardHomeContent = () => {
 
             {/* Enhanced Key Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {stats.map((stat, index) => (
-                <Card key={index} className="hover-lift border-l-4 border-l-primary">
-                  <CardContent className="p-4 sm:p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1 sm:space-y-2 min-w-0 flex-1">
-                        <p className="text-xs sm:text-sm font-medium text-muted-foreground">{stat.label}</p>
-                        <p className="text-2xl sm:text-3xl font-bold text-foreground">{stat.value}</p>
-                        <div className="flex items-center text-xs text-success">
-                          <span className="bg-success/10 text-success px-2 py-1 rounded-full">{stat.change}</span>
-                          <span className="ml-2 text-muted-foreground hidden sm:inline">vs yesterday</span>
-                        </div>
-                      </div>
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+              <Card className="hover-lift border-l-4 border-l-primary">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1 sm:space-y-2 min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm font-medium text-muted-foreground">Today's Sales</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-foreground">₵{stats.todaysSales.toFixed(2)}</p>
+                      <div className="flex items-center text-xs text-success">
+                        <span className="bg-success/10 text-success px-2 py-1 rounded-full">Live</span>
+                        <span className="ml-2 text-muted-foreground hidden sm:inline">vs yesterday</span>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="hover-lift border-l-4 border-l-primary">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1 sm:space-y-2 min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm font-medium text-muted-foreground">Total Orders</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-foreground">{stats.totalOrders}</p>
+                      <div className="flex items-center text-xs text-success">
+                        <span className="bg-success/10 text-success px-2 py-1 rounded-full">All time</span>
+                      </div>
+                    </div>
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="hover-lift border-l-4 border-l-primary">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1 sm:space-y-2 min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm font-medium text-muted-foreground">Active Products</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-foreground">{stats.activeProducts}</p>
+                      <div className="flex items-center text-xs text-success">
+                        <span className="bg-success/10 text-success px-2 py-1 rounded-full">Active</span>
+                      </div>
+                    </div>
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Package className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="hover-lift border-l-4 border-l-primary">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1 sm:space-y-2 min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm font-medium text-muted-foreground">Customers</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-foreground">{stats.customers}</p>
+                      <div className="flex items-center text-xs text-success">
+                        <span className="bg-success/10 text-success px-2 py-1 rounded-full">Total</span>
+                      </div>
+                    </div>
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Users className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
             {/* Main Dashboard Grid - Improved Layout */}
@@ -164,13 +363,7 @@ const DashboardHomeContent = () => {
                     <CardDescription className="text-sm">Best sellers this month</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-2 sm:space-y-3 flex-1 overflow-y-auto">
-                    {[
-                      { name: "Jollof Rice", orders: 23, revenue: "₵690" },
-                      { name: "Waakye", orders: 18, revenue: "₵540" },
-                      { name: "Banku + Tilapia", orders: 12, revenue: "₵480" },
-                      { name: "Fried Rice", orders: 8, revenue: "₵320" },
-                      { name: "Kelewele", orders: 6, revenue: "₵180" }
-                    ].map((product, index) => (
+                    {topProducts.length > 0 ? topProducts.map((product, index) => (
                       <div key={product.name} className="flex items-center justify-between">
                         <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
                           <div className="w-5 h-5 sm:w-6 sm:h-6 bg-primary/10 rounded text-xs flex items-center justify-center font-medium text-primary flex-shrink-0">
@@ -183,7 +376,9 @@ const DashboardHomeContent = () => {
                         </div>
                         <span className="font-medium text-xs sm:text-sm flex-shrink-0">{product.revenue}</span>
                       </div>
-                    ))}
+                    )) : (
+                      <p className="text-sm text-muted-foreground">No sales data yet</p>
+                    )}
                   </CardContent>
                 </Card>
               </div>
@@ -202,32 +397,7 @@ const DashboardHomeContent = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                  {[
-                    { 
-                      id: "#1234", 
-                      customer: "Kwame Asante", 
-                      items: "2x Jollof Rice", 
-                      amount: "₵30", 
-                      status: "confirmed",
-                      time: "2 mins ago"
-                    },
-                    { 
-                      id: "#1235", 
-                      customer: "Fatima Musa", 
-                      items: "1x Waakye + Fish", 
-                      amount: "₵15", 
-                      status: "delivered",
-                      time: "15 mins ago"
-                    },
-                    { 
-                      id: "#1236", 
-                      customer: "Emmanuel Osei", 
-                      items: "3x Banku + Tilapia", 
-                      amount: "₵45", 
-                      status: "pending",
-                      time: "1 hour ago"
-                    }
-                  ].map((order) => (
+                  {recentOrders.length > 0 ? recentOrders.map((order) => (
                     <div key={order.id} className="flex items-center justify-between p-3 sm:p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
                       <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
                         <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -255,7 +425,9 @@ const DashboardHomeContent = () => {
                         </Badge>
                       </div>
                     </div>
-                  ))}
+                  )) : (
+                    <p className="text-sm text-muted-foreground col-span-full">No recent orders</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
