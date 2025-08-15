@@ -38,13 +38,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         // Handle business data update after email verification
         if (event === 'SIGNED_IN' && session?.user) {
-          setTimeout(() => {
+          setTimeout(async () => {
             const pendingData = localStorage.getItem('pendingBusinessData');
+            console.log('Checking for pending business data:', pendingData);
+            
             if (pendingData) {
               try {
                 const businessInfo = JSON.parse(pendingData);
+                console.log('Processing business info:', businessInfo);
                 
-                supabase
+                const { error: profileError } = await supabase
                   .from('profiles')
                   .update({
                     business_name: businessInfo.businessName,
@@ -58,22 +61,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     delivery_areas: businessInfo.deliveryAreas,
                     full_name: businessInfo.fullName
                   })
-                  .eq('user_id', session.user.id)
-                  .then(({ error: profileError }) => {
-                    if (!profileError) {
-                      localStorage.removeItem('pendingBusinessData');
-                      toast({
-                        title: "🎉 Welcome to AI Chat Market!",
-                        description: "Your business profile has been completed successfully!",
-                      });
-                    }
+                  .eq('user_id', session.user.id);
+                
+                console.log('Profile update result:', { profileError });
+                
+                if (!profileError) {
+                  localStorage.removeItem('pendingBusinessData');
+                  toast({
+                    title: "🎉 Welcome to AI Chat Market!",
+                    description: "Your business profile has been completed successfully!",
                   });
+                } else {
+                  console.error('Profile update error:', profileError);
+                  toast({
+                    title: "Profile update failed",
+                    description: "Please complete your profile in settings.",
+                    variant: "destructive",
+                  });
+                }
               } catch (error) {
                 console.error('Error processing pending business data:', error);
                 localStorage.removeItem('pendingBusinessData');
+                toast({
+                  title: "Profile setup error",
+                  description: "Please complete your profile in settings.",
+                  variant: "destructive",
+                });
               }
             }
-          }, 0);
+          }, 1000); // Increased delay to ensure profile exists
         }
       }
     );
@@ -90,7 +106,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string, fullName?: string) => {
     try {
-      const redirectUrl = `${window.location.origin}/dashboard`;
+      // Use production URL for redirect if in production, otherwise use current origin
+      const isProduction = window.location.hostname.includes('vercel.app') || 
+                          !window.location.hostname.includes('localhost');
+      const redirectUrl = isProduction 
+        ? `https://${window.location.hostname}/dashboard`
+        : `${window.location.origin}/dashboard`;
+      
+      console.log('Signup redirect URL:', redirectUrl);
       
       const { data, error } = await supabase.auth.signUp({
         email,
