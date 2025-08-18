@@ -9,10 +9,12 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Edit, Trash2, Package, TrendingUp, Grid3X3, List } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Search, Edit, Trash2, Package, TrendingUp, Grid3X3, List, Upload, Link2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { v4 as uuidv4 } from 'uuid';
 
 export function ProductManagement() {
   const { user } = useAuth();
@@ -30,8 +32,12 @@ export function ProductManagement() {
     price: "",
     category: "",
     stock_quantity: "",
-    sku: ""
+    sku: "",
+    image_url: ""
   });
+  const [imageUploadMethod, setImageUploadMethod] = useState<"url" | "upload">("url");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
 
   useEffect(() => {
     if (user) {
@@ -62,14 +68,63 @@ export function ProductManagement() {
     }
   };
 
+  const generateSKU = () => {
+    const timestamp = Date.now().toString().slice(-6);
+    const random = Math.random().toString(36).substring(2, 5).toUpperCase();
+    return `PRD-${timestamp}-${random}`;
+  };
+
+  const handleFileUpload = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${uuidv4()}.${fileExt}`;
+    const filePath = `product-images/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('product-images')
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('product-images')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onload = () => setImagePreview(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleAddProduct = async () => {
     try {
+      let finalImageUrl = newProduct.image_url;
+
+      // Handle file upload if upload method is selected and file exists
+      if (imageUploadMethod === "upload" && selectedFile) {
+        finalImageUrl = await handleFileUpload(selectedFile);
+      }
+
+      // Generate SKU if not provided
+      const finalSku = newProduct.sku || generateSKU();
+
+      const stockQty = parseInt(newProduct.stock_quantity);
+
       const { error } = await supabase
         .from('products')
         .insert({
           ...newProduct,
           price: parseFloat(newProduct.price),
-          stock_quantity: parseInt(newProduct.stock_quantity),
+          stock_quantity: stockQty,
+          initial_stock_quantity: stockQty,
+          sku: finalSku,
+          image_url: finalImageUrl,
           user_id: user.id,
           status: 'active'
         });
@@ -82,8 +137,11 @@ export function ProductManagement() {
         price: "",
         category: "",
         stock_quantity: "",
-        sku: ""
+        sku: "",
+        image_url: ""
       });
+      setSelectedFile(null);
+      setImagePreview("");
       setIsAddProductOpen(false);
       fetchProducts();
 
@@ -111,7 +169,8 @@ export function ProductManagement() {
           price: parseFloat(editingProduct.price),
           category: editingProduct.category,
           stock_quantity: parseInt(editingProduct.stock_quantity),
-          sku: editingProduct.sku
+          sku: editingProduct.sku,
+          image_url: editingProduct.image_url
         })
         .eq('id', editingProduct.id)
         .eq('user_id', user.id);
@@ -175,7 +234,12 @@ export function ProductManagement() {
   const productStats = {
     total: products.length,
     active: products.filter(p => p.status === 'active').length,
-    lowStock: products.filter(p => p.stock_quantity < 10).length,
+    lowStock: products.filter(p => {
+      const initialStock = p.initial_stock_quantity || p.stock_quantity;
+      const currentStock = p.stock_quantity;
+      const remainingPercentage = (currentStock / initialStock) * 100;
+      return remainingPercentage <= 30 && currentStock > 0;
+    }).length,
     outOfStock: products.filter(p => p.stock_quantity === 0).length
   };
 
@@ -305,6 +369,51 @@ export function ProductManagement() {
                       placeholder="Describe your product..."
                     />
                   </div>
+                  
+                  {/* Image Upload Section */}
+                  <div>
+                    <Label>Product Image</Label>
+                    <Tabs value={imageUploadMethod} onValueChange={(value) => setImageUploadMethod(value as "url" | "upload")}>
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="url" className="flex items-center gap-2">
+                          <Link2 className="w-4 h-4" />
+                          Image URL
+                        </TabsTrigger>
+                        <TabsTrigger value="upload" className="flex items-center gap-2">
+                          <Upload className="w-4 h-4" />
+                          Upload File
+                        </TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="url" className="space-y-2">
+                        <Input
+                          placeholder="https://example.com/image.jpg"
+                          value={newProduct.image_url}
+                          onChange={(e) => {
+                            setNewProduct({ ...newProduct, image_url: e.target.value });
+                            setImagePreview(e.target.value);
+                          }}
+                        />
+                      </TabsContent>
+                      <TabsContent value="upload" className="space-y-2">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                        />
+                      </TabsContent>
+                    </Tabs>
+                    {imagePreview && (
+                      <div className="mt-2">
+                        <img 
+                          src={imagePreview} 
+                          alt="Preview" 
+                          className="w-20 h-20 object-cover rounded-md border"
+                          onError={() => setImagePreview("")}
+                        />
+                      </div>
+                    )}
+                  </div>
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="price">Price (₵)</Label>
@@ -331,20 +440,30 @@ export function ProductManagement() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="category">Category</Label>
+                      <Select value={newProduct.category} onValueChange={(value) => setNewProduct({ ...newProduct, category: value })}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select or type category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map(category => (
+                            <SelectItem key={category} value={category}>{category}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <Input
-                        id="category"
+                        className="mt-2"
                         value={newProduct.category}
                         onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
-                        placeholder="e.g., Main Course"
+                        placeholder="Or type new category"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="sku">SKU (Optional)</Label>
+                      <Label htmlFor="sku">SKU (Auto-generated if empty)</Label>
                       <Input
                         id="sku"
                         value={newProduct.sku}
                         onChange={(e) => setNewProduct({ ...newProduct, sku: e.target.value })}
-                        placeholder="PROD-001"
+                        placeholder="Leave empty for auto-generation"
                       />
                     </div>
                   </div>
@@ -388,14 +507,26 @@ export function ProductManagement() {
           ) : viewMode === "grid" ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredProducts.map((product) => (
-                <Card key={product.id} className="hover-lift">
-                  <CardContent className="p-4">
-                    <div className="space-y-3">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-medium text-sm">{product.name}</h3>
-                          <p className="text-xs text-muted-foreground mt-1">{product.description}</p>
-                        </div>
+                 <Card key={product.id} className="hover-lift">
+                   <CardContent className="p-4">
+                     <div className="space-y-3">
+                       {product.image_url && (
+                         <div className="w-full h-32 rounded-md overflow-hidden">
+                           <img 
+                             src={product.image_url} 
+                             alt={product.name}
+                             className="w-full h-full object-cover"
+                             onError={(e) => {
+                               e.currentTarget.style.display = 'none';
+                             }}
+                           />
+                         </div>
+                       )}
+                       <div className="flex items-start justify-between">
+                         <div className="flex-1">
+                           <h3 className="font-medium text-sm">{product.name}</h3>
+                           <p className="text-xs text-muted-foreground mt-1">{product.description}</p>
+                         </div>
                         <div className="flex gap-1">
                           <Dialog>
                             <DialogTrigger asChild>
@@ -452,22 +583,52 @@ export function ProductManagement() {
                                     </div>
                                   </div>
                                   <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                      <Label htmlFor="edit-category">Category</Label>
-                                      <Input
-                                        id="edit-category"
-                                        value={editingProduct.category || ""}
-                                        onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
-                                      />
-                                    </div>
-                                    <div>
-                                      <Label htmlFor="edit-sku">SKU</Label>
-                                      <Input
-                                        id="edit-sku"
-                                        value={editingProduct.sku || ""}
-                                        onChange={(e) => setEditingProduct({ ...editingProduct, sku: e.target.value })}
-                                      />
-                                    </div>
+                                   <div>
+                                     <Label htmlFor="edit-image">Image URL</Label>
+                                     <Input
+                                       id="edit-image"
+                                       value={editingProduct.image_url || ""}
+                                       onChange={(e) => setEditingProduct({ ...editingProduct, image_url: e.target.value })}
+                                       placeholder="https://example.com/image.jpg"
+                                     />
+                                     {editingProduct.image_url && (
+                                       <img 
+                                         src={editingProduct.image_url} 
+                                         alt="Product" 
+                                         className="w-20 h-20 object-cover rounded-md border mt-2"
+                                         onError={(e) => {
+                                           e.currentTarget.style.display = 'none';
+                                         }}
+                                       />
+                                     )}
+                                   </div>
+                                   <div>
+                                     <Label htmlFor="edit-category">Category</Label>
+                                     <Select value={editingProduct.category || ""} onValueChange={(value) => setEditingProduct({ ...editingProduct, category: value })}>
+                                       <SelectTrigger>
+                                         <SelectValue placeholder="Select category" />
+                                       </SelectTrigger>
+                                       <SelectContent>
+                                         {categories.map(category => (
+                                           <SelectItem key={category} value={category}>{category}</SelectItem>
+                                         ))}
+                                       </SelectContent>
+                                     </Select>
+                                     <Input
+                                       className="mt-2"
+                                       value={editingProduct.category || ""}
+                                       onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
+                                       placeholder="Or type new category"
+                                     />
+                                   </div>
+                                   <div>
+                                     <Label htmlFor="edit-sku">SKU</Label>
+                                     <Input
+                                       id="edit-sku"
+                                       value={editingProduct.sku || ""}
+                                       onChange={(e) => setEditingProduct({ ...editingProduct, sku: e.target.value })}
+                                     />
+                                   </div>
                                   </div>
                                   <Button onClick={handleEditProduct} className="w-full">
                                     Update Product
@@ -504,15 +665,22 @@ export function ProductManagement() {
                         <Badge variant={product.category ? "secondary" : "outline"} className="text-xs">
                           {product.category || "No Category"}
                         </Badge>
-                        <Badge 
-                          variant={
-                            product.stock_quantity > 10 ? "default" : 
-                            product.stock_quantity > 0 ? "secondary" : "destructive"
-                          } 
-                          className="text-xs"
-                        >
-                          {product.stock_quantity} in stock
-                        </Badge>
+                         <Badge 
+                           variant={
+                             (() => {
+                               const initialStock = product.initial_stock_quantity || product.stock_quantity;
+                               const currentStock = product.stock_quantity;
+                               const remainingPercentage = (currentStock / initialStock) * 100;
+                               
+                               if (currentStock === 0) return "destructive";
+                               if (remainingPercentage <= 30) return "secondary";
+                               return "default";
+                             })()
+                           } 
+                           className="text-xs"
+                         >
+                           {product.stock_quantity} in stock
+                         </Badge>
                       </div>
                       
                       <div className="flex items-center justify-between">
@@ -538,27 +706,46 @@ export function ProductManagement() {
               </TableHeader>
               <TableBody>
                 {filteredProducts.map((product) => (
-                  <TableRow key={product.id}>
-                    <TableCell>
-                      <div>
-                        <p className="font-medium">{product.name}</p>
-                        <p className="text-xs text-muted-foreground">{product.description}</p>
-                      </div>
-                    </TableCell>
+                   <TableRow key={product.id}>
+                     <TableCell>
+                       <div className="flex items-center gap-3">
+                         {product.image_url && (
+                           <img 
+                             src={product.image_url} 
+                             alt={product.name}
+                             className="w-12 h-12 object-cover rounded-md border"
+                             onError={(e) => {
+                               e.currentTarget.style.display = 'none';
+                             }}
+                           />
+                         )}
+                         <div>
+                           <p className="font-medium">{product.name}</p>
+                           <p className="text-xs text-muted-foreground">{product.description}</p>
+                         </div>
+                       </div>
+                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">{product.category || "No Category"}</Badge>
                     </TableCell>
                     <TableCell>₵{parseFloat(product.price?.toString() || "0").toFixed(2)}</TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant={
-                          product.stock_quantity > 10 ? "default" : 
-                          product.stock_quantity > 0 ? "secondary" : "destructive"
-                        }
-                      >
-                        {product.stock_quantity}
-                      </Badge>
-                    </TableCell>
+                     <TableCell>
+                       <Badge 
+                         variant={
+                           (() => {
+                             const initialStock = product.initial_stock_quantity || product.stock_quantity;
+                             const currentStock = product.stock_quantity;
+                             const remainingPercentage = (currentStock / initialStock) * 100;
+                             
+                             if (currentStock === 0) return "destructive";
+                             if (remainingPercentage <= 30) return "secondary";
+                             return "default";
+                           })()
+                         }
+                       >
+                         {product.stock_quantity}
+                       </Badge>
+                     </TableCell>
                     <TableCell>{product.sku || "N/A"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
