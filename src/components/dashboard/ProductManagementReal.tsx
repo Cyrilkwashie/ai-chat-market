@@ -32,7 +32,6 @@ export function ProductManagement() {
     price: "",
     category: "",
     stock_quantity: "",
-    sku: "",
     image_url: ""
   });
   const [imageUploadMethod, setImageUploadMethod] = useState<"url" | "upload">("url");
@@ -111,8 +110,8 @@ export function ProductManagement() {
         finalImageUrl = await handleFileUpload(selectedFile);
       }
 
-      // Generate SKU if not provided
-      const finalSku = newProduct.sku || generateSKU();
+      // Always generate SKU
+      const finalSku = generateSKU();
 
       const stockQty = parseInt(newProduct.stock_quantity);
 
@@ -137,7 +136,6 @@ export function ProductManagement() {
         price: "",
         category: "",
         stock_quantity: "",
-        sku: "",
         image_url: ""
       });
       setSelectedFile(null);
@@ -437,7 +435,7 @@ export function ProductManagement() {
                       />
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div>
                     <div>
                       <Label htmlFor="category">Category</Label>
                       <Select value={newProduct.category} onValueChange={(value) => setNewProduct({ ...newProduct, category: value })}>
@@ -455,15 +453,6 @@ export function ProductManagement() {
                         value={newProduct.category}
                         onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
                         placeholder="Or type new category"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="sku">SKU (Auto-generated if empty)</Label>
-                      <Input
-                        id="sku"
-                        value={newProduct.sku}
-                        onChange={(e) => setNewProduct({ ...newProduct, sku: e.target.value })}
-                        placeholder="Leave empty for auto-generation"
                       />
                     </div>
                   </div>
@@ -619,14 +608,6 @@ export function ProductManagement() {
                                        value={editingProduct.category || ""}
                                        onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
                                        placeholder="Or type new category"
-                                     />
-                                   </div>
-                                   <div>
-                                     <Label htmlFor="edit-sku">SKU</Label>
-                                     <Input
-                                       id="edit-sku"
-                                       value={editingProduct.sku || ""}
-                                       onChange={(e) => setEditingProduct({ ...editingProduct, sku: e.target.value })}
                                      />
                                    </div>
                                   </div>
