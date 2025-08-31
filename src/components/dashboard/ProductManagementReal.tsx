@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Search, Edit, Trash2, Package, TrendingUp, Grid3X3, List, Upload, Link2 } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Package, TrendingUp, Grid3X3, List, Upload, Link2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -23,6 +23,7 @@ export function ProductManagement() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [stockFilter, setStockFilter] = useState("all");
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -68,8 +69,8 @@ export function ProductManagement() {
   };
 
   const generateSKU = () => {
-    const timestamp = Date.now().toString().slice(-6);
-    const random = Math.random().toString(36).substring(2, 5).toUpperCase();
+    const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
     return `PRD-${timestamp}-${random}`;
   };
 
@@ -218,6 +219,18 @@ export function ProductManagement() {
     }
   };
 
+  const removeImage = () => {
+    setImagePreview("");
+    setSelectedFile(null);
+    if (imageUploadMethod === "url") {
+      setNewProduct({ ...newProduct, image_url: "" });
+    }
+  };
+
+  const countWords = (text: string) => {
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  };
+
   const filteredProducts = products.filter(product => {
     const matchesSearch = 
       product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -226,7 +239,20 @@ export function ProductManagement() {
 
     const matchesCategory = categoryFilter === "all" || product.category === categoryFilter;
 
-    return matchesSearch && matchesCategory;
+    const initialStock = product.initial_stock_quantity || product.stock_quantity;
+    const currentStock = product.stock_quantity;
+    const remainingPercentage = (currentStock / initialStock) * 100;
+    
+    let matchesStock = true;
+    if (stockFilter === "active") {
+      matchesStock = currentStock > 0 && remainingPercentage > 30;
+    } else if (stockFilter === "low-stock") {
+      matchesStock = remainingPercentage <= 30 && currentStock > 0;
+    } else if (stockFilter === "out-of-stock") {
+      matchesStock = currentStock === 0;
+    }
+
+    return matchesSearch && matchesCategory && matchesStock;
   });
 
   const productStats = {
@@ -363,9 +389,17 @@ export function ProductManagement() {
                     <Textarea
                       id="description"
                       value={newProduct.description}
-                      onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                      onChange={(e) => {
+                        const words = countWords(e.target.value);
+                        if (words <= 60) {
+                          setNewProduct({ ...newProduct, description: e.target.value });
+                        }
+                      }}
                       placeholder="Describe your product..."
                     />
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {countWords(newProduct.description)}/60 words
+                    </div>
                   </div>
                   
                   {/* Image Upload Section */}
@@ -401,13 +435,20 @@ export function ProductManagement() {
                       </TabsContent>
                     </Tabs>
                     {imagePreview && (
-                      <div className="mt-2">
+                      <div className="mt-2 relative inline-block">
                         <img 
                           src={imagePreview} 
                           alt="Preview" 
                           className="w-20 h-20 object-cover rounded-md border"
                           onError={() => setImagePreview("")}
                         />
+                        <button
+                          type="button"
+                          onClick={removeImage}
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
                       </div>
                     )}
                   </div>
@@ -487,6 +528,17 @@ export function ProductManagement() {
                 ))}
               </SelectContent>
             </Select>
+            <Select value={stockFilter} onValueChange={setStockFilter}>
+              <SelectTrigger className="w-full sm:w-[200px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Stock Levels</SelectItem>
+                <SelectItem value="active">Active (&gt;30%)</SelectItem>
+                <SelectItem value="low-stock">Low Stock (≤30%)</SelectItem>
+                <SelectItem value="out-of-stock">Out of Stock</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {filteredProducts.length === 0 ? (
@@ -542,14 +594,22 @@ export function ProductManagement() {
                                       onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
                                     />
                                   </div>
-                                  <div>
-                                    <Label htmlFor="edit-description">Description</Label>
-                                    <Textarea
-                                      id="edit-description"
-                                      value={editingProduct.description || ""}
-                                      onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
-                                    />
-                                  </div>
+                                   <div>
+                                     <Label htmlFor="edit-description">Description</Label>
+                                     <Textarea
+                                       id="edit-description"
+                                       value={editingProduct.description || ""}
+                                       onChange={(e) => {
+                                         const words = countWords(e.target.value);
+                                         if (words <= 60) {
+                                           setEditingProduct({ ...editingProduct, description: e.target.value });
+                                         }
+                                       }}
+                                     />
+                                     <div className="text-xs text-muted-foreground mt-1">
+                                       {countWords(editingProduct.description || "")}/60 words
+                                     </div>
+                                   </div>
                                   <div className="grid grid-cols-2 gap-4">
                                     <div>
                                       <Label htmlFor="edit-price">Price (₵)</Label>
@@ -580,16 +640,25 @@ export function ProductManagement() {
                                        onChange={(e) => setEditingProduct({ ...editingProduct, image_url: e.target.value })}
                                        placeholder="https://example.com/image.jpg"
                                      />
-                                     {editingProduct.image_url && (
-                                       <img 
-                                         src={editingProduct.image_url} 
-                                         alt="Product" 
-                                         className="w-20 h-20 object-cover rounded-md border mt-2"
-                                         onError={(e) => {
-                                           e.currentTarget.style.display = 'none';
-                                         }}
-                                       />
-                                     )}
+                                      {editingProduct.image_url && (
+                                        <div className="mt-2 relative inline-block">
+                                          <img 
+                                            src={editingProduct.image_url} 
+                                            alt="Product" 
+                                            className="w-20 h-20 object-cover rounded-md border"
+                                            onError={(e) => {
+                                              e.currentTarget.style.display = 'none';
+                                            }}
+                                          />
+                                          <button
+                                            type="button"
+                                            onClick={() => setEditingProduct({ ...editingProduct, image_url: "" })}
+                                            className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                                          >
+                                            <X className="w-3 h-3" />
+                                          </button>
+                                        </div>
+                                      )}
                                    </div>
                                    <div>
                                      <Label htmlFor="edit-category">Category</Label>
@@ -728,15 +797,126 @@ export function ProductManagement() {
                        </Badge>
                      </TableCell>
                     <TableCell>{product.sku || "N/A"}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => setEditingProduct(product)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
+                     <TableCell>
+                       <div className="flex gap-1">
+                         <Dialog>
+                           <DialogTrigger asChild>
+                             <Button 
+                               variant="ghost" 
+                               size="sm"
+                               onClick={() => setEditingProduct(product)}
+                             >
+                               <Edit className="h-4 w-4" />
+                             </Button>
+                           </DialogTrigger>
+                           <DialogContent>
+                             <DialogHeader>
+                               <DialogTitle>Edit Product</DialogTitle>
+                               <DialogDescription>Update product information</DialogDescription>
+                             </DialogHeader>
+                             {editingProduct && (
+                               <div className="space-y-4">
+                                 <div>
+                                   <Label htmlFor="table-edit-name">Product Name</Label>
+                                   <Input
+                                     id="table-edit-name"
+                                     value={editingProduct.name}
+                                     onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
+                                   />
+                                 </div>
+                                 <div>
+                                   <Label htmlFor="table-edit-description">Description</Label>
+                                   <Textarea
+                                     id="table-edit-description"
+                                     value={editingProduct.description || ""}
+                                     onChange={(e) => {
+                                       const words = countWords(e.target.value);
+                                       if (words <= 60) {
+                                         setEditingProduct({ ...editingProduct, description: e.target.value });
+                                       }
+                                     }}
+                                   />
+                                   <div className="text-xs text-muted-foreground mt-1">
+                                     {countWords(editingProduct.description || "")}/60 words
+                                   </div>
+                                 </div>
+                                 <div className="grid grid-cols-2 gap-4">
+                                   <div>
+                                     <Label htmlFor="table-edit-price">Price (₵)</Label>
+                                     <Input
+                                       id="table-edit-price"
+                                       type="number"
+                                       step="0.01"
+                                       value={editingProduct.price}
+                                       onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
+                                     />
+                                   </div>
+                                   <div>
+                                     <Label htmlFor="table-edit-stock">Stock Quantity</Label>
+                                     <Input
+                                       id="table-edit-stock"
+                                       type="number"
+                                       value={editingProduct.stock_quantity}
+                                       onChange={(e) => setEditingProduct({ ...editingProduct, stock_quantity: e.target.value })}
+                                     />
+                                   </div>
+                                 </div>
+                                 <div className="grid grid-cols-2 gap-4">
+                                  <div>
+                                    <Label htmlFor="table-edit-image">Image URL</Label>
+                                    <Input
+                                      id="table-edit-image"
+                                      value={editingProduct.image_url || ""}
+                                      onChange={(e) => setEditingProduct({ ...editingProduct, image_url: e.target.value })}
+                                      placeholder="https://example.com/image.jpg"
+                                    />
+                                    {editingProduct.image_url && (
+                                      <div className="mt-2 relative inline-block">
+                                        <img 
+                                          src={editingProduct.image_url} 
+                                          alt="Product" 
+                                          className="w-20 h-20 object-cover rounded-md border"
+                                          onError={(e) => {
+                                            e.currentTarget.style.display = 'none';
+                                          }}
+                                        />
+                                        <button
+                                          type="button"
+                                          onClick={() => setEditingProduct({ ...editingProduct, image_url: "" })}
+                                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                                        >
+                                          <X className="w-3 h-3" />
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div>
+                                    <Label htmlFor="table-edit-category">Category</Label>
+                                    <Select value={editingProduct.category || ""} onValueChange={(value) => setEditingProduct({ ...editingProduct, category: value })}>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select category" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {categories.map(category => (
+                                          <SelectItem key={category} value={category}>{category}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                    <Input
+                                      className="mt-2"
+                                      value={editingProduct.category || ""}
+                                      onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
+                                      placeholder="Or type new category"
+                                    />
+                                  </div>
+                                 </div>
+                                 <Button onClick={handleEditProduct} className="w-full">
+                                   Update Product
+                                 </Button>
+                               </div>
+                             )}
+                           </DialogContent>
+                         </Dialog>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <Button variant="ghost" size="sm">
