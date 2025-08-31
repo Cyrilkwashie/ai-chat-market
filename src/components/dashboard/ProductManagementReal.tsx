@@ -69,9 +69,8 @@ export function ProductManagement() {
   };
 
   const generateSKU = () => {
-    const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-    return `PRD-${timestamp}-${random}`;
+    const nextId = (products.length + 1).toString().padStart(7, '0');
+    return nextId;
   };
 
   const handleFileUpload = async (file: File): Promise<string> => {
@@ -551,18 +550,18 @@ export function ProductManagement() {
                  <Card key={product.id} className="hover-lift">
                    <CardContent className="p-4">
                      <div className="space-y-3">
-                       {product.image_url && (
-                         <div className="w-full h-32 rounded-md overflow-hidden">
-                           <img 
-                             src={product.image_url} 
-                             alt={product.name}
-                             className="w-full h-full object-cover"
-                             onError={(e) => {
-                               e.currentTarget.style.display = 'none';
-                             }}
-                           />
-                         </div>
-                       )}
+                        {product.image_url && (
+                          <div className="w-full h-32 rounded-md overflow-hidden flex items-center justify-center bg-muted">
+                            <img 
+                              src={product.image_url} 
+                              alt={product.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                              }}
+                            />
+                          </div>
+                        )}
                        <div className="flex items-start justify-between">
                          <div className="flex-1">
                            <h3 className="font-medium text-sm">{product.name}</h3>
