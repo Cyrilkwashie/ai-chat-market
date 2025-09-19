@@ -38,6 +38,7 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const totalSteps = 5;
 
   // Basic auth form data
@@ -219,6 +220,41 @@ const SignIn = () => {
         description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!authData.email) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(authData.email, {
+        redirectTo: `${window.location.origin}/signin?reset=true`,
+      });
+      
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Password reset email sent!",
+          description: "Please check your email for a password reset link.",
+        });
+        setIsForgotPassword(false);
+      }
     } finally {
       setLoading(false);
     }
@@ -579,127 +615,186 @@ const SignIn = () => {
         <Card className="card-elevated">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">
-              {isLogin ? "Welcome back" : "Get started"}
+              {isForgotPassword 
+                ? "Reset Password"
+                : isLogin 
+                  ? "Welcome back" 
+                  : "Get started"
+              }
             </CardTitle>
             <CardDescription>
-              {isLogin 
-                ? "Sign in to your vendor account" 
-                : "Create your account and start selling"
+              {isForgotPassword
+                ? "Enter your email to receive a password reset link"
+                : isLogin 
+                  ? "Sign in to your vendor account" 
+                  : "Create your account and start selling"
               }
             </CardDescription>
           </CardHeader>
           
           <CardContent className="space-y-4">
-            <form onSubmit={handleAuthSubmit} className="space-y-4">
-              {!isLogin && (
+            {isForgotPassword ? (
+              <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name *</Label>
-                  <Input
-                    id="fullName"
-                    name="fullName"
-                    placeholder="Enter your full name"
-                    value={authData.fullName}
-                    onChange={handleAuthInputChange}
-                    required
-                  />
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    className="pl-10"
-                    value={authData.email}
-                    onChange={handleAuthInputChange}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    className="pl-10 pr-10"
-                    value={authData.password}
-                    onChange={handleAuthInputChange}
-                    required
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </Button>
-                </div>
-                {!isLogin && authData.password && (
-                  <div className="mt-2">
-                    {authData.password.length < 6 ? (
-                      <p className="text-sm text-destructive flex items-center gap-1">
-                        <AlertCircle className="w-3 h-3" />
-                        Password must be at least 6 characters long
-                      </p>
-                    ) : (
-                      <p className="text-sm text-green-600 flex items-center gap-1">
-                        <CheckCircle className="w-3 h-3" />
-                        Password meets requirements
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {!isLogin && (
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Label htmlFor="email">Email</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type="password"
-                      placeholder="Confirm your password"
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="Enter your email"
                       className="pl-10"
-                      value={authData.confirmPassword}
+                      value={authData.email}
                       onChange={handleAuthInputChange}
                       required
                     />
                   </div>
                 </div>
-              )}
 
-              <Button type="submit" className="w-full" variant="hero" disabled={loading || !isStepValid()}>
-                {loading ? "Please wait..." : (isLogin ? "Sign In" : "Continue Setup")}
-              </Button>
-            </form>
+                <Button type="submit" className="w-full" variant="hero" disabled={loading}>
+                  {loading ? "Sending..." : "Send Reset Link"}
+                </Button>
+              </form>
+            ) : (
+              <form onSubmit={handleAuthSubmit} className="space-y-4">
+                {!isLogin && (
+                  <div className="space-y-2">
+                    <Label htmlFor="fullName">Full Name *</Label>
+                    <Input
+                      id="fullName"
+                      name="fullName"
+                      placeholder="Enter your full name"
+                      value={authData.fullName}
+                      onChange={handleAuthInputChange}
+                      required
+                    />
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      className="pl-10"
+                      value={authData.email}
+                      onChange={handleAuthInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                {!isForgotPassword && (
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter your password"
+                        className="pl-10 pr-10"
+                        value={authData.password}
+                        onChange={handleAuthInputChange}
+                        required
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </Button>
+                    </div>
+                    {!isLogin && authData.password && (
+                      <div className="mt-2">
+                        {authData.password.length < 6 ? (
+                          <p className="text-sm text-destructive flex items-center gap-1">
+                            <AlertCircle className="w-3 h-3" />
+                            Password must be at least 6 characters long
+                          </p>
+                        ) : (
+                          <p className="text-sm text-green-600 flex items-center gap-1">
+                            <CheckCircle className="w-3 h-3" />
+                            Password meets requirements
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {!isLogin && (
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type="password"
+                        placeholder="Confirm your password"
+                        className="pl-10"
+                        value={authData.confirmPassword}
+                        onChange={handleAuthInputChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <Button type="submit" className="w-full" variant="hero" disabled={loading || !isStepValid()}>
+                  {loading ? "Please wait..." : (isLogin ? "Sign In" : "Continue Setup")}
+                </Button>
+              </form>
+            )}
 
             <Separator className="my-6" />
 
             <div className="text-center">
-              <p className="text-sm text-muted-foreground">
-                {isLogin ? "Don't have an account?" : "Already have an account?"}
-              </p>
-              <Button
-                variant="link"
-                className="p-0 h-auto"
-                onClick={() => setIsLogin(!isLogin)}
-              >
-                {isLogin ? "Sign up for free" : "Sign in instead"}
-              </Button>
+              {isForgotPassword ? (
+                <div className="space-y-2">
+                  <Button
+                    variant="link"
+                    className="p-0 h-auto"
+                    onClick={() => setIsForgotPassword(false)}
+                  >
+                    ← Back to sign in
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    {isLogin ? "Don't have an account?" : "Already have an account?"}
+                  </p>
+                  <Button
+                    variant="link"
+                    className="p-0 h-auto"
+                    onClick={() => setIsLogin(!isLogin)}
+                  >
+                    {isLogin ? "Sign up for free" : "Sign in instead"}
+                  </Button>
+                  {isLogin && (
+                    <div className="mt-2">
+                      <Button
+                        variant="link"
+                        className="p-0 h-auto text-sm"
+                        onClick={() => setIsForgotPassword(true)}
+                      >
+                        Forgot password?
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="text-center">
